@@ -145,7 +145,7 @@
         <mxCell id="9lTi8IzpTVJnWQJsn2NG-55" parent="9lTi8IzpTVJnWQJsn2NG-51" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- prix: float" vertex="1">
           <mxGeometry height="26" width="160" y="104" as="geometry" />
         </mxCell>
-        <mxCell id="9lTi8IzpTVJnWQJsn2NG-56" parent="9lTi8IzpTVJnWQJsn2NG-51" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- capaciterTotal: int" vertex="1">
+        <mxCell id="9lTi8IzpTVJnWQJsn2NG-56" parent="9lTi8IzpTVJnWQJsn2NG-51" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- nombreTotal: int" vertex="1">
           <mxGeometry height="26" width="160" y="130" as="geometry" />
         </mxCell>
         <mxCell id="9lTi8IzpTVJnWQJsn2NG-57" parent="9lTi8IzpTVJnWQJsn2NG-51" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" value="- nombreRestant: int" vertex="1">
