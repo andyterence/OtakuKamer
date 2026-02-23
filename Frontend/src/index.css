@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+@keyframes flotter {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-55px); }
+  100% { transform: translateY(0px); }
+}
+
+.anime-flotter {
+  animation: flotter 3s ease-in-out infinite;
+}
