@@ -2,7 +2,7 @@
 
 @keyframes flotter {
   0%   { transform: translateY(0px); }
-  50%  { transform: translateY(-55px); }
+  50%  { transform: translateY(-45px); }
   100% { transform: translateY(0px); }
 }
 
