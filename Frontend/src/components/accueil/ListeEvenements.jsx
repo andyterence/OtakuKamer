@@ -7,6 +7,8 @@ export function ListeEvenements(){
     const [evenements, setEvenements] = useState([])
     // UseState qui va se charger du filtre des evenements selon le type
     const [filtreActif, setFiltreActif] = useState('Tous')
+    // Pour generer les filtres boutons grace a .map()
+    const filtres = ['Tous', 'Gaming', 'Anime', 'Manga']
 
     useEffect(() => {
         const chargerEvenements = async() => {
@@ -25,22 +27,39 @@ export function ListeEvenements(){
     : evenements.filter(e => e.typeEven === filtreActif)
 
     return(
-        <div className='w-full h-full bg-linear-to-r from-black to-violet-700 flex flex-col justify-center items-center pt-15 gap-10'>
-            <div className='flex flex-col justify-center items-center bg-clip-text text-transparent bg-gradient-to-r from-white to-cyan-800 gap-2'>
-                <h1 className='md:my-10 h-full font-bold md:text-6xl shadow-lg shadow-indigo-500/50'>Prochains Événements</h1>
-                <p className='md:text-2xl font-bold'>Découvrez tous les événements Otaku au Cameroun</p>
+        <div className='w-full h-full bg-[#1A1A2E] flex flex-col justify-center items-center pt-15 gap-10'>
+            <div className='flex flex-col justify-center items-center gap-2'>
+                <h1 className='md:my-10 h-full font-bold md:text-6xl text-[#F1F1F1] shadow-lg shadow-indigo-500/50'>Prochains Événements</h1>
+                <p className='md:text-2xl text-[#9CA3AF] font-bold'>Découvrez tous les événements Otaku au Cameroun</p>
             </div>
             <div className='w-full grid grid-rows md:flex justify-center items-center gap-10 md:mt-6'>
-                <button onClick={() => setFiltreActif('Tous')} className='shadow-lg shadow-indigo-500/50 bg-linear-to-r from-purple-600 to-blue-500 px-10 h-14 rounded-md font-bold text-lg cursor-pointer transition-all duration-300 hover:scale-90 hover:opacity-90'>Tout</button>
+                {filtres.map(filtre => (
+                    <button
+                        key={filtre}
+                        onClick={() => setFiltreActif(filtre)}
+                        className={filtreActif === filtre 
+                        ? 'shadow-lg shadow-indigo-500/50 bg-linear-to-r from-purple-600 to-blue-500 px-10 h-14 rounded-md font-bold text-lg cursor-pointer transition-all duration-300 hover:scale-105 hover:opacity-100'
+                        : 'bg-linear-to-r from-purple-600 to-blue-500 px-10 h-10 rounded-md font-bold cursor-pointer transition-all duration-300 hover:scale-95 hover:shadow-lg shadow-cyan-300/50 hover:opacity-90'
+                        }
+                    >
+                        {filtre}
+                    </button>
+                ))}
+                {/* <button onClick={() => setFiltreActif('Tous')} className='shadow-lg shadow-indigo-500/50 bg-linear-to-r from-purple-600 to-blue-500 px-10 h-14 rounded-md font-bold text-lg cursor-pointer transition-all duration-300 hover:scale-90 hover:opacity-90'>Tout</button>
                 <button onClick={() => setFiltreActif('Gaming')} className='shadow-lg shadow-indigo-500/50 bg-linear-to-r from-purple-600 to-blue-500 px-10 h-14 rounded-md font-bold text-lg cursor-pointer transition-all duration-300 hover:scale-90 hover:opacity-90'>Gaming</button>
                 <button onClick={() => setFiltreActif('Anime')} className='shadow-lg shadow-indigo-500/50 bg-linear-to-r from-purple-600 to-blue-500 px-10 h-14 rounded-md font-bold text-lg cursor-pointer transition-all duration-300 hover:scale-90 hover:opacity-90'>Anime</button>
-                <button onClick={() => setFiltreActif('Manga')} className='shadow-lg shadow-indigo-500/50 bg-linear-to-r from-purple-600 to-blue-500 px-10 h-14 rounded-md font-bold text-lg cursor-pointer transition-all duration-300 hover:scale-90 hover:opacity-90'>Manga</button>
+                <button onClick={() => setFiltreActif('Manga')} className='shadow-lg shadow-indigo-500/50 bg-linear-to-r from-purple-600 to-blue-500 px-10 h-14 rounded-md font-bold text-lg cursor-pointer transition-all duration-300 hover:scale-90 hover:opacity-90'>Manga</button> */}
             </div>
             <div className='md:flex justify-center items-center gap-10 my-10 rounded-xl'>
                 {evenementsFiltres.length === 0 
                     ? <p className=' font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-cyan-800'>Aucun événement de ce type</p>
                     : evenementsFiltres.map(evenement => (
-                        <div key={evenement.id} className='card h-110 w-70 flex flex-col justify-center items-center gap-1 bg-linear-to-r from-purple-900 to-black rounded-xl border-2 border-purple-500 shadow-lg shadow-indigo-500/50 font-bold transition-all duration-300 hover:scale-105 hover:opacity-80 p-4'>
+                        <div key={evenement.id} className={`card h-110 w-70 flex flex-col justify-center items-center gap-1 bg-linear-to-r from-purple-900 to-black rounded-xl border-2 border-purple-500 shadow-lg shadow-indigo-500/50 font-bold transition-all duration-300 hover:scale-105 hover:opacity-80 p-4 ${
+                            evenement.typeEven === 'Gaming' ? 'border-green-500' :
+                            evenement.typeEven === 'Anime' ? 'border-blue-500' :
+                            evenement.typeEven === 'Manga' ? 'border-red-500' :
+                                                    'border-purple-500'
+                        }`}>
                             <div className="relative h-[120vh] w-full bg-cover bg-center"
                             style={{ backgroundImage: `url(${evenement?.image})` }}>
                             </div>
@@ -48,7 +67,9 @@ export function ListeEvenements(){
                                 <h1 className='text-2xl text-center font-bold'>{evenement?.titre}</h1>
                             </div>
                             <div className='text-[12px] w-full text-[#F1F1F1]'>
-                                <p className='font-bold'>{evenement?.dateLancement}</p>
+                                <p>{new Date(evenement?.dateLancement).toLocaleDateString('fr-FR', {
+                                    day: 'numeric', month: 'long', year: 'numeric'
+                                })}</p>
                             </div>
                             <div className='text-[12px] w-full text-[#F1F1F1]'>
                                 <p>{evenement?.lieu}</p>

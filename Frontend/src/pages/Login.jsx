@@ -39,7 +39,7 @@ function Login() {
         console.log(reponse.data)
         console.log(email, motDePasse)
         // Rediriger l'utilisateur vers la page d'accueil après une connexion réussie
-        navigate('/')
+        navigate('/accueil')
     } catch (_err) {
         // si axios échoue
         setErreur("Email ou mot de passe incorrect")

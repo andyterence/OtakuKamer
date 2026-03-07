@@ -7,6 +7,7 @@ import Hero from './components/accueil/hero'
 import Accueil from './pages/accueil'
 import ListeEvenements from './components/accueil/ListeEvenements'
 import ListeNews from './components/accueil/ListeNews'
+import Sidebar from './components/shared/sidebar'
 
 function App() {
   return (
@@ -19,10 +20,11 @@ function App() {
           } />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/accueil" element={<Accueil />} />
-        <Route path="/hero" element={<Hero />} />
-        <Route path="/ListeEvenements" element={<ListeEvenements   />} />
-        <Route path="/ListeNews" element={<ListeNews   />} />
+        <Route path="/accueil" element={<PrivateRoute><Accueil /></PrivateRoute>} />
+        <Route path="/hero" element={<PrivateRoute><Hero /></PrivateRoute>} />
+        <Route path="/ListeEvenements" element={<PrivateRoute><ListeEvenements /></PrivateRoute>} />
+        <Route path="/ListeNews" element={<PrivateRoute><ListeNews /></PrivateRoute>} />
+        <Route path="/Sidebar" element={<PrivateRoute><Sidebar /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   )

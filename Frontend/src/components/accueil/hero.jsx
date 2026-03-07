@@ -61,13 +61,14 @@ export default function Hero() {
             {/* CONTENU PRINCIPAL */}
             <div className="relative z-10 h-full w-full flex flex-col justify-center items-center gap-10 text-[#F1F1F1]">
 
-                <div className='bg-linear-to-t from-sky-500 to-indigo-500 px-4 h-8 rounded-full flex justify-center items-center font-bold'>
+                <div className='bg-[#E63946] px-4 h-8 rounded-full flex justify-center items-center font-bold'>
                     Événement Principal
                 </div>
 
                 <div className='flex flex-col justify-center items-center gap-2 text-center px-4'>
-                    <h1 className='text-5xl font-bold  bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400'>{evenementsVedettes?.titre}</h1>
-                    <p className='text-[18px] text-gray-300'>{evenementsVedettes?.description}</p>
+                    <h1 className='text-5xl font-bold text-[#F1F1F1]'>{evenementsVedettes?.titre}</h1>
+                    {evenementsVedettes?.description?.slice(0, 100)}
+                    {evenementsVedettes?.description?.length > 100 ? '...' : ''}
                 </div>
 
                 <div className='border border-purple-500 bg-black/30 px-6 h-10 rounded-md flex justify-center items-center font-bold '>
