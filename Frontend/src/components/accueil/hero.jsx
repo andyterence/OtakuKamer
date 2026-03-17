@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import background from '../../assets/imgs/background.jpg'
+import localisation from '../../assets/icons/map.svg'
+import notif from '../../assets/icons/bell.svg'
 
 export default function Hero() {
 
@@ -52,60 +55,83 @@ export default function Hero() {
         }, [evenementsVedettes])
 
     return (
-        <div className="relative h-[100vh] w-full bg-cover bg-center"
-            style={{ backgroundImage: `url(${evenementsVedettes?.image})` }}>
-
+        <div className="relative h-[100vh] w-full flex md:flex-row items-center bg-cover-center md:p-40"
+            style={{ backgroundImage: `url(${background})` }}>
             {/* Overlay sombre */}
-            <div className="absolute inset-0 bg-black/60"></div>
-
-            {/* CONTENU PRINCIPAL */}
-            <div className="relative z-10 h-full w-full flex flex-col justify-center items-center gap-10 text-[#F1F1F1]">
-
-                <div className='bg-[#E63946] px-4 h-8 rounded-full flex justify-center items-center font-bold'>
-                    Événement Principal
+            <div className="absolute inset-0 bg-black/70"></div>
+            {/* SECTION DE GAUCHE - INFORMATION SUR L'EVENEMENT MAJEUR */}
+            <section className='w-1/2 flex flex-col justify-center gap-10 z-10'>
+                <div className='w-50 h-7 flex justify-center items-center font-bold text-[#C2611F] text-[12px] border border-orange-500 bg-black/30 px-6 py-2 rounded-full'>
+                    <p>Événement à venir</p>
                 </div>
-
-                <div className='flex flex-col justify-center items-center gap-2 text-center px-4'>
-                    <h1 className='text-5xl font-bold text-[#F1F1F1]'>{evenementsVedettes?.titre}</h1>
+                <div className='font-bold'>
+                    <h1 className='w-[50%] text-6xl font-bold text-[#F1F1F1]'>{evenementsVedettes?.titre}</h1>
+                </div>
+                <div className='font-bold text-[#F1F1F1]'>
                     {evenementsVedettes?.description?.slice(0, 100)}
                     {evenementsVedettes?.description?.length > 100 ? '...' : ''}
                 </div>
-
-                <div className='border border-purple-500 bg-black/30 px-6 h-10 rounded-md flex justify-center items-center font-bold '>
-                     LE COMPTE À REBOURS A COMMENCÉ
+                <div className='font-bold flex items-center gap-3'>
+                    <a
+                        href='#'
+                        className='bg-[#C2611F] text-[12px] text-[#F1F1F1] px-4 py-3 rounded-xl font-bold cursor-pointer hover:shadow-sm shadow-black-500/50 hover:opacity-95 transition'>
+                        RÉSERVER MA PLACE
+                    </a>
+                    <a
+                        href='#'
+                        className='border-1 border-[#C2611F] text-[12px] text-[#C2611F] px-12 py-3 rounded-xl font-bold cursor-pointer hover:shadow-sm hover:bg-[#F1F1F1] shadow-black-500/50 hover:opacity-70 transition'>
+                        À propos
+                    </a>
                 </div>
-
-                <div className='flex justify-center items-center gap-6'>
+                <div className='flex justify- items-center gap-6'>
                     {evenementTermine ? (
-                        <div className='text-center'>
-                            <p className='text-2xl font-bold'>Événement en cours !</p>
-                            <p className='text-gray-300'>Le prochain événement vedette sera annoncé bientôt.</p>
+                        <div className='text-center text-[#0D0D0D]'>
+                            <p className='tet-gray-300'>Le prochain événement vedette sera annoncé bientôt.</p>
                         </div>
                     ) : (
-                        <div className='flex justify-center items-center gap-6'>
-                            {[
-                            { valeur: compteRebours.mois, label: 'MOIS' },
-                            { valeur: compteRebours.jours, label: 'JOURS' },
-                            { valeur: compteRebours.heures, label: 'HEURES' },
-                            { valeur: compteRebours.minutes, label: 'MINUTES' },
-                            { valeur: compteRebours.secondes, label: 'SECONDES' },
-                        ].map((item, index, arr) => (
-                            <div key={item.label} className='flex items-center gap-6'>
-                                <div className='flex flex-col justify-center items-center'>
-                                    <span className='text-sm md:text-7xl font-bold shadow-lg shadow-indigo-500/50'>{String(item.valeur).padStart(2, '0')}</span>
-                                    <span className='text-sm tracking-widest mt-1'>{item.label}</span>
-                                </div>
-                                {index < arr.length - 1 && <span className='text-4xl font-bold text-purple-400'>:</span>}
+                        <div className='flex flex-col justify-center gap-3'>
+                            <p className='text-[10px] text-[#0D0D0D] font-bold tracking-wide'>COMPTE À REBOURS</p>
+                            <div className='flex justify-center items-center gap-6'>
+                                    {[
+                                    { valeur: compteRebours.jours, label: 'JOURS' },
+                                    { valeur: compteRebours.heures, label: 'HEURES' },
+                                    { valeur: compteRebours.minutes, label: 'MIN' },
+                                    { valeur: compteRebours.secondes, label: 'SEC' },
+                                ].map((item) => (
+                                    <div key={item.label} className='flex items-center gap-6'>
+                                        <div className='flex flex-col justify-center items-center rounded-xl bg-gray-100 shadow-md shadow-orange-500/50 h-20 w-20'>
+                                            <span className='text-sm md:text-xl text-[12px] font-bold text-[#C2611F]'>{String(item.valeur).padStart(2, '0')}</span>
+                                            <span className='text-sm md:text-[10px] tracking-widest mt-1'>{item.label}</span>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                            </div>
-                        )}
+                        </div>
+                    )}
                 </div>
 
-                <button className='bg-linear-to-r from-purple-600 to-blue-500 shadow-lg shadow-indigo-500/50 px-10 h-14 rounded-md font-bold text-lg cursor-pointer hover:opacity-90 transition'>
-                    RÉSERVER MA PLACE
-                </button>
-            </div>
+            </section>
+            {/* SECTION DE DROITE - IMAGE DE L'EVENEMENT MAJEUR */}
+            <section className='w-1/2 flex justify-center items-center font-bold'>
+                <div className="relative h-130 w-100 flex flex-col justify-end gap-2 p-5 bg-cover bg-center rounded-xl"
+                    style={{ backgroundImage: `url(${evenementsVedettes?.image})` }}>
+                    {/* Overlay sombre */}
+                    <div className="absolute inset-0 bg-black/30"></div>
+                    <div className='absolute z-10 w-30 h-7 shadow-md shadow-black-500/50 flex justify-center items-center text-[#F1F1F1] font-bold bg-[#C2611F] text-[10px] rounded-full md:left-64 md:bottom-118'>
+                        <p>En vedette</p>
+                    </div>
+                    <div className='flex justify-start items-center gap-2 text-[14px] text-[#F1F1F1] w-full z-10'>
+                        <img className='h-5 w-5' src={notif} alt="Icon de la notification" />
+                        <p>{new Date(evenementsVedettes?.dateLancement).toLocaleDateString('fr-FR', {
+                            day: 'numeric', month: 'long', year: 'numeric'
+                        })}</p>
+                    </div>
+                    <div className='flex justify-start items-center gap-2 text-[14px] w-full text-[#F1F1F1] z-10'>
+                        <img className='h-5 w-5' src={localisation} alt="Icon de la localisation" />
+                        <p>{evenementsVedettes?.lieu}</p>
+                    </div>
+                </div>  
+            </section>
         </div>
     )
 }

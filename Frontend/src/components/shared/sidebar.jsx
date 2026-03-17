@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import logo2 from '../../assets/logos/logo-orange.png'
+// import logo2 from '../../assets/logos/logo-orange.png'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import logo from '../../assets/logos/logo-orange.png'
 import accueil from "../../assets/icons/home-1-svgrepo-com.svg";
 import user_icon from "../../assets/icons/user-svgrepo-com.svg";
 import align_text from "../../assets/icons/align-text-left-svgrepo-com.svg";
@@ -9,7 +10,6 @@ import create_even from "../../assets/icons/plus-circle-add-new-create-cross-svg
 import calendrier from "../../assets/icons/calendar-days-svgrepo-com.svg";
 import setting from "../../assets/icons/setting-svgrepo-com.svg";
 import exit from "../../assets/icons/exit.svg";
-import avatar_orga from "../../assets/icons/avatar-orga.svg";
 
 
 function Sidebar() {
@@ -27,11 +27,16 @@ function Sidebar() {
             })
             setUtilisateur(reponse.data)
             } catch (_err) {
+                if (_err.response?.status === 401) {
+                    localStorage.removeItem('access')
+                    localStorage.removeItem('refresh')
+                    navigate('/login')
+                }
                 console.error(_err)
             }
-        }
-        seConnecter()
-    },[])
+                    }
+                    seConnecter()
+            },[])
 
     function seDeconnecter(){
         localStorage.removeItem('access')
@@ -40,95 +45,163 @@ function Sidebar() {
     }
 
     return(
-        <div className="bg-[#1A1A2E] border-r border-purple-900 flex flex-col justify-start w-full h-screen md:p-4 text-[#F1F1F1]">
+        <div className="bg-[#EDEDF5] border-r border-[#C2611F] flex flex-col justify-start w-full h-screen md:p-4 text-[#1A1A2E]">
+            {/* PREMIER GRANDE SECTION */}
+            <div className="flex flex-col justify-center gap-4 text-xl">
+                {/* SECTION TITRE + LOGO */}
+                <div className="flex justify-start items-center font-bold">
+                    {/* Conteneur du logo */}
+                    <div className="flex justify-center items-center">
+                        <img className='h-10 h-10' src={logo} alt="Logo d'OtakuKamer" />
+                    </div>
+                    {/* Conteneur du titre */}
+                    <div>
+                        <h1>KamerOtaku</h1>
+                    </div>
+                </div>
+                {/* SECTION DE RECHERCHE */}
+                <div className="text-[12px] flex flex-col gap-1">
+                    <label className="font-bold text-[#C2611F]" htmlFor="search">Rechercher</label>
+                    <input
+                        type="search" 
+                        name="search" 
+                        id="search"
+                        placeholder="  Que recherchez vous ?"
+                        className="bg-gray-300 h-7 rounded-sm border-none"
+                    />
+                </div>
+                {/* SECTION PRINCIPALE */}
+                <div>
+                    {/* TITRE DU PROGIL */}
+                    <div className="w-full text-[12px] font-bold text-[#C2611F]/80 px4">
+                        <h2>Profil</h2>
+                    </div>
+                    {/* PROFIL DU USER */}
+                    <div className="w-full flex items-center justify-start gap-2 bg-[#C2611F]/20 rounded-md p-2">
+                        {/* ICON DU USER */}
+                        <div className="bg-[#C2611F] w-10 h-10 rounded-full flex justify-center items-center">
+                            <img className='h-6 h-6' src={user_icon} alt="Logo d'utilisateur" />
+                        </div>
+                        {/* NOM ET TYPE DU USER */}
+                        <div className="flex flex-col">
+                            <h1 className="font-bold text-[12px]">{utilisateur?.first_name}</h1>
+                            <p className="text-gray-500 text-[10px]">{utilisateur?.role}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             {utilisateur?.role === 'organisateur' ? (
-                <>
-                    <div className="flex flex-col justify-center items-start font-bold gap-2">
-                        <h2 className="text-2xl">OtakuKamer</h2>
-                        <p className="text-[12px] text-[#9CA3AF]">Organisateur</p>
-                    </div>
-                    <div className="w-full h-[1px] bg-purple-900 my-2"></div>
-                    <div className="flex justify-start items-center gap-2 my-2">
-                        <div className="bg-violet-500 w-16 h-16 rounded-full flex justify-center items-center"><img className='h-8 w-8' src={user_icon} alt="Icon d'utilisateur" /></div>
-                        <div>
-                            <h2>{utilisateur?.name}</h2>
-                            <p className="text-[12px] text-[#9CA3AF]">Compte Pro</p>
+                <div className="flex flex-col justify-between h-screen">
+                    {/* BARRE DE SEPARATION */}
+                    <div className="bg-[#C2611F] h-[2px] w-full my-4 p-0"></div>
+                    {/* DEUXIEME GRANDE SECTION */}
+                    <div className="flex-1 flex flex-col gap-4 font-bold">
+                        {/* Accueil */}
+                        <div className="active border-l-4 border-[#C2611F] bg-[#C2611F]/50 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                            <img className='h-5 w-5' src={accueil} alt="Logo d'accueil" />
+                            <button 
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/accueil/`)}
+                            >
+                                Accueil
+                            </button> 
+                        </div>
+                        {/* Mes Événement */}
+                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                            <img className='h-5 w-5' src={align_text} alt="Logo de mes evenements" />
+                            <button 
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/MyEven/`)}
+                            >
+                                Mes Événement
+                            </button>
+                        </div>
+                        {/* Créer un Événement */}
+                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                            <img className='h-5 w-5' src={create_even} alt="Logo d'evenement" />
+                            <button 
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/createEven/`)}
+                            >
+                                Créer un Événement
+                            </button>
+                        </div>
+                        {/* Calendrier */}
+                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                            <img className='h-5 w-5' src={calendrier} alt="Logo du calendrier" />
+                            <button 
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/calendrier/`)}
+                            >
+                                Calendrier
+                            </button>
+                        </div>
+                        {/* Paramètres */}
+                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                            <img className='h-5 w-5' src={setting} alt="Logo d'accueil" />
+                            <button 
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/setting/`)}
+                            >
+                                Paramètres
+                            </button>
                         </div>
                     </div>
-                    <div  className="w-full h-full flex flex-col justify-center items-start text-[13px] font-bold gap-4">
-                        <div className="w-full h-[1px] bg-gray-700 my-2"></div>
-                        <div className="flex justify-start items-center h-[6vh] w-[80%] rounded-sm hover:bg-linear-to-r from-purple-600 to-blue-500 hover:px-4 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg shadow-indigo-500/50 gap-2">
-                            <img className='h-5 w-5 md:h-7 md:w-7' src={accueil} alt="Logo d'accueil" />
-                            <a href="#">Accueil</a>
-                            {/* <img className='h-10 h-10' src={arrow_left} alt="Logo d'OtakuKamer" /> */}
-                        </div>
-                        <div className="flex justify-start items-center h-[6vh] w-[80%] rounded-sm hover:bg-linear-to-r from-purple-600 to-blue-500 hover:px-4 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg shadow-indigo-500/50 gap-2">
-                            <img className='h-5 w-5 md:h-7 md:w-7' src={align_text} alt="Logo des evenements" />
-                            <a href="#">Mes Événement</a>
-                        </div>
-                        <div className="flex justify-start items-center h-[6vh] w-[80%] rounded-sm hover:bg-linear-to-r from-purple-600 to-blue-500 hover:px-4 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg shadow-indigo-500/50 gap-2">
-                            <img className='h-5 w-5 md:h-7 md:w-7' src={create_even} alt="Logo pour creer un evenement" />
-                            <a href="#">Créer un Événement</a>
-                        </div>
-                        <div className="flex justify-start items-center h-[6vh] w-[80%] rounded-sm hover:bg-linear-to-r from-purple-600 to-blue-500 hover:px-4 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg shadow-indigo-500/50 gap-2">
-                            <img className='h-5 w-5 md:h-7 md:w-7' src={calendrier} alt="Logo pour creer un evenement" />
-                            <a href="#">Calendrier</a>
-                        </div>
-                        <div className="flex justify-start items-center h-[6vh] w-[80%] rounded-sm hover:bg-linear-to-r from-purple-600 to-blue-500 hover:px-4 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg shadow-indigo-500/50 gap-2">
-                            <img className='h-5 w-5 md:h-7 md:w-7' src={setting} alt="Logo pour creer un evenement" />
-                            <a href="#">Paramètres</a>
-                        </div>
-                    </div>
-                    <div className="w-full h-full flex flex-col justify-end items-center text-[14px] gap-3 md:mt-0">
-                        <div className="w-full h-[1px] bg-gray-700 my-2"></div>
-                        <div className="flex justify-start items-center h-[6vh] w-[80%] rounded-sm bg-linear-to-r from-purple-600 to-blue-500 px-2 hover:px-4 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg shadow-indigo-500/50 gap-2">
-                            <img className='h-5 w-5 md:h-7 md:w-7' src={avatar_orga} alt="Logo d'utilisateur" />
-                            <p>Mode utilisateur</p>
-                        </div>
-                        <div className="flex justify-start items-center h-[6vh] w-[80%] rounded-sm hover:bg-linear-to-r from-red-900 to-pink-900 px-2 hover:px-4 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg shadow-indigo-500/50 gap-2">
+                    {/* TROISIEME GRANDE SECTION */}
+                    <div className="flex flex-col font-bold">
+                        {/* Deconnexion */}
+                        <div className="bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:py-2 hover:px-6 hover:bg-red-900/80">
                             <img className='h-5 w-5 md:h-7 md:w-7' src={exit} alt="Logo pour creer un evenement" />
                             <button onClick={seDeconnecter}>Deconnexion</button>
                         </div>
                     </div>
-                </>
+                </div>
             ) : (
-                <>
-                    <div className="flex flex-col justify-center items-start font-bold gap-2">
-                        <h2 className="text-2xl">OtakuKamer</h2>
-                        <p className="text-[12px] text-[#9CA3AF]">Utilisateur</p>
-                    </div>
-                    <div className="w-full h-[1px] bg-purple-900 my-2"></div>
-                    <div className="flex justify-start items-center gap-2 mt-7">
-                        <div className="bg-violet-500 w-16 h-16 rounded-full flex justify-center items-center"><img className='h-8 w-8' src={user_icon} alt="Icon d'utilisateur" /></div>
-                        <div>
-                            <h2>{utilisateur?.name}</h2>
-                            <p className="text-[12px] text-[#9CA3AF]">Membre</p>
+                <div className="flex flex-col justify-between h-screen">
+                    {/* BARRE DE SEPARATION */}
+                    <div className="bg-[#C2611F] h-[2px] w-full my-4 p-0"></div>
+                    {/* DEUXIEME GRANDE SECTION */}
+                    <div className="flex-1 flex flex-col gap-4 font-bold">
+                        {/* Accueil */}
+                        <div className="active border-l-4 border-[#C2611F] bg-[#C2611F]/50 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                            <img className='h-5 w-5' src={accueil} alt="Logo d'accueil" />
+                            <button 
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/accueil/`)}
+                            >
+                                Accueil
+                            </button>
+                        </div>
+                        {/* Mes Billets */}
+                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                            <img className='h-5 w-5' src={align_text} alt="Logo de mes billets" />
+                            <button 
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/billets/`)}
+                            >
+                                Mes billets
+                            </button>
+                        </div>
+                        {/* Paramètres */}
+                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                            <img className='h-5 w-5' src={setting} alt="Logo des parametres" />
+                            <button 
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/setting/`)}
+                            >
+                                Paramètres
+                            </button>
                         </div>
                     </div>
-                    <div  className="w-full h-full flex flex-col justify-center items-start text-[13px] font-bold gap-4">
-                        <div className="w-full h-[1px] bg-purple-900 my-2"></div>
-                        <div className="flex justify-start items-center h-[6vh] w-[80%] rounded-sm hover:bg-linear-to-r from-purple-600 to-blue-500 hover:px-4 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg shadow-indigo-500/50 gap-2">
-                            <img className='h-5 w-5 md:h-7 md:w-7' src={accueil} alt="Logo d'accueil" />
-                            <a href="#">Accueil</a>
-                            {/* <img className='h-10 h-10' src={arrow_left} alt="Logo d'OtakuKamer" /> */}
-                        </div>
-                        <div className="flex justify-start items-center h-[6vh] w-[80%] rounded-sm hover:bg-linear-to-r from-purple-600 to-blue-500 hover:px-4 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg shadow-indigo-500/50 gap-2">
-                            <img className='h-5 w-5 md:h-7 md:w-7' src={align_text} alt="Logo des evenements" />
-                            <a href="#">Mes Billets</a>
-                        </div>
-                        <div className="flex justify-start items-center h-[6vh] w-[80%] rounded-sm hover:bg-linear-to-r from-purple-600 to-blue-500 hover:px-4 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg shadow-indigo-500/50 gap-2">
-                            <img className='h-5 w-5 md:h-7 md:w-7' src={setting} alt="Logo pour creer un evenement" />
-                            <a href="#">Paramètres</a>
-                        </div>
-                    </div>
-                    <div className="w-full h-full flex flex-col justify-end items-center text-[14px] font-bold gap-3 md:mt-0">
-                        <div className="w-full h-[1px] bg-purple-900 my-2"></div>
-                        <div className="flex justify-start items-center h-[6vh] w-[80%] rounded-sm hover:bg-linear-to-r from-red-900 to-pink-900 px-2 hover:px-4 cursor-pointer transition-all duration-200 hover:scale-105 hover:shadow-lg shadow-indigo-500/50 gap-2">
+                    {/* TROISIEME GRANDE SECTION */}
+                    <div className="flex flex-col font-bold">
+                        {/* Deconnexion */}
+                        <div className="bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:py-2 hover:px-6 hover:bg-red-900/80">
                             <img className='h-5 w-5 md:h-7 md:w-7' src={exit} alt="Logo pour creer un evenement" />
                             <button onClick={seDeconnecter}>Deconnexion</button>
                         </div>
                     </div>
-                </>
+                </div>
             )}
             
         </div>

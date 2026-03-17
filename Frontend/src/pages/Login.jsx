@@ -159,7 +159,7 @@ function Login() {
                 {erreur && <p className="text-red-500 text-sm">{erreur}</p>}
             </div>
             <div>
-                <p>Pas encore de compte ? <a href="#" className="text-blue-500 hover:underline">S'inscrire</a></p>
+                <p>Pas encore de compte ? <a href="/register" className="text-blue-500 hover:underline">S'inscrire</a></p>
             </div>
             <div></div>
         </section>
