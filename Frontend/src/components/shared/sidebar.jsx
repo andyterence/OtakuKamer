@@ -10,12 +10,12 @@ import create_even from "../../assets/icons/plus-circle-add-new-create-cross-svg
 import calendrier from "../../assets/icons/calendar-days-svgrepo-com.svg";
 import setting from "../../assets/icons/setting-svgrepo-com.svg";
 import exit from "../../assets/icons/exit.svg";
+import menu from "../../assets/icons/menu.svg";
 
 
-function Sidebar() {
+function Sidebar({ menuOuvert, setMenuOuvert }) {
 
     const [utilisateur, setUtilisateur] = useState(null)
-    const [menuOuvert, setMenuOuvert] = useState(false)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -45,7 +45,13 @@ function Sidebar() {
     }
 
     return(
-        <div className="bg-[#EDEDF5] border-r border-[#C2611F] flex flex-col justify-start w-full h-screen md:p-4 text-[#1A1A2E]">
+        <div 
+            className={`bg-[#EDEDF5] border-r border-[#C2611F] flex flex-col justify-start 
+                        w-[70%] md:w-full h-screen p-4 text-[#1A1A2E] 
+                        fixed md:relative z-40 transition-transform duration-300
+                        ${menuOuvert ? 'translate-x-0' : '-translate-x-full'} 
+                        md:translate-x-0`}
+            >
             {/* PREMIER GRANDE SECTION */}
             <div className="flex flex-col justify-center gap-4 text-xl">
                 {/* SECTION TITRE + LOGO */}
@@ -111,7 +117,7 @@ function Sidebar() {
                             <img className='h-5 w-5' src={align_text} alt="Logo de mes evenements" />
                             <button 
                                 className="cursor-pointer"
-                                onClick={() => navigate(`/MyEven/`)}
+                                onClick={() => navigate(`/MyEvenement/`)}
                             >
                                 Mes Événement
                             </button>
@@ -194,10 +200,10 @@ function Sidebar() {
                         </div>
                     </div>
                     {/* TROISIEME GRANDE SECTION */}
-                    <div className="flex flex-col font-bold">
+                    <div className="flex flex-col">
                         {/* Deconnexion */}
                         <div className="bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:py-2 hover:px-6 hover:bg-red-900/80">
-                            <img className='h-5 w-5 md:h-7 md:w-7' src={exit} alt="Logo pour creer un evenement" />
+                            <img className='h-5 w-5 md:h-7 md:w-7' src={exit} alt="Logo pour la deconnexion" />
                             <button onClick={seDeconnecter}>Deconnexion</button>
                         </div>
                     </div>

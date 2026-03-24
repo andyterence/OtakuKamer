@@ -22,6 +22,8 @@ export default function EvenementShow() {
     const [categorieChoisie, setCategorieChoisie] = useState(null)
     // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
+    // Etat pour refuser l'autorisation a un element aux personnes qui ne sont pas connecter
+    const token = localStorage.getItem('access')
 
     // FONCTION POUR LA RESERVATION
     const reserver = async () => {
@@ -266,12 +268,14 @@ export default function EvenementShow() {
                                                 className='w-1/4 bg-[#C2611F]/30 flex justify-center items-center rounded-xl cursor-pointer hover:px-6 hover:bg-[#C2611F]/50 transition-all'>+</button>
                                         </div>
                                         {/* BUTON DE RESERVATION */}
-                                        <button
+                                        {token && (
+                                            <button
                                                 onClick={reserver}
                                                 className='w-full h-12 bg-[#C2611F]/30 flex justify-center items-center rounded-xl cursor-pointer hover:px-6 hover:bg-[#C2611F]/50 transition-all'
                                                 >
                                                     Reserver ma place
-                                        </button>
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             )}

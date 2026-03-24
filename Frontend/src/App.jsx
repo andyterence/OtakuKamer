@@ -6,6 +6,9 @@ import Register from './pages/register'
 import Accueil from './pages/accueil'
 import EvenementShow from './pages/evenementShow'
 import Billets from './pages/billets'
+import CreateEven from './pages/createEven'
+import MyEvenement from './pages/myEvenement'
+import Calendrier from './pages/calendrier'
 
 function App() {
   return (
@@ -14,9 +17,12 @@ function App() {
         <Route path="/" element={<Navigate to="/accueil" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/accueil" element={<PrivateRoute><Accueil /></PrivateRoute>} />
+        <Route path="/accueil" element={<Accueil />} />
         <Route path="/billets" element={<PrivateRoute><Billets /></PrivateRoute>} />
-        <Route path="/evenement/:id" element={<PrivateRoute><EvenementShow /></PrivateRoute>} />
+        <Route path="/evenement/:id" element={<EvenementShow />} />
+        <Route path="/createEven/" element={<PrivateRoute><CreateEven /></PrivateRoute>} />
+        <Route path="/myEvenement/" element={<PrivateRoute><MyEvenement /></PrivateRoute>} />
+        <Route path="/calendrier/" element={<PrivateRoute><Calendrier /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   )

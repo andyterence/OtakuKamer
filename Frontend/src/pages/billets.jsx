@@ -45,6 +45,51 @@ export default function Billets() {
         lien.click()
     }
 
+    // POUR ANNULER UN BILLET
+    const annulerBillet = async (billetId) => {
+        try {
+                const token = localStorage.getItem('access')
+                const reponse = await axios.put(
+                        `http://localhost:8000/api/billet/${billetId}/`,
+                        { statut: 'annule' },
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    )
+                setBillets(billets.map(b => 
+                    b.id === billetId ? { ...b, statut: 'annule' } : b
+                ))
+            } catch (_err) {
+                if (_err.response?.status === 401) {
+                localStorage.removeItem('access')
+                localStorage.removeItem('refresh')
+                navigate('/login')
+            }
+                console.error(_err)
+            } finally {
+                setEnAttente(false)
+        }
+    }
+
+    // POUR SUPPRIMER UN BILLET DEJA ANNULER
+    const supprimerBillet = async (billetId) => {
+        try {
+                const token = localStorage.getItem('access')
+                const reponse = await axios.delete(
+                    `http://localhost:8000/api/billet/${billetId}/`,
+                    { headers: { Authorization: `Bearer ${token}` } }
+                )
+                setBillets(billets.filter(b => b.id !== billetId))
+            } catch (_err) {
+                if (_err.response?.status === 401) {
+                localStorage.removeItem('access')
+                localStorage.removeItem('refresh')
+                navigate('/login')
+            }
+                console.error(_err)
+            } finally {
+                setEnAttente(false)
+        }
+    }
+
     useEffect(() => {
         const chargerBillets = async() => {
             setEnAttente(true)
@@ -118,6 +163,25 @@ export default function Billets() {
                                 {/* BACKGROUND DE L'EVENEMENT */}
                                 <div className='w-1/3 h-full rounded-xl bg-cover bg-center'
                                     style={{ backgroundImage: `url(${billet?.categorie?.evenement?.image})` }}>
+                                {/* OVERLAY SI ANNULE */}
+                                {billet.statut === 'annule' && (
+                                    <div className='absolute inset-0 bg-black/70 rounded-xl flex justify-center items-center'>
+                                        <p className='text-red-500 font-bold text-xl'>Annulé</p>
+                                    </div>
+                                )}
+
+                                {billet.statut === 'valide' && (
+                                    <button onClick={() => annulerBillet(billet.id)}>
+                                        Annuler
+                                    </button>
+                                )}
+                                
+                                {/* OVERLAY SI UTILISE */}
+                                {billet.statut === 'utilise' && (
+                                    <div className='absolute inset-0 bg-black/70 rounded-xl flex justify-center items-center'>
+                                        <p className='text-gray-400 font-bold text-xl'>Utilisé</p>
+                                    </div>
+                                )}
                                 </div>
                                 {/* Detail du billet */}
                                 <div className='w-2/3 h-full flex flex-col justify-evenly items-start gap-4'>
@@ -160,26 +224,48 @@ export default function Billets() {
                                         </div>
                                     </div>
                                     {/* PRESENTATION DU QRCODE */}
-                                        <div className='w-full flex justify-center items-center gap-4'>
-                                            <div className='bg-[#C2611F]/40 h-10 w-full p-4 flex justify-center gap-4 items-center cursor-pointer rounded-xl'>
-                                                <img className='h-6 w-6' src={qrcode} alt="Logo de telechargement du qrcode" />
-                                                <button
-                                                    onClick={() => setQrOuvert(qrOuvert === billet?.id ? null : billet?.id)}
-                                                    className='cursor-pointer'
-                                                >
-                                                    Afficher le QRCODE 
-                                                </button>
-                                            </div>
-                                            {/* BUTON DE TELECHARGEMENT */}
-                                            <div>
+                                    <div className='w-full flex justify-center items-center gap-4'>
+                                        <div className='w-full h-full flex justify-center items-center gap-2'>
+                                            {/* Annuler — visible seulement si valide */}
+                                            {billet.statut === 'valide' && (
                                                 <button 
-                                                    onClick={() => telechargerQR(billet?.id)}
-                                                    className='cursor-pointer'
+                                                    onClick={() => annulerBillet(billet.id)}
+                                                    className='bg-red-500/60 w-full text-red-700 px-4 py-2 rounded-xl cursor-pointer hover:bg-red-500/50 transition'
                                                 >
-                                                    <img className='h-7 w-7' src={download} alt="Logo de telechargement du fichier" />
+                                                    Annuler
                                                 </button>
-                                            </div>
+                                            )}
+
+                                            {/* Supprimer — visible seulement si annulé */}
+                                            {billet.statut === 'annule' && (
+                                                <button 
+                                                    onClick={() => supprimerBillet(billet.id)}
+                                                    className='inset-0 z-10 bg-red-700/60 w-full text-gray-200 px-4 py-2 rounded-xl cursor-pointer hover:bg-gray-500/50 transition'
+                                                >
+                                                    Supprimer
+                                                </button>
+                                            )}
+
                                         </div>
+                                        <div className='bg-[#C2611F]/40 h-10 w-full p-4 flex justify-center gap-4 items-center cursor-pointer rounded-xl'>
+                                            <img className='h-6 w-6' src={qrcode} alt="Logo de telechargement du qrcode" />
+                                            <button
+                                                onClick={() => setQrOuvert(qrOuvert === billet?.id ? null : billet?.id)}
+                                                className='cursor-pointer'
+                                            >
+                                                Afficher le QRCODE 
+                                            </button>
+                                        </div>
+                                        {/* BUTON DE TELECHARGEMENT, D'ANNULATION ET DE SUPPRESSION*/}
+                                        <div>
+                                            <button 
+                                                onClick={() => telechargerQR(billet?.id)}
+                                                className='cursor-pointer'
+                                            >
+                                                <img className='h-7 w-7' src={download} alt="Logo de telechargement du fichier" />
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         ))

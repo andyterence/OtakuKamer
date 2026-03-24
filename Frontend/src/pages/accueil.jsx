@@ -7,19 +7,43 @@ import ListeEvenements from "../components/accueil/ListeEvenements";
 import ListeNews from "../components/accueil/ListeNews";
 import Sidebar from "../components/shared/sidebar";
 import kurama_attend from '../assets/imgs/goku_attend.png'
+import menu from '../assets/icons/menu.svg'
 
 function Accueil() {
 
     // État pour indiquer si la connexion est en cours d'attente, utilisé pour afficher une image différente pendant le processus de connexion
     const [enAttente, setEnAttente] = useState(false)
+    // Etat pour refuser l'autorisation du sidebar aux personnes qui ne sont pas connecter
+    const token = localStorage.getItem('access')
+    // Menu ouvert ou pas
+    const [menuOuvert, setMenuOuvert] = useState(false)
     
     return(
 
         <div className="flex items-start">
-            <aside className="w-1/7 sticky top-0 h-screen">
-                <Sidebar />
-            </aside>
-            <main className="w-6/7">
+            {menuOuvert && (
+                <div 
+                    className='md:hidden fixed inset-0 bg-black/50 z-30'
+                    onClick={() => setMenuOuvert(false)}
+                    />
+                )}
+            {token && (
+                <>
+                    {/* BOUTON HAMBURGER */}
+                    <button 
+                        className='md:hidden fixed top-4 left-4 z-50'
+                        onClick={() => setMenuOuvert(!menuOuvert)}
+                    >
+                        <img className='h-5 w-5' src={menu} alt="Menu" />
+                    </button>
+                    
+                    {/* SIDEBAR */}
+                    <aside className="md:w-1/7 w-0 md:sticky md:top-0 md:h-screen z-50">
+                        <Sidebar menuOuvert={menuOuvert} setMenuOuvert={setMenuOuvert} />
+                    </aside>
+                </>
+            )}
+            <main className={token ? 'md:w-6/7 w-full' : 'w-full'}>
                 <Hero />
                 <ListeEvenements />
                 <ListeNews />

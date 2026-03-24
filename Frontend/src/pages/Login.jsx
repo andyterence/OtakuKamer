@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import logo from '../assets/logos/OtakuKamer_logo.png'
+import logo from '../assets/logos/logo-orange.png'
 // import goku from '../assets/imgs/goku_bienvenue.png'
 import naruto from '../assets/imgs/naruto_bienvenue.png'
 // import goku_hover from '../assets/imgs/goku_hover.png'
@@ -53,13 +53,13 @@ function Login() {
 
   return (
     // Structure de la page de connexion avec deux sections : une pour l'accueil et une pour le formulaire de connexion
-    <div className='flex md:flex-row flex-col bg-[#0D0D0D] h-full w-full flex items-center justify-center'>
+    <div className='flex md:flex-row flex-col text-[#0D0D0D] h-full w-full flex items-center justify-center'>
 
         {/* SECTION DE GAUCHE - ACCUEIL */}
-        <section className='w-full md:w-1/2 h-screen flex flex-col items-center justify-center gap-2'>
-            <div className='flex items-center justify-center text-[#F1F1F1] gap-2 p-4'>
-                <img className='h-10 h-10' src={logo} alt="Logo d'OtakuKamer" />
-                <h1 className='md:text-2xl font-bold'>OtakuKamer</h1>
+        <section className='hidden md:block md:w-1/2 h-[98vh] md:h-screen flex flex-col items-center justify-center gap-2 pt-[4%]'>
+            <div className='flex items-center justify-center text-[#0D0D0D] gap-2 p-4'>
+                <img className='w-16 h-16' src={logo} alt="Logo d'OtakuKamer" />
+                <h1 className='text-3xl md:text-2xl font-bold'>OtakuKamer</h1>
             </div>
             <div className='flex items-center justify-center'>
                 {!erreur && !estSurvole && <img className='w-70 h-auto anime-flotter' src={naruto} />}
@@ -67,31 +67,31 @@ function Login() {
                 {erreur && <img className='w-70 h-auto' src={sakura_erreur} />}
             </div>
             <div className='flex flex-col items-center justify-center'>
-                <div className='w-70'>
-                    <h2 className='text-2xl text-center text-[#F1F1F1] mb-2 px-3'>Vivez votre passion Otaku au Cameroun</h2>
+                <div className='w-70 font-[500]'>
+                    <h2 className='text-2xl text-center text-[#0D0D0D] mb-2 px-3'>Vivez votre passion Otaku au Cameroun</h2>
                 </div>
                 <div className='w-100'>
-                    <p className='text-center text-[#9CA3AF] px-5'>Vivez l’expérience Otaku à 100 % : suivez les news de la communauté et réservez vos places pour les plus grands festivals du pays.</p>
+                    <p className='text-center text-[#0D0D0D] px-5'>Vivez l’expérience Otaku à 100 % : suivez les news de la communauté et réservez vos places pour les plus grands festivals du pays.</p>
                 </div>
             </div>
         </section>
 
         {/* SECTION DE DROITE - FORMULAIRE DE CONNEXION */}
-        <section className='md:w-1/2 bg-[#1A1A2E] h-screen w-full flex flex-col items-center justify-center gap-2'>
+        <section className='w-full md:w-1/2 h-screen flex flex-col items-center justify-center gap-2'>
 
             {/* MOT DE BIENVENUE */}
             <div className='w-80 py-4'>
-                <h1 className='text-3xl text-center text-[#F1F1F1] font-bold'>Bon retour ! Prêt à continuer l'aventure ?</h1>
+                <h1 className='text-3xl text-center text-[#0D0D0D] font-bold'>Bon retour ! Prêt à continuer l'aventure ?</h1>
             </div>
             {/* BOUTONS DE CONNEXION AVEC GOOGLE OU GITHUB */}
             <div className='flex items-center justify-center gap-4 text-[12px]'>
-                <button className='w-41 bg-[#9CA3AF] text-[#0D0D0D] p-3 rounded-md border-[1px solid #2D2D2D]'>Se connecter avec Google</button>
-                <button className='w-41 bg-[#9CA3AF] text-[#0D0D0D] p-3 rounded-md border-[1px solid #2D2D2D]'>Se connecter avec GitHub</button>
+                <button className='w-41 bg-[#C2611F] text-[#] p-3 rounded-md border-[1px solid #2D2D2D]'>Se connecter avec Google</button>
+                <button className='w-41 bg-[#C2611F] text-[#0D0D0D] p-3 rounded-md border-[1px solid #2D2D2D]'>Se connecter avec GitHub</button>
             </div>
             <div className='w-88 rounded-[10px]'>
                 <form action="" method="post" className="space-y-4">
                     <div>
-                        <label htmlFor="email" className="block text-sm text-[#9CA3AF] mb-1"
+                        <label htmlFor="email" className="block text-sm text-[#0D0D0D] mb-1"
                         >Email</label
                         >
                         <input
@@ -110,7 +110,7 @@ function Login() {
                     </div>
 
                     <div>
-                        <label htmlFor="password" className="block text-sm text-[#9CA3AF] mb-1"
+                        <label htmlFor="password" className="block text-sm text-[#0D0D0D] mb-1"
                         >Password</label
                         >
                         <input
@@ -131,7 +131,7 @@ function Login() {
 
                     <div className='flex justify-between'>
                         <div className='flex justify-start items-center gap-3'>
-                            <label htmlFor="check" className="block text-sm text-[#9CA3AF] mb-1">
+                            <label htmlFor="check" className="block text-sm text-[#0D0D0D] mb-1">
                                 Se souvenir de moi
                             </label>
                             <input
@@ -142,7 +142,7 @@ function Login() {
                             />
                         </div>
                         <div>
-                            <a href='#' className='text-[#9CA3AF] text-sm'>Mot de passe oublié ?</a>
+                            <a href='#' className='text-[#0D0D0D] text-sm'>Mot de passe oublié ?</a>
                         </div>
                     </div>
 
@@ -151,7 +151,7 @@ function Login() {
                         onMouseLeave={() => setEstSurvole(false)}
                         onClick={handleSubmit}
                         type="submit"
-                        className="w-full bg-gray-900 text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                        className="w-full bg-[#C2611F] text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors"
                     >
                         SE CONNECTER
                     </button>
