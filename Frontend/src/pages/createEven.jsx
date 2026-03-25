@@ -85,14 +85,14 @@ export default function CreateEven() {
                 <Sidebar />
             </aside>
             {/* SECTION PRINCIPALE */}
-            <section className="w-6/7 h- bg-gray-200 flex flex-col justify-center items-center gap-10 px-[10%] py-4">
+            <section className="w-6/7 h- bg-gray-200 flex flex-col justify-center items-center gap-10">
                 {/* TITRE ET SOUS TITRE */}
-                <div className='w-full font-bold flex flex-col items-start justify-start gap-2'>
-                    <h1 className='text-5xl'>Créer un Événement</h1>
-                    <p className='text-xl text-[#C2611F]'>Remplissez les informations pour créer votre événement</p>
+                <div className='w-full flex flex-col justify-center items-start font-bold md:p-10 md:pb-0'>
+                    <h1 className='text-4xl'>Créer un Événement</h1>
+                    <p className='text-md text-[#C2611F]'>Remplissez les informations pour créer votre événement</p>
                 </div>
                 {/* INFROMATION A REMPLIRE POUR LA CREATION DE L'EVNEMENT */}
-                <div className='w-full'>
+                <div className='w-full px-10'>
                     {/* FORMULAIRE DE REMPLISSAGE */}
                     <form 
                         onSubmit={handleSubmit}
@@ -263,19 +263,20 @@ export default function CreateEven() {
                             </div>
                         </div>
                         {/* BUTTON DE PUBLICATION */}
-                        <div className='w-full flex justify-center items-center gap-4'>
+                        <div className='w-full flex justify-center items-center gap-4 md:pb-8'>
                             <button 
                                 type="submit" 
                                 disabled={enAttente}
-                                className='text-black bg-[#C2611F] px-4 h-6 w-2/3 md:h-10 rounded-sm font-bold md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:scale-101 hover:bg-[#C2611F]/80'
+                                className='text-black bg-[#C2611F] px-4 h-6 w-2/3 md:h-10 rounded-sm font-bold md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/80'
                             >
                                 {enAttente ? 'Création en cours...' : 'Publier l\'événement'}
                             </button>
                             <button 
                                 type="button" 
                                 disabled={enAttente}
-                                className='text-black border-1 border-[#C2611F] px-4 h-6 w-1/3 md:h-10 rounded-sm font-bold md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:scale-101 hover:bg-[#C2611F]/80'
+                                className='text-black border-1 border-[#C2611F] px-4 h-6 w-1/3 md:h-10 rounded-sm font-bold md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/90 hover:text-white'
                             >
+                                {enAttente ? 'Création en cours...' : 'Enregistrer comme brouillon'}
                             </button>
                         </div>
                     </form>

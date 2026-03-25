@@ -86,6 +86,7 @@ export default function Hero() {
                     </a>
                     <a
                         href='#'
+                        onClick={() => navigate(`/about`)}
                         className='border-1 border-[#C2611F] text-[12px] text-[#C2611F] px-12 py-3 rounded-xl font-bold cursor-pointer hover:shadow-sm hover:bg-[#F1F1F1] shadow-black-500/50 hover:opacity-70 transition'>
                         À propos
                     </a>

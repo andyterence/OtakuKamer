@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Sidebar from "../components/shared/sidebar";
+import Footer from "../components/shared/Footer";
 import axios from 'axios'
 // import info from '../assets/icons/info.svg'
 import logo from '../assets/logos/OtakuKamer_logo.png'
@@ -13,12 +14,21 @@ import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
 
 // import notif from '../../assets/icons/bell.svg'
 
-export default function Billets() {
+export default function Calendrier() {
 
+    
     const [evenements, setEvenements] = useState([])
     const [enAttente, setEnAttente] = useState(false)
     // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
+
+    // AFFICHAGE DU CALENDRIER PAR MOIS
+    const evenementsParMois = evenements.reduce((groupes, evenement) => {
+    const mois = new Date(evenement.dateLancement).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })
+    if (!groupes[mois]) groupes[mois] = []
+    groupes[mois].push(evenement)
+    return groupes
+    }, {})
 
     useEffect(() => {
         const chargerEvenements = async() => {
@@ -62,30 +72,23 @@ export default function Billets() {
                     </div>
                 )}
                 {/* CONTENEUR GENERAL REGROUPANT LES EVENEMENTS PAR MOIS*/}
-                <div className='bg-[#C2611F]/10 w-[90%] h-90 flex flex-col justify-center items-center rounded-md'>
-                    {/* REGROUPEMENT PAR MOIS */}
-                    <div className='w-[95%] flex justify-start items-start gap-2 p-4 font-bold'>
-                        <img className='h-6 w-6' src={calendrier} alt="Icon de la date de lancement" />
-                        <p>
-                            {/* AFFICHE UNIQUEMENT LE MOIS */}
-                            {new Date(evenements.dateLancement).getMonth()}
-                        </p>
-                    </div>
-                    {/* CHAQUE EVENEMENT FILTRER EN MAP */}
-                    <div className='bg-[#C2611F]/20 w-[95%] h-20 flex justify-start items-center rounded-md p-4'>
-                        <div className='flex justify-center items-start gap-2'>
-                            <img className='h-6 w-6' src={calendrier} alt="Icon de la date de lancement" />
-                            <p>
-                                {new Date(evenements.map(evenement => evenement.dateLancement)).toLocaleDateString('fr-FR', {
-                                    day: 'numeric', month: 'long'
-                                })}
-                            </p>
+                {Object.entries(evenementsParMois).map(([mois, evenementsDuMois]) => (
+                    <div key={mois} className='bg-[#C2611F]/10 w-[90%] flex flex-col gap-2 rounded-md p-4 mb-4'>
+                        {/* TITRE DU MOIS */}
+                        <div className='flex items-center gap-2 font-bold'>
+                            <img className='h-6 w-6' src={calendrier} />
+                            <p className='capitalize'>{mois}</p>
                         </div>
-                        <div>
-                            <h1>{evenements.titre}</h1>
-                        </div>
+                        {/* EVENEMENTS DU MOIS */}
+                        {evenementsDuMois.map(evenement => (
+                            <div key={evenement.id} className='bg-[#C2611F]/20 flex justify-between items-center rounded-md p-4'>
+                                <p className='bg-[#C2611F]/30 h-12 w-16 rounded-md shadow-[#C2611F]/30 shadow-md flex justify-center items-center'>{new Date(evenement.dateLancement).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}</p>
+                                <h1 className='font-bold'>{evenement.titre}</h1>
+                                <p  className='bg-[#C2611F]/30 h-8 w-40 rounded-md shadow-[#C2611F]/10 shadow-md flex justify-center items-center'>{evenement.statut}</p>
+                            </div>
+                        ))}
                     </div>
-                </div>
+                ))}
             </section>
         </div>
     )

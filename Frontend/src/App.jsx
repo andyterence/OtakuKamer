@@ -9,6 +9,7 @@ import Billets from './pages/billets'
 import CreateEven from './pages/createEven'
 import MyEvenement from './pages/myEvenement'
 import Calendrier from './pages/calendrier'
+import About from './pages/about'
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="/createEven/" element={<PrivateRoute><CreateEven /></PrivateRoute>} />
         <Route path="/myEvenement/" element={<PrivateRoute><MyEvenement /></PrivateRoute>} />
         <Route path="/calendrier/" element={<PrivateRoute><Calendrier /></PrivateRoute>} />
+        <Route path="/about/" element={<PrivateRoute><About /></PrivateRoute>} />
       </Routes>
     </BrowserRouter>
   )

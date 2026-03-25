@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 // import logo2 from '../../assets/logos/logo-orange.png'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import logo from '../../assets/logos/logo-orange.png'
+import { useNavigate, useLocation } from 'react-router-dom'
 import accueil from "../../assets/icons/home-1-svgrepo-com.svg";
+import logo from '../../assets/logos/logo-orange.png'
 import user_icon from "../../assets/icons/user-svgrepo-com.svg";
 import align_text from "../../assets/icons/align-text-left-svgrepo-com.svg";
 import create_even from "../../assets/icons/plus-circle-add-new-create-cross-svgrepo-com.svg";
@@ -17,6 +17,7 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
 
     const [utilisateur, setUtilisateur] = useState(null)
     const navigate = useNavigate()
+    const location = useLocation()
 
     useEffect(() => {
         const seConnecter = async() => {
@@ -103,51 +104,66 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
                     {/* DEUXIEME GRANDE SECTION */}
                     <div className="flex-1 flex flex-col gap-4 font-bold">
                         {/* Accueil */}
-                        <div className="active border-l-4 border-[#C2611F] bg-[#C2611F]/50 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                        <div className={location.pathname === '/accueil' 
+                            ? 'active border-l-4 border-[#C2611F] bg-[#C2611F]/70 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                            : 'border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                        }>
                             <img className='h-5 w-5' src={accueil} alt="Logo d'accueil" />
                             <button 
                                 className="cursor-pointer"
-                                onClick={() => navigate(`/accueil/`)}
+                                onClick={() => navigate(`/accueil`)}
                             >
                                 Accueil
                             </button> 
                         </div>
                         {/* Mes Événement */}
-                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                        <div className={location.pathname === '/MyEvenement' 
+                            ? 'active border-l-4 border-[#C2611F] bg-[#C2611F]/70 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                            : 'border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                        }>
                             <img className='h-5 w-5' src={align_text} alt="Logo de mes evenements" />
                             <button 
                                 className="cursor-pointer"
-                                onClick={() => navigate(`/MyEvenement/`)}
+                                onClick={() => navigate(`/MyEvenement`)}
                             >
                                 Mes Événement
                             </button>
                         </div>
                         {/* Créer un Événement */}
-                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                        <div className={location.pathname === '/createEven' 
+                            ? 'active border-l-4 border-[#C2611F] bg-[#C2611F]/70 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                            : 'border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                        }>
                             <img className='h-5 w-5' src={create_even} alt="Logo d'evenement" />
                             <button 
                                 className="cursor-pointer"
-                                onClick={() => navigate(`/createEven/`)}
+                                onClick={() => navigate(`/createEven`)}
                             >
                                 Créer un Événement
                             </button>
                         </div>
                         {/* Calendrier */}
-                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                        <div className={location.pathname === '/calendrier' 
+                            ? 'active border-l-4 border-[#C2611F] bg-[#C2611F]/70 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                            : 'border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                        }>
                             <img className='h-5 w-5' src={calendrier} alt="Logo du calendrier" />
                             <button 
                                 className="cursor-pointer"
-                                onClick={() => navigate(`/calendrier/`)}
+                                onClick={() => navigate(`/calendrier`)}
                             >
                                 Calendrier
                             </button>
                         </div>
                         {/* Paramètres */}
-                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                        <div className={location.pathname === '/setting' 
+                            ? 'active border-l-4 border-[#C2611F] bg-[#C2611F]/70 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                            : 'border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                        }>
                             <img className='h-5 w-5' src={setting} alt="Logo d'accueil" />
                             <button 
                                 className="cursor-pointer"
-                                onClick={() => navigate(`/setting/`)}
+                                onClick={() => navigate(`/setting`)}
                             >
                                 Paramètres
                             </button>

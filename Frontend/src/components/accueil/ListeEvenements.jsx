@@ -61,7 +61,7 @@ function ListeEvenements(){
             </div>
             <div className='w-full flex flex-col justify-center items-center gap-4 md:gap-30 md:my-10 px-4 rounded-xl'>
                 {evenementsFiltres.length === 0 
-                    ? <p className=' font-bold bg-clip-text text-transparent hover:shadow-sm shadow-indigo-500/50'>Aucun événement de ce type</p>
+                    ? <p className=' font-bold'>Aucun événement de ce type</p>
                     : evenementsFiltres.map(evenement => (
                         <div key={evenement.id} className={`card md:h-140 w-full md:w-250 bg-[#C2611F]/20 flex flex-col md:flex-row justify-center items-center rounded-xl font-bold md:p-4 ${
                             evenement.typeEven === 'Gaming' ? 'border-green-500' :

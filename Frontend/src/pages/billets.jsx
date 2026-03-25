@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Sidebar from "../components/shared/sidebar";
+import Footer from "../components/shared/Footer";
 import axios from 'axios'
 import { QRCodeCanvas } from 'qrcode.react'
 import info from '../assets/icons/info.svg'
@@ -118,7 +119,7 @@ export default function Billets() {
             <aside className="w-1/7 sticky top-0 h-screen">
                 <Sidebar />
             </aside>
-            <section className="w-6/7 bg-gray-200">
+            <section className="w-6/7 bg-gray-200 flex flex-col">
             {/* TITRE ET SOUS TITRE DE BIENVENUE */}
                 <div className='flex flex-col justify-center items-start font-bold md:p-10'>
                     <h1 className='text-4xl'>Mes Billets</h1>
@@ -271,6 +272,7 @@ export default function Billets() {
                         ))
                     }
                 </div>
+                <Footer />
             </section>
         </div>
     )

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import background from '../assets/imgs/background.jpg'
-import move_left from '../assets/icons/move-left.svg'
+import move_left from '../assets/icons/left.svg'
 import star from '../assets/icons/star.svg'
 import users from '../assets/icons/users.svg'
 import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
