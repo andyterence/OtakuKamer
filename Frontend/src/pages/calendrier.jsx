@@ -73,7 +73,7 @@ export default function Calendrier() {
                 )}
                 {/* CONTENEUR GENERAL REGROUPANT LES EVENEMENTS PAR MOIS*/}
                 {Object.entries(evenementsParMois).map(([mois, evenementsDuMois]) => (
-                    <div key={mois} className='bg-[#C2611F]/10 w-[90%] flex flex-col gap-2 rounded-md p-4 mb-4'>
+                    <div key={mois} className='bg-[#C2611F]/10 w-[80%] flex flex-col gap-2 rounded-md p-4 mb-4'>
                         {/* TITRE DU MOIS */}
                         <div className='flex items-center gap-2 font-bold'>
                             <img className='h-6 w-6' src={calendrier} />

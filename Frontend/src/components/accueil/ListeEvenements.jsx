@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import CarrouselEvenements from './carrouselEvenements'
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 // import EmblaCarousel from './EmblaCarousel'
 import axios from 'axios'
 import map from '../../assets/icons/map-check.svg'
@@ -21,6 +23,14 @@ function ListeEvenements(){
     const filtres = ['Tous', 'Gaming', 'Anime', 'Manga']
     // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
+
+    useEffect(() => {
+    AOS.init({
+        duration: 1000, // Durée de l'animation
+        once: false,    // Si tu veux que l'animation se répète au scroll
+    });
+    }, []);
+
     useEffect(() => {
         const chargerEvenements = async() => {
             try {
@@ -49,9 +59,10 @@ function ListeEvenements(){
                 {filtres.map(filtre => (
                     <button
                         key={filtre}
+                        data-aos="fade-down"
                         onClick={() => setFiltreActif(filtre)}
                         className={filtreActif === filtre 
-                        ? 'bg-[#C2611F] px-6 h-14 md:px-10 md:h-14 rounded-md font-bold md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:scale-105 hover:opacity-100'
+                        ? ' bg-[#C2611F] px-6 h-14 md:px-10 md:h-14 rounded-md font-bold md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:scale-105 hover:opacity-100'
                         : 'bg-[#C2611F] px-4 h-10 md:px-10 md:h-10 rounded-md font-bold cursor-pointer transition-all duration-300 hover:scale-95 hover:shadow-md shadow-cyan-300/50 hover:opacity-90'
                         }
                     >
@@ -63,7 +74,7 @@ function ListeEvenements(){
                 {evenementsFiltres.length === 0 
                     ? <p className=' font-bold'>Aucun événement de ce type</p>
                     : evenementsFiltres.map(evenement => (
-                        <div key={evenement.id} className={`card md:h-140 w-full md:w-250 bg-[#C2611F]/20 flex flex-col md:flex-row justify-center items-center rounded-xl font-bold md:p-4 ${
+                        <div key={evenement.id} data-aos="fade-right" className={`card md:h-140 w-full md:w-250 bg-[#C2611F]/20 flex flex-col md:flex-row justify-center items-center rounded-xl font-bold md:p-4 ${
                             evenement.typeEven === 'Gaming' ? 'border-green-500' :
                             evenement.typeEven === 'Anime' ? 'border-blue-500' :
                             evenement.typeEven === 'Manga' ? 'border-red-500' :

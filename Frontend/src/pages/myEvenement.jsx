@@ -28,30 +28,6 @@ export default function MyEvenement() {
     // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
 
-    // POUR ANNULER UN EVENEMENT
-    const annulerEvenement = async (evenementsId) => {
-        try {
-                const token = localStorage.getItem('access')
-                const reponse = await axios.put(
-                        `http://localhost:8000/api/evenements/${evenementsId}/`,
-                        { statut: 'annule' },
-                        { headers: { Authorization: `Bearer ${token}` } }
-                    )
-                setEvenements(evenements.map(e => 
-                    e.id === evenementsId ? { ...e, statut: 'annule' } : e
-                ))
-            } catch (_err) {
-                if (_err.response?.status === 401) {
-                localStorage.removeItem('access')
-                localStorage.removeItem('refresh')
-                navigate('/login')
-            }
-                console.error(_err)
-            } finally {
-                setEnAttente(false)
-        }
-    }
-
     // POUR SUPPRIMER UN EVENEMENT DEJA ANNULER
     const supprimerEvenement = async (evenementsId) => {
         try {
@@ -126,7 +102,7 @@ export default function MyEvenement() {
                     {/* Nombre Billets Vendus */}
                     <div className='flex flex-col justify-evenly items-start w-70 h-40 rounded-xl border-1 border-[#C2611F] py-4 px-8'>
                         <div><img className='h-7 w-7' src={ticket} alt="Logo du ticket" /></div>
-                        <div>{evenements.length}</div>
+                        <div>0</div>
                         <div>Billets Vendus</div>
                     </div>
                     {/* Revenus (FCFA) */}
@@ -155,8 +131,8 @@ export default function MyEvenement() {
                         ? <p className=' font-bold'>Vous n'avez aucun événement enregistrer</p>
                         : evenements.map(evenement => (
                             <div 
-                                key={evenement.id} 
-                                className='relative card h-90 md:h-75 md:w-[95%] flex flex-col md:flex-row justify-start items-center gap-4 border-1 border-[#C2611F] rounded-xl border-2 border-[#C2611F] font-bold bg-cover bg-center transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/10 p-4'>
+                                key={evenement.id}
+                                className='animate__animated animate__zoomInDown relative card h-90 md:h-75 md:w-[95%] flex flex-col md:flex-row justify-start items-center gap-4 border-1 border-[#C2611F] rounded-xl border-2 border-[#C2611F] font-bold bg-cover bg-center transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/10 p-4'>
                                 {/* BACKGROUND DE L'EVENEMENT */}
                                 <div className='w-1/3 h-full rounded-xl bg-cover bg-center'
                                     style={{ backgroundImage: `url(${evenement?.image})` }}>
@@ -227,7 +203,7 @@ export default function MyEvenement() {
                                                     voir
                                                 </button>
                                                 <button onClick={() => navigate(`/modifierEvenement/${evenement.id}`)} className='flex justify-center items-center gap-1 text-md bg-[#C2611F]/80 w-25 h-10 rounded-md hover:bg-[#C2611F] cursor-pointer transition-all duration-300'>
-                      j                              <img className='h-4 w-4' src={pen} alt="Logo du calendrier" />
+                                                    <img className='h-4 w-4' src={pen} alt="Logo du calendrier" />
                                                     Modifier
                                                 </button>
                                                 <button onClick={() => supprimerEvenement(evenement.id)} className='flex justify-center items-center gap-1 text-md bg-red-500 w-25 h-10 rounded-md hover:bg-red-600 cursor-pointer transition-all duration-300'>

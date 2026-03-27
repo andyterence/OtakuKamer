@@ -65,7 +65,7 @@ export default function Hero() {
             {/* Overlay sombre */}
             <div className="absolute inset-0 bg-black/70"></div>
             {/* SECTION DE GAUCHE - INFORMATION SUR L'EVENEMENT MAJEUR */}
-            <section className='w-full md:w-1/2 flex flex-col justify-center gap-12 md:gap-10 p-2 z-10'>
+            <section className='animate__animated animate__fadeInDown animate__slow w-full md:w-1/2 flex flex-col justify-center gap-12 md:gap-10 p-2 z-10'>
                 <div className='w-50 md:h-7 flex justify-center items-center font-bold text-[#C2611F] text-[12px] border border-orange-500 bg-black/30 px-6 py-2 rounded-full'>
                     <p>Événement à venir</p>
                 </div>
@@ -119,7 +119,7 @@ export default function Hero() {
                 </div>
             </section>
             {/* SECTION DE DROITE - IMAGE DE L'EVENEMENT MAJEUR */}
-            <section className='w-1/2 flex justify-center items-center font-bold'>
+            <section className='animate__animated animate__fadeInDown animate__slow w-1/2 flex justify-center items-center font-bold'>
                 <div className="relative h-130 w-100 flex flex-col justify-end gap-2 p-5 bg-cover bg-center hidden md:block rounded-xl"
                     style={{ backgroundImage: `url(${evenementsVedettes?.image})` }}>
                     {/* Overlay sombre */}

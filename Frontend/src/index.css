@@ -1,17 +1,26 @@
 @import "tailwindcss";
 
+/* Plugin Preline pour Tailwind v4 */
+@plugin "preline/plugin";
+
+/* Indique à Tailwind de scanner les fichiers Preline */
+@source "../node_modules/preline/dist/*.js";
+
+/* Thèmes Preline */
+@import "preline/css/themes/theme.css";
+
+/* animations personnalisées img */
 @keyframes flotter {
   0%   { transform: translateY(0px); }
   50%  { transform: translateY(-4px); }
   100% { transform: translateY(0px); }
 }
 
-/* STYLE POUR LE CARROUSEL */
-
 .anime-flotter {
   animation: flotter 3s ease-in-out infinite;
 }
 
+/* Style pour le carrousel Embla */
 .embla__viewport {
   overflow: hidden;
 }

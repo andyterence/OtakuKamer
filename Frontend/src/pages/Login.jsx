@@ -30,23 +30,18 @@ function Login() {
     // Indiquer que la connexion est en cours d'attente pour afficher une image de chargement
     setEnAttente(true)
     try {
-        // Envoyer une requête POST à l'API pour obtenir les tokens d'accès et de rafraîchissement en utilisant les informations d'identification de l'utilisateur
-        const reponse = await axios.post('http://localhost:8000/api/token/', { email: email, password: motDePasse })
-         // Stocker les tokens d'accès et de rafraîchissement dans le localStorage pour une utilisation ultérieure
-        localStorage.setItem('access', reponse.data.access)
-        localStorage.setItem('refresh', reponse.data.refresh)
-        // Afficher la réponse de l'API dans la console pour vérifier les tokens reçus
-        console.log(reponse.data)
-        console.log(email, motDePasse)
-        // Rediriger l'utilisateur vers la page d'accueil après une connexion réussie
-        navigate('/accueil')
-    } catch (_err) {
-        // si axios échoue
-        setErreur("Email ou mot de passe incorrect")
-        console.error(_err)}
-    finally {
-        // Réinitialiser l'état d'attente pour arrêter d'afficher l'image de chargement, que la connexion réussisse ou échoue
-        setEnAttente(false)
+            const reponse = await axios.post('http://localhost:8000/api/token/', {
+                email: email,
+                password: motDePasse
+            })
+            localStorage.setItem('access', reponse.data.access)
+            localStorage.setItem('refresh', reponse.data.refresh)
+            navigate('/accueil')
+        } catch (_err) {
+            setErreur("Email ou mot de passe incorrect")
+            console.error(_err)
+        } finally {
+            setEnAttente(false)
         }
     }
 
@@ -145,33 +140,23 @@ function Login() {
                             <a href='#' className='text-[#0D0D0D] text-sm'>Mot de passe oublié ?</a>
                         </div>
                     </div>
-
                     <button
+                        onClick={handleSubmit}
                         onMouseEnter={() => setEstSurvole(true)}
                         onMouseLeave={() => setEstSurvole(false)}
-                        onClick={handleSubmit}
                         type="submit"
-                        className="w-full bg-[#C2611F] text-white py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                        className="w-full bg-[#C2611F] text-white py-3 rounded-lg font-bold hover:bg-[#a14f19] transition-colors"
+                        disabled={enAttente}
                     >
-                        SE CONNECTER
+                        {enAttente ? 'Connexion...' : 'Se connecter'}
                     </button>
+
+                        
                 </form>
-                {erreur && <p className="text-red-500 text-sm">{erreur}</p>}
             </div>
-            <div>
-                <p>Pas encore de compte ? <a href="/register" className="text-blue-500 hover:underline">S'inscrire</a></p>
-            </div>
-            <div></div>
         </section>
-        {/* L'IMAGE QU'ON AFFICHE SI UNE REQUETTE EST EN COURS */}
-        {enAttente && (
-            <div className="flex flex-col fixed inset-0 bg-[#0D0D0D] flex items-center justify-center z-50">
-                <img className='w-80 h-auto anime-flotter' src={kurama_attend} />
-                <p className="text-white text-lg">Chargement en cours...</p>
-            </div>
-        )}
     </div>
-  )
+  );
 }
 
-export default Login
+export default Login;

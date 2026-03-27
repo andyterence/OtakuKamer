@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useLocation } from 'react-router-dom'
 import axios from 'axios'
+// import "preline/preline";
+import 'preline/dist/preline.js';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import background from '../assets/imgs/background.jpg'
 import move_left from '../assets/icons/left.svg'
 import star from '../assets/icons/star.svg'
@@ -8,13 +12,16 @@ import users from '../assets/icons/users.svg'
 import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
 import map from '../assets/icons/map-check.svg'
 import shield from '../assets/icons/shield-check.svg'
-import ticket from '../assets/icons/ticket-check.svg'
+// import ticket from '../assets/icons/ticket-check.svg'
 // import notif from '../../assets/icons/bell.svg'
 
 export default function EvenementShow() {
 
     const { id } = useParams()
+    const location = useLocation();
     const [evenement, setEvenement] = useState(null)
+    const [modalOuvert, setModalOuvert] = useState(false)
+    const [messageConfirmation, setMessageConfirmation] = useState(false)
     const [enAttente, setEnAttente] = useState(false)
     // DECREMENTATION ET INCREMENTATION POUR L'ACHAT DES BILLETS
     const [quantite, setQuantite] = useState(1)
@@ -55,6 +62,24 @@ export default function EvenementShow() {
     }
 
     useEffect(() => {
+        AOS.init({
+            duration: 1000, // Durée de l'animation
+            once: false,    // l'animation se répète au scroll
+        });
+        }, []);
+        
+    // useEffect pour recharger le timer de Preline UI
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (window.HSStaticMethods) {
+                window.HSStaticMethods.autoInit()
+            }
+        }, 100)
+        return () => clearTimeout(timer)
+    }, [location.pathname, categorieChoisie]) 
+
+
+    useEffect(() => {
         const chargerEvenement = async() => {
             setEnAttente(true)
             try {
@@ -88,7 +113,7 @@ export default function EvenementShow() {
                         </button>
                     </div>
                     {/* Section - TYPE + TITRE + AVIS + PARTICIPANTS */}
-                    <div className='flex jusfity-evenly items-center'>
+                    <div className='flex jusfity-evenly items-center animate__animated animate__zoomInLeft'>
                         <div className='flex flex-col items-center justify-center gap-4'>
                             {/* Titre */}
                             <div>
@@ -123,14 +148,14 @@ export default function EvenementShow() {
                 {/* PREMIERE COLONE */}
                 <div className='w-3/5 h-full flex flex-col justify-center items-center gap-4 m-4'>
                     {/* À propos de l'événement */}
-                    <div className='w-full h-110 bg-gray-100 p-4 font-bold flex flex-col justify-center items-start rounded-md gap-2'>
+                    <div data-aos="fade-up" className='w-[90%] h-110 bg-gray-100 p-4 font-bold flex flex-col justify-center items-start rounded-md gap-2'>
                         <h1>À propos de l'événement</h1>
                         <p className='bg-[#C2611F]/20 h-full w-full rounded-md p-4'>
                             {evenement?.description}
                         </p>
                     </div>
                     {/* Galerie */}
-                    <div className='w-full h-90 bg-gray-100 p-4 font-bold flex flex-col rounded-md gap-2'>
+                    <div data-aos="fade-up" className='w-[90%] h-90 bg-gray-100 p-4 font-bold flex flex-col rounded-md gap-2'>
                         <h1>Galerie</h1>
                         <div className='h-full w-full flex justify-center items-center gap-2'>
                             {evenement?.photos?.map(photo => (
@@ -143,7 +168,7 @@ export default function EvenementShow() {
                         </div>
                     </div>
                     {/* Organisé par */}
-                    <div className='w-full h-full bg-gray-100 p-4 font-bold flex flex-col rounded-xl gap-2'>
+                    <div data-aos="fade-up" className='w-[90%] h-full bg-gray-100 p-4 font-bold flex flex-col rounded-xl gap-2'>
                         <h1>Organisé par</h1>
                         <div className="w-full h-35 flex items-center justify-start gap-2 bg-[#C2611F]/20 rounded-md p-10">
                             {/* Icon de l'organisateur */}
@@ -160,7 +185,7 @@ export default function EvenementShow() {
                 </div>
                 {/* DEUXIEME COLONE - INFO SUR L'ACHAT DE BILLET*/}
                 <div className='relative w-2/5 bg-gray-200 flex justify-center items-start py-4'>
-                    <div className='sticky top-0 bg-[#C2611F]/20 w-100 min-h-screen rounded-md font-bold'>
+                    <div data-aos="fade-up" className='sticky top-0 bg-[#C2611F]/20 w-100 min-h-screen rounded-md font-bold'>
                         {/* CHOISIR LE TYPE DE BILLET */}
                         <div className='flex flex-col justify-center items-start gap-2 p-4'>
                             <div className='text-sm'>
@@ -270,7 +295,7 @@ export default function EvenementShow() {
                                         {/* BUTON DE RESERVATION */}
                                         {token && (
                                             <button
-                                                onClick={reserver}
+                                                onClick={() => setModalOuvert(true)}
                                                 className='w-full h-12 bg-[#C2611F]/30 flex justify-center items-center rounded-xl cursor-pointer hover:px-6 hover:bg-[#C2611F]/50 transition-all'
                                                 >
                                                     Reserver ma place
@@ -290,6 +315,38 @@ export default function EvenementShow() {
                     </div>
                 </div>
             </section>
+            {/* MODAL DE CONFIRMATION */}
+            {modalOuvert && (
+                <div className='fixed inset-0 bg-black/60 z-50 flex justify-center items-center'>
+                    <div className='bg-white rounded-xl p-8 w-96 flex flex-col gap-6'>
+                        <h2 className='text-xl font-bold'>Confirmer la réservation</h2>
+                        <p>{quantite} billet(s) — {categorieChoisie?.nom}</p>
+                        <p className='text-2xl font-bold text-[#C2611F]'>
+                            Total : {(quantite * categorieChoisie?.prix).toFixed(0)} FCFA
+                        </p>
+                        <div className='flex gap-4'>
+                            <button 
+                                onClick={() => setModalOuvert(false)}
+                                className='w-1/2 py-3 border border-gray-300 rounded-xl'>
+                                Annuler
+                            </button>
+                            <button 
+                                onClick={() => { reserver(); setModalOuvert(false), setMessageConfirmation(true) }}
+                                className='w-1/2 py-3 bg-[#C2611F] text-white rounded-xl'>
+                                Confirmer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* MESSAGE DE CONFIRMATION */}
+            {messageConfirmation && (
+                <div className='fixed inset-0 bg-black/60 z-50 flex justify-center items-start md:pt-10'>
+                    <div className='bg-white/40 rounded-xl p-8 w-96 flex flex-col justify-center items-center gap-6'>
+                        <h2 className='text-xl font-bold text-green-800'>Votre billet a bien ete réserver</h2>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

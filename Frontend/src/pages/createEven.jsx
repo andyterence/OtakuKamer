@@ -4,21 +4,25 @@ import { useNavigate } from 'react-router-dom'
 import Sidebar from "../components/shared/sidebar";
 import axios from 'axios'
 import imageIcon from '../assets/icons/image.svg'
-// import background from '../assets/imgs/background.jpg'
-// import move_left from '../assets/icons/move-left.svg'
-// import star from '../assets/icons/star.svg'
-// import users from '../assets/icons/users.svg'
 import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
 import map from '../assets/icons/map-check.svg'
 import note from '../assets/icons/note.svg'
 import tags from '../assets/icons/tags.svg'
 import tag from '../assets/icons/tag.svg'
-// import money from '../assets/icons/money.svg'
 import clock from '../assets/icons/clock.svg'
+import x from '../assets/icons/x.svg'
 // import notif from '../../assets/icons/bell.svg'
+// import background from '../assets/imgs/background.jpg'
+// import move_left from '../assets/icons/move-left.svg'
+// import star from '../assets/icons/star.svg'
+// import users from '../assets/icons/users.svg'
+// import money from '../assets/icons/money.svg'
 
 export default function CreateEven() {
 
+    const [categories, setCategories] = useState([
+        { nom: '', prix: '', nombreteTotale: '' }
+    ])
     const [titre, setTitre] = useState('')
     const [description, setDescription] = useState('')
     const [typeEven, setTypeEven] = useState('')
@@ -33,49 +37,77 @@ export default function CreateEven() {
     // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
 
+    // Fonctions pour gérer les catégories
+    const ajouterCategorie = () => {
+        setCategories([...categories, { nom: '', prix: '', nombreteTotale: '' }])
+    }
+
+    const supprimerCategorie = (index) => {
+        setCategories(categories.filter((_, i) => i !== index))
+    }
+
+    const modifierCategorie = (index, champ, valeur) => {
+        const nouvellesCategories = [...categories]
+        nouvellesCategories[index][champ] = valeur
+        setCategories(nouvellesCategories)
+    }
+
     const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    // Préparation des données (obligatoire pour les fichiers/images)
-    const formData = new FormData();
-    formData.append('titre', titre);
-    formData.append('description', description);
-    formData.append('typeEven', typeEven);
-    formData.append('ville', ville);
-    formData.append('lieu', lieu);
-    formData.append('prix', 0); 
-    formData.append('statut', statut)
-    
-    // Fusion Date + Heure pour le format DateTime de Django
-    if (date && heure) {
-        formData.append('dateLancement', `${date}T${heure}:00`);
-    }
-
-    // L'image
-    if (image) {
-        formData.append('image', image);
-    }
-
-    try {
-        setEnAttente(true);
-        // Récupère ton token (depuis le localStorage ou un context)
-        const token = localStorage.getItem('access')
-
-        const response = await axios.post('http://localhost:8000/api/evenements/', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-                'Authorization': `Bearer ${token}` // Nécessaire pour perform_create
-            }
-        });
+        e.preventDefault();
         
-        console.log("Succès !", response.data);
-        navigate('/accueil')
-    } catch (error) {
-        console.error("Erreur détaillée :", error.response?.data);
-    } finally {
-        setEnAttente(false);
-    }
-};
+        const formData = new FormData();
+        formData.append('titre', titre);
+        formData.append('description', description);
+        formData.append('typeEven', typeEven);
+        formData.append('ville', ville);
+        formData.append('lieu', lieu);
+        formData.append('prix', 0); 
+        formData.append('statut', statut)
+        
+        if (date && heure) {
+            formData.append('dateLancement', `${date}T${heure}:00`);
+        }
+        if (image) {
+            formData.append('image', image);
+        }
+
+        try {
+            setEnAttente(true);
+            const token = localStorage.getItem('access')
+
+            // ETAPE 1 — Créer l'événement
+            const response = await axios.post('http://localhost:8000/api/evenements/', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            const evenementId = response.data.id  // ← récupère l'ID du nouvel événement
+
+            // ETAPE 2 — Créer chaque catégorie liée à cet événement
+            for (const categorie of categories) {
+                if (categorie.nom && categorie.prix && categorie.nombreteTotale) {
+                    await axios.post('http://localhost:8000/api/categorie/', {
+                        evenement: evenementId,
+                        nom: categorie.nom,
+                        prix: parseFloat(categorie.prix),
+                        nombreteTotale: parseInt(categorie.nombreteTotale),
+                        nombreRestant: parseInt(categorie.nombreteTotale)  // au départ = total
+                    }, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    })
+                }
+            }
+
+            console.log("Succès !", response.data);
+            navigate('/accueil')
+        } catch (error) {
+            console.error("Erreur détaillée :", error.response?.data);
+        } finally {
+            setEnAttente(false);
+        }
+    };
 
 
     return (
@@ -92,7 +124,7 @@ export default function CreateEven() {
                     <p className='text-md text-[#C2611F]'>Remplissez les informations pour créer votre événement</p>
                 </div>
                 {/* INFROMATION A REMPLIRE POUR LA CREATION DE L'EVNEMENT */}
-                <div className='w-full px-10'>
+                <div className='w-[80%]'>
                     {/* FORMULAIRE DE REMPLISSAGE */}
                     <form 
                         onSubmit={handleSubmit}
@@ -100,23 +132,72 @@ export default function CreateEven() {
                          className='flex flex-col gap-8'
                         >
                         {/* PHOTO DE COUVERTURE */}
-                        <div className='w-full flex flex-col justify-center items-center gap-4 w-[70%] h-[50vh] bg-[#C2611F]/10 rounded-xl'>
-                            <div className='w-full h-1/10 flex justify-start items-center gap-2 font-[500] px-10 pt-2'>
-                                <img className='h-6 w-6' src={imageIcon} alt="Icone_de_la_photo_de_couverture" />
+                        <div className='w-full flex flex-col gap-4 bg-[#C2611F]/10 rounded-xl p-6'>
+                            <div className='w-full flex justify-start items-center gap-2 font-[500]'>
+                                <img className='h-6 w-6' src={imageIcon} alt="Icone photo" />
                                 <h1>Photo de couverture</h1>
                             </div>
-                            {/* CONTENEUR DE LA PHOTO */}
+                            {/* ZONE DE DROP / APERÇU */}
+                            {!image ? (
+                                // ÉTAT VIDE — zone de clic stylisée
+                                <label
+                                    htmlFor="photo-couverture"
+                                    className='w-full h-60 flex flex-col justify-center items-center gap-3 bg-[#C2611F]/10 border-2 border-dashed border-[#C2611F]/40 rounded-xl cursor-pointer hover:bg-[#C2611F]/20 hover:border-[#C2611F] transition-all'
+                                >
+                                    <img className='h-12 w-12 opacity-40' src={imageIcon} alt="Ajouter une image" />
+                                    <div className='text-center'>
+                                        <p className='font-bold text-[#C2611F]'>Cliquez pour choisir une image</p>
+                                        <p className='text-sm text-gray-500'>PNG, JPG, WEBP — Max 5 Mo</p>
+                                    </div>
+                                </label>
+                            ) : (
+                                // ÉTAT AVEC IMAGE — aperçu + boutons
+                                <div className='w-full flex flex-col gap-3'>
+                                    <div className='relative w-full h-60 rounded-xl overflow-hidden'>
+                                        <img
+                                            src={URL.createObjectURL(image)}
+                                            alt="Aperçu de la couverture"
+                                            className='w-full h-full object-cover'
+                                        />
+                                        {/* OVERLAY AU SURVOL */}
+                                        <div className='absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex justify-center items-center gap-3'>
+                                            {/* Bouton changer */}
+                                            <label
+                                                htmlFor="photo-couverture"
+                                                className='bg-white text-[#C2611F] px-4 py-2 rounded-lg text-sm font-bold cursor-pointer hover:bg-[#C2611F] hover:text-white transition-all'
+                                            >
+                                                Changer
+                                            </label>
+                                            {/* Bouton supprimer */}
+                                            <button
+                                                type="button"
+                                                onClick={() => setImage(null)}
+                                                className='bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-red-600 transition-all'
+                                            >
+                                                Supprimer
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {/* NOM DU FICHIER */}
+                                    <p className='text-sm text-gray-500 px-1'>
+                                         {image.name} — {(image.size / 1024 / 1024).toFixed(2)} Mo
+                                    </p>
+                                </div>
+                            )}
+
+                            {/* INPUT CACHÉ — déclenché par les deux labels */}
                             <input
-                                type='file' 
-                                onChange={(e) => setImage(e.target.files[0])}
-                                className='bg-[#C2611F]/20 w-[90%] h-9/10 cursor-pointer mb-6 rounded-xl'
-                            >
-                            </input>
+                                type='file'
+                                id='photo-couverture'
+                                accept='image/*'
+                                onChange={(e) => setImage(e.target.files[0] || null)}
+                                className='hidden'
+                            />
                         </div>
                         {/* INFORMATION DE BASES */}
-                        <div className='w-full flex flex-col justify-center items-center gap-4 w-[70%] h-[70vh] bg-[#C2611F]/10 rounded-xl px-10'>
+                        <div className='w-full h-full flex flex-col justify-center items-center gap-4 bg-[#C2611F]/10 rounded-xl p-6'>
                             {/* MOT DE REFERENCE */}
-                            <div className='w-full flex justify-start items-center gap-2 font-[500]'>
+                            <div className='w-full flex justify-start items-center gap-2 font-[500] px-2'>
                                 <img className='h-6 w-6' src={note} alt="Icone des informations" />
                                 <h1>Informations de Base</h1>
                             </div>
@@ -137,19 +218,18 @@ export default function CreateEven() {
                                 {/* Description complète */}
                                 <div className='flex flex-col px-4'>
                                     <label htmlFor="description_long">Description complète</label>
-                                    <input
-                                        type='text' 
+                                    <textarea
                                         id='description_long'
                                         onChange={(e) => setDescription(e.target.value)}
-                                        placeholder='     Decrivez votre evenement en detail...'
-                                        className='bg-[#C2611F]/20 h-90 cursor-pointer rounded-md'
-                                    >
-                                    </input>
+                                        placeholder='Décrivez votre événement en détail...'
+                                        rows={6}
+                                        className='bg-[#C2611F]/20 cursor-pointer rounded-md p-3 resize-y text-sm focus:outline-none focus:ring-2 focus:ring-[#C2611F]/50'
+                                    />
                                 </div>
                             </div>
                         </div>
                         {/* DETAILS DE L'EVENEMENT */}
-                        <div className='w-full flex flex-col justify-center items-center gap-4 w-[70%] h-[70vh] bg-[#C2611F]/10 rounded-xl px-10'>
+                        <div className='w-full h-full flex flex-col justify-center items-center gap-4 w-[70%] h-[70vh] bg-[#C2611F]/10 rounded-xl p-6'>
                             {/* MOT DE REFERENCE */}
                             <div className='w-full flex justify-start items-center gap-2 font-[500]'>
                                 <img className='h-6 w-6' src={tags} alt="Icone des informations" />
@@ -162,16 +242,20 @@ export default function CreateEven() {
                                     <div className='w-full flex flex-col px-4'>
                                         <div className='w-full flex gap-2'>
                                             <img className='h-5 w-5' src={tag} alt="Icone des informations" />
-                                            <label htmlFor="name">Type d'événement</label>
+                                            <label htmlFor="typeEven">Type d'événement</label>
                                         </div>
-                                        <input
+                                        <select
                                             type='text'
-                                            id='name'
+                                            id='typeEven'
                                             onChange={(e) => setTypeEven(e.target.value)}
                                             placeholder='     Ex:OtakuFest 2026'
                                             className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md'
                                         >
-                                        </input>
+                                            <option value="Tous">Mixte</option>
+                                            <option value="Anime">Anime</option>
+                                            <option value="Manga">Manga</option>
+                                            <option value="Gaming">Gaming</option>
+                                        </select>
                                     </div>
                                 </div>
                                 {/* Date de l'événement & Heure de début */}
@@ -260,6 +344,83 @@ export default function CreateEven() {
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        {/* CATEGORIES DE BILLETS */}
+                        <div className='w-full flex flex-col justify-center items-center gap-4 bg-[#C2611F]/10 rounded-xl px-6 py-6'>
+                            {/* TITRE */}
+                            <div className='w-full flex justify-between items-center font-[500]'>
+                                <div className='flex items-center gap-2'>
+                                    <img className='h-6 w-6' src={tag} alt="Icone des catégories" />
+                                    <h1>Catégories de billets</h1>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={ajouterCategorie}
+                                    className='bg-[#C2611F] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#a14f19] transition-all'
+                                >
+                                    + Ajouter une catégorie
+                                </button>
+                            </div>
+
+                            {/* LISTE DES CATEGORIES */}
+                            <div className='w-full flex flex-col gap-4'>
+                                {categories.map((categorie, index) => (
+                                    <div key={index} className='w-full flex gap-4 items-end bg-[#C2611F]/10 rounded-xl p-4'>
+                                                
+                                        {/* Nom de la catégorie */}
+                                        <div className='flex-1 flex flex-col'>
+                                            <label className='text-sm font-[500] mb-1'>
+                                                Nom de la catégorie
+                                            </label>
+                                            <input
+                                                type='text'
+                                                value={categorie.nom}
+                                                onChange={(e) => modifierCategorie(index, 'nom', e.target.value)}
+                                                placeholder='Ex: Standard, VIP...'
+                                                className='bg-[#C2611F]/20 h-10 rounded-md px-3 text-sm'
+                                            />
+                                        </div>
+                                        {/* Prix */}
+                                        <div className='flex-1 flex flex-col'>
+                                            <label className='text-sm font-[500] mb-1'>
+                                                Prix (FCFA)
+                                            </label>
+                                            <input
+                                                type='number'
+                                                value={categorie.prix}
+                                                onChange={(e) => modifierCategorie(index, 'prix', e.target.value)}
+                                                placeholder='Ex: 5000'
+                                                min='0'
+                                                className='bg-[#C2611F]/20 h-10 rounded-md px-3 text-sm'
+                                            />
+                                        </div>
+                                        {/* Nombre de places */}
+                                        <div className='flex-1 flex flex-col'>
+                                            <label className='text-sm font-[500] mb-1'>
+                                                Nombre de places
+                                            </label>
+                                            <input
+                                                type='number'
+                                                value={categorie.nombreteTotale}
+                                                onChange={(e) => modifierCategorie(index, 'nombreteTotale', e.target.value)}
+                                                placeholder='Ex: 100'
+                                                min='1'
+                                                className='bg-[#C2611F]/20 h-10 rounded-md px-3 text-sm'
+                                             />
+                                        </div>
+                                        {/* Bouton supprimer — masqué si une seule catégorie */}
+                                        {categories.length > 1 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => supprimerCategorie(index)}
+                                                className='h-10 flex justify-center items-center px-3 bg-red-400/30 text-red-600 rounded-md hover:bg-red-400/50 transition-all text-sm font-bold'
+                                            >
+                                                <img className='h-6 w-6' src={x} alt="Icone de suppression" />
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                         {/* BUTTON DE PUBLICATION */}

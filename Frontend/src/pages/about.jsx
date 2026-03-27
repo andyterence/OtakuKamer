@@ -3,6 +3,8 @@ import logo from '../assets/logos/OtakuKamer_logo.png'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from "../components/shared/sidebar";
+import Footer from "../components/shared/Footer";
+import Navbar from "../components/shared/Navbar";
 import kurama_attend from '../assets/imgs/goku_attend.png'
 import menu from '../assets/icons/menu.svg'
 import left from '../assets/icons/left.svg'
@@ -13,7 +15,6 @@ import excellence from '../assets/icons/target.svg'
 import innov from '../assets/icons/innov.svg'
 import logo_2 from '../assets/logos/logo-orange.png'
 import background from '../assets/imgs/background.jpg'
-import Footer from "../components/shared/Footer";
 
 function About() {
 
@@ -53,8 +54,9 @@ function About() {
                 </>
             )}
             <main className={token ? 'md:w-6/7 w-full bg-gray-100 flex flex-col' : 'bg-gray-100 w-full flex flex-col'}>
+                <Navbar />
                 {/* TITRE ET SOUS TITRE DE BIENVENUE */}
-                <div className='flex justify-between items-center'>
+                <div className='flex justify-between items-center md:mt-30'>
                     <div className='w-full flex flex-col justify-center items-start font-bold md:p-10'>
                         <h1 className='text-4xl'>À Propos d'OtakuKamer</h1>
                         <p className='text-md text-[#C2611F]'>La première plateforme dédiée aux événements Otaku au Cameroun</p>

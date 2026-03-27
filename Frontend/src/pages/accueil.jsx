@@ -10,6 +10,8 @@ import Navbar from "../components/shared/Navbar";
 import Footer from "../components/shared/Footer";
 import kurama_attend from '../assets/imgs/goku_attend.png';
 import menu from '../assets/icons/menu.svg'
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 function Accueil() {
 
@@ -50,7 +52,7 @@ function Accueil() {
                     <Hero />
                     <ListeEvenements />
                     {/* <ListeNews /> */}
-                    <Footer />
+                    <Footer  />
                 </main>
                 
                 {/* L'IMAGE QU'ON AFFICHE SI UNE REQUETTE EST EN COURS */}
