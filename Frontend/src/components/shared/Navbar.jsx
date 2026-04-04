@@ -15,7 +15,7 @@ function Navbar() {
     return(
         <nav className="z-50 fixed w-full h-15 text-white bg-black/50 flex justify-center items-center">
             <div className="w-full h-full flex justify-start items-center pl-10">
-                <img className='h-15 h-15' src={logo} alt="Logo d'OtakuKamer" />
+                <img className='h-15 w-15' src={logo} alt="Logo d'OtakuKamer" />
             </div>
             <ul className="w-full flex justify-start items-center gap-4 text-[14px] font-bold">
                 <li>
@@ -33,11 +33,16 @@ function Navbar() {
                 <li>
                     <a 
                         className={location.pathname === '/ListeEvenements' 
-                            ? 'active text-[#C2611F] transition-all duration-300 hover:px-4'
-                            : 'transition-all duration-300 hover:px-4 hover:text-[#C2611F]/80'
+                            ? 'active text-[#C2611F] transition-all duration-300 hover:px-4 cursor-pointer'
+                            : 'transition-all duration-300 hover:px-4 hover:text-[#C2611F]/80 cursor-pointer'
                         }
-                        onClick={() => navigate(`/accueil`)} 
-                        href="#"
+                        onClick={() => {
+                            navigate('/accueil')
+                            // Petit délai pour laisser la page charger avant de scroller
+                            setTimeout(() => {
+                                document.getElementById('liste-evenements')?.scrollIntoView({ behavior: 'smooth' })
+                            }, 100)
+                        }}
                     >
                         Événements
                     </a>

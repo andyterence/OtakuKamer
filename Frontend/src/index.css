@@ -1,8 +1,5 @@
 @import "tailwindcss";
 
-/* Plugin Preline pour Tailwind v4 */
-@plugin "preline/plugin";
-
 /* Indique à Tailwind de scanner les fichiers Preline */
 @source "../node_modules/preline/dist/*.js";
 

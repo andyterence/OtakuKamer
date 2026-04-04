@@ -25,7 +25,7 @@ export default function ModifierEvenement() {
     const [menuOuvert, setMenuOuvert] = useState(false)
     const [titre, setTitre] = useState('')
     const [description, setDescription] = useState('')
-    const [typeEven, setTypeEven] = useState('')
+    const [typeEven, setTypeEven] = useState('Mixte')
     const [date, setDate] = useState('')
     const [heure, setHeure] = useState('')
     const [ville, setVille] = useState('')
@@ -48,7 +48,7 @@ export default function ModifierEvenement() {
         formData.append('statut', statut)
         
         if (date && heure) {
-            formData.append('dateLancement', `${date}T${heure}:00`);
+            formData.append('dateLancement', `${date}T${heure}:00+00:00`);
         }
         if (image) {
             formData.append('image', image);

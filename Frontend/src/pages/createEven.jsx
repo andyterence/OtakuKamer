@@ -2,6 +2,7 @@ import { useState } from 'react'
 // Ajoute cet import
 import { useNavigate } from 'react-router-dom'
 import Sidebar from "../components/shared/sidebar";
+import Toast from '../components/shared/Toast'
 import axios from 'axios'
 import imageIcon from '../assets/icons/image.svg'
 import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
@@ -25,7 +26,7 @@ export default function CreateEven() {
     ])
     const [titre, setTitre] = useState('')
     const [description, setDescription] = useState('')
-    const [typeEven, setTypeEven] = useState('')
+    const [typeEven, setTypeEven] = useState('Tous')
     // const [categorieBillet, setCategorieBillet] = useState('')
     const [date, setDate] = useState('')
     const [heure, setHeure] = useState('')
@@ -36,7 +37,9 @@ export default function CreateEven() {
     const [enAttente, setEnAttente] = useState(false)
     // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
-
+    // Pour afficher les messages de succes ou d'erreur après la création de l'événement avec la fonction Toast.jsx dans le dossier shared
+    const [toastMessage, setToastMessage] = useState('')
+    const [toastType, setToastType] = useState('succes')
     // Fonctions pour gérer les catégories
     const ajouterCategorie = () => {
         setCategories([...categories, { nom: '', prix: '', nombreteTotale: '' }])
@@ -52,6 +55,13 @@ export default function CreateEven() {
         setCategories(nouvellesCategories)
     }
 
+    // Pour formater la date et l'heure au format ISO avant de les envoyer au backend, qui attend ce format pour les champs DateTime
+    const formaterDateISO = (dateStr) => {
+        if (!dateStr.includes('/')) return dateStr; // Déjà au bon format (tirets)
+        const [jour, mois, annee] = dateStr.split('/');
+        return `${annee}-${mois}-${jour}`; // Inverse pour avoir AAAA-MM-JJ
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
@@ -62,11 +72,39 @@ export default function CreateEven() {
         formData.append('ville', ville);
         formData.append('lieu', lieu);
         formData.append('prix', 0); 
-        formData.append('statut', statut)
+        formData.append('statut', statut);
         
         if (date && heure) {
-            formData.append('dateLancement', `${date}T${heure}:00`);
+            try {
+                // 1. On prépare la date (gestion des slashs si nécessaire)
+                const datePrete = formaterDateISO(date.trim());
+                const heureNettoyee = heure.trim();
+
+                // 2. On crée l'objet Date (YYYY-MM-DDTHH:mm:00)
+                const dateObj = new Date(`${datePrete}T${heureNettoyee}:00`);
+
+                // 3. Vérification de la validité
+                if (isNaN(dateObj.getTime())) {
+                    setToastMessage("Le format de la date ou de l'heure est incorrect.");
+                    setToastType('erreur');
+                    return; 
+                }
+
+                // 4. Ajout au FormData au format ISO
+                formData.append('dateLancement', dateObj.toISOString());
+                
+            } catch (e) {
+                console.error("Erreur de formatage date :", e);
+                setToastMessage("Erreur lors de la préparation de la date.");
+                setToastType('erreur');
+                return;
+            }
+        } else {
+            setToastMessage("Veuillez remplir la date et l'heure.");
+            setToastType('erreur');
+            return;
         }
+
         if (image) {
             formData.append('image', image);
         }
@@ -74,7 +112,7 @@ export default function CreateEven() {
         try {
             setEnAttente(true);
             const token = localStorage.getItem('access')
-
+            // console.log("formData:", formData);
             // ETAPE 1 — Créer l'événement
             const response = await axios.post('http://localhost:8000/api/evenements/', formData, {
                 headers: {
@@ -89,7 +127,7 @@ export default function CreateEven() {
             for (const categorie of categories) {
                 if (categorie.nom && categorie.prix && categorie.nombreteTotale) {
                     await axios.post('http://localhost:8000/api/categorie/', {
-                        evenement: evenementId,
+                        evenement_id: parseInt(evenementId),
                         nom: categorie.nom,
                         prix: parseFloat(categorie.prix),
                         nombreteTotale: parseInt(categorie.nombreteTotale),
@@ -101,8 +139,13 @@ export default function CreateEven() {
             }
 
             console.log("Succès !", response.data);
-            navigate('/accueil')
+            // Succès
+            setToastMessage('Événement créé avec succès !')
+            setToastType('succes')
+            setTimeout(() => navigate('/accueil'), 2000)
         } catch (error) {
+            setToastMessage('Une erreur est survenue, vérifie les champs.')
+            setToastType('erreur')
             console.error("Erreur détaillée :", error.response?.data);
         } finally {
             setEnAttente(false);
@@ -443,6 +486,14 @@ export default function CreateEven() {
                     </form>
                 </div>
             </section>
+            {/* TOAST DE SUCCES OU D'ERREUR */}
+            {toastMessage && (
+                <Toast 
+                    message={toastMessage} 
+                    setMessage={setToastMessage} 
+                    type={toastType} 
+                />
+            )}
         </div>
     )
 }

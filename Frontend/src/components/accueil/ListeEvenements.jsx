@@ -48,7 +48,7 @@ function ListeEvenements(){
     : evenements.filter(e => e.typeEven === filtreActif)
 
     return(
-        <div className='w-full h-full bg-[#EDEDF5] flex flex-col justify-center items-center pt-10 md:pt-15 gap-10'>
+        <div id="liste-evenements" className='w-full h-full bg-[#EDEDF5] flex flex-col justify-center items-center pt-10 md:pt-15 gap-10'>
             <div className='flex flex-col justify-center items-center font-bold text-[#C2611F] text-[12px] gap-1'>
                 <div className='flex justify-center items-center font-bold text-[#C2611F] bg-black/30 px-6 py-2 rounded-full'>
                     <h1>Événement à venir</h1>

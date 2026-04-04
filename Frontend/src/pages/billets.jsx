@@ -10,8 +10,10 @@ import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
 import ticket from '../assets/icons/ticket-check.svg'
 import download from '../assets/icons/download.svg'
 import qrcode from '../assets/icons/scan-qr-code.svg'
-import background from '../assets/imgs/background.jpg'
-import map from '../assets/icons/map-check.svg'
+// import background from '../assets/imgs/background.jpg'
+import map from '../assets/icons/locate.svg'
+import map_check from '../assets/icons/locate-fixed.svg'
+import bank from '../assets/icons/banknote.svg'
 
 // import notif from '../../assets/icons/bell.svg'
 
@@ -20,6 +22,9 @@ export default function Billets() {
     const [billets, setBillets] = useState([])
     const [enAttente, setEnAttente] = useState(false)
     const [qrOuvert, setQrOuvert] = useState(null)
+    const [modalOuvert, setModalOuvert] = useState(false)
+    const [messageConfirmation, setMessageConfirmation] = useState(false)
+    const [billetAnnuler, setBilletAnnuler] = useState(null)
     // UseState qui va se charger de la liste des billets selon le type
     // const [billets, setbillets] = useState([])
     // Pour pouvoir naviguer entre les pages
@@ -160,7 +165,7 @@ export default function Billets() {
                         : billets.map(billet => (
                             <div 
                                 key={billet.id} 
-                                className='relative card h-90 md:h-65 md:w-[82%] flex flex-col md:flex-row justify-start items-center gap-4 bg-[#C2611F]/40 rounded-xl border-2 border-[#C2611F] font-bold bg-cover bg-center transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/50 p-4'>
+                                className='relative card h-full md:w-[82%] flex flex-col md:flex-row justify-start items-center gap-4 bg-[#C2611F]/40 rounded-xl border-2 border-[#C2611F] bg-cover bg-center transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/50 p-4'>
                                 {/* BACKGROUND DE L'EVENEMENT */}
                                 <div className='w-1/3 h-full rounded-xl bg-cover bg-center'
                                     style={{ backgroundImage: `url(${billet?.categorie?.evenement?.image})` }}>
@@ -169,12 +174,6 @@ export default function Billets() {
                                     <div className='absolute inset-0 bg-black/70 rounded-xl flex justify-center items-center'>
                                         <p className='text-red-500 font-bold text-xl'>Annulé</p>
                                     </div>
-                                )}
-
-                                {billet.statut === 'valide' && (
-                                    <button onClick={() => annulerBillet(billet.id)}>
-                                        Annuler
-                                    </button>
                                 )}
                                 
                                 {/* OVERLAY SI UTILISE */}
@@ -188,20 +187,44 @@ export default function Billets() {
                                 <div className='w-2/3 h-full flex flex-col justify-evenly items-start gap-4'>
                                     <div className='w-full h-full justify-evenly flex items-start gap-2'>
                                         <div className='w-full h-full text-[12px] justify-evenly flex flex-col items-start gap-2'>
-                                            <p>{billet?.categorie.evenement.titre}</p>
-                                            <p>{billet?.categorie.nom}</p>
-                                            <p>
-                                                {new Date(billet?.dateAchat).toLocaleDateString('fr-FR', {
-                                                day: 'numeric', month: 'long', year: 'numeric'
-                                                })}
-                                            </p>
-                                            <p>
-                                                {new Date(billet?.categorie?.evenement?.dateLancement).toLocaleDateString('fr-FR', {
-                                                day: 'numeric', month: 'long', year: 'numeric'
-                                                })}
-                                            </p>
-                                            <p>{billet?.prix} FCFA</p>
-                                            <p>{billet?.statut}</p>
+                                            <p className=' font-bold text-xl'>{billet?.categorie.evenement.titre}</p>
+                                            <div className='flex flex-col justify-start items-center'>
+                                                <div className='w-full flex justify-start items-center gap-1'>
+                                                    <img className='h-4 w-4' src={map} alt="Logo de l'information" />
+                                                    <p className='text-[12px]'>Categorie</p>
+                                                </div>
+                                                <p className='font-bold w-full'>{billet?.categorie.nom}</p>
+                                            </div>
+                                            <div className='flex flex-col justify-start items-center'>
+                                                <div className='w-full flex justify-start items-center gap-1'>
+                                                    <img className='h-4 w-4' src={map} alt="Logo de l'information" />
+                                                    <p className='text-[12px]'>Date d'achat</p>
+                                                </div>
+                                                <p className='font-bold'>
+                                                    {new Date(billet?.dateAchat).toLocaleDateString('fr-FR', {
+                                                    day: 'numeric', month: 'long', year: 'numeric'
+                                                    })}
+                                                </p>
+                                            </div>
+                                            <div className='flex flex-col justify-start items-center'>
+                                                <div className='w-full flex justify-start items-center gap-1'>
+                                                    <img className='h-4 w-4' src={map_check} alt="Logo de l'information" />
+                                                    <p className='text-[12px]'>Date de lancement</p>
+                                                </div>
+                                                <p className='w-full font-bold'>
+                                                    {new Date(billet?.categorie?.evenement?.dateLancement).toLocaleDateString('fr-FR', {
+                                                    day: 'numeric', month: 'long', year: 'numeric'
+                                                    })}
+                                                </p>
+                                            </div>
+                                            <div className='flex flex-col justify-start items-center'>
+                                                <div className='w-full flex justify-start items-center gap-1'>
+                                                    <img className='h-4 w-4' src={bank} alt="Logo de l'information" />
+                                                    <p className='text-[12px]'>Prix unitaire</p>
+                                                </div>
+                                                <p  className='font-bold'>{billet?.prix} FCFA</p>
+                                            </div>
+                                            <p className='font-bold'>{billet?.statut}</p>
                                         </div>
                                         {/* QRCODE */}
                                         <div className='w-full h-full flex justify-center items-center top-10'>
@@ -230,13 +253,15 @@ export default function Billets() {
                                             {/* Annuler — visible seulement si valide */}
                                             {billet.statut === 'valide' && (
                                                 <button 
-                                                    onClick={() => annulerBillet(billet.id)}
-                                                    className='bg-red-500/60 w-full text-red-700 px-4 py-2 rounded-xl cursor-pointer hover:bg-red-500/50 transition'
+                                                    onClick={() => {
+                                                        setBilletAnnuler(billet.id)  // ← ici billet existe
+                                                        setModalOuvert(true)
+                                                    }}
+                                                    className='bg-red-500/60 w-full text-red-700 px-4 py-2 rounded-xl'
                                                 >
                                                     Annuler
                                                 </button>
                                             )}
-
                                             {/* Supprimer — visible seulement si annulé */}
                                             {billet.statut === 'annule' && (
                                                 <button 
@@ -272,8 +297,45 @@ export default function Billets() {
                         ))
                     }
                 </div>
-                <Footer />
             </section>
+            {/* MODAL DE CONFIRMATION */}
+            {modalOuvert && (
+                <div className='fixed inset-0 bg-black/60 z-50 flex justify-center items-center'>
+                    <div className='bg-white rounded-xl p-8 w-96 flex flex-col gap-6'>
+                        <h2 className='text-xl font-bold'>Confirmer l'annulation</h2>
+                        <p className='text-gray-600'>Cette action est irréversible.</p>
+                        <div className='flex gap-4'>
+                            {/* Ferme le modal sans rien faire */}
+                            <button 
+                                onClick={() => setModalOuvert(false)}
+                                className='w-1/2 py-3 border border-gray-300 rounded-xl'
+                            >
+                                Retour
+                            </button>
+                            {/* Confirme l'annulation */}
+                            <button 
+                                onClick={async () => {
+                                    await annulerBillet(billetAnnuler)
+                                    setModalOuvert(false)
+                                    setMessageConfirmation(true)
+                                    setTimeout(() => setMessageConfirmation(false), 2000)
+                                }}
+                                className='w-1/2 py-3 bg-red-500 text-white rounded-xl'
+                            >
+                                Confirmer l'annulation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* MESSAGE DE CONFIRMATION */}
+            {messageConfirmation && (
+                <div className='fixed inset-0 z-50 flex justify-center items-start md:pt-10'>
+                    <div className='bg-white/40 rounded-xl p-8 w-96 flex flex-col justify-center items-center gap-6'>
+                        <h2 className='text-xl font-bold text-green-800'>Votre billet a bien été annulé</h2>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

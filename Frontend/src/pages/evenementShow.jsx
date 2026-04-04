@@ -37,18 +37,22 @@ export default function EvenementShow() {
     if (!categorieChoisie) {
         alert('Veuillez choisir une catégorie !')
         return
-    }
-    try {
-        const token = localStorage.getItem('access')
-        const reponse = await axios.post(
-            'http://localhost:8000/api/billet/',
-            { categorie: categorieChoisie.id, quantite: quantite },
-            { headers: { Authorization: `Bearer ${token}` } }
-        )
-        navigate('/billets')
-    } catch (_err) {
-        console.error(_err)
-    }
+        }
+        try {
+            const token = localStorage.getItem('access')
+            const reponse = await axios.post(
+                'http://localhost:8000/api/billet/',
+                { categorie: categorieChoisie.id, quantite: quantite },
+                { headers: { Authorization: `Bearer ${token}` } }
+            )
+            setMessageConfirmation(true)
+            setTimeout(() => {
+                setMessageConfirmation(false)
+                navigate('/billets')
+            }, 1000)
+        } catch (_err) {
+            console.error(_err)
+        }
     }
     const incrementer = () => {
         if (quantite < categorieChoisie?.nombreRestant) {
@@ -148,7 +152,7 @@ export default function EvenementShow() {
                 {/* PREMIERE COLONE */}
                 <div className='w-3/5 h-full flex flex-col justify-center items-center gap-4 m-4'>
                     {/* À propos de l'événement */}
-                    <div data-aos="fade-up" className='w-[90%] h-110 bg-gray-100 p-4 font-bold flex flex-col justify-center items-start rounded-md gap-2'>
+                    <div data-aos="fade-up" className='w-[90%] h-110 bg-gray-100 p-4 flex flex-col justify-center items-start rounded-md gap-2'>
                         <h1>À propos de l'événement</h1>
                         <p className='bg-[#C2611F]/20 h-full w-full rounded-md p-4'>
                             {evenement?.description}
@@ -331,7 +335,10 @@ export default function EvenementShow() {
                                 Annuler
                             </button>
                             <button 
-                                onClick={() => { reserver(); setModalOuvert(false), setMessageConfirmation(true) }}
+                                onClick={async () => {
+                                    setModalOuvert(false)
+                                    await reserver()
+                                }}
                                 className='w-1/2 py-3 bg-[#C2611F] text-white rounded-xl'>
                                 Confirmer
                             </button>

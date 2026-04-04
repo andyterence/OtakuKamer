@@ -59,7 +59,7 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
                 <div className="flex justify-start items-center font-bold">
                     {/* Conteneur du logo */}
                     <div className="flex justify-center items-center">
-                        <img className='h-10 h-10' src={logo} alt="Logo d'OtakuKamer" />
+                        <img className='h-10 w-10' src={logo} alt="Logo d'OtakuKamer" />
                     </div>
                     {/* Conteneur du titre */}
                     <div>
@@ -87,7 +87,7 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
                     <div className="w-full flex items-center justify-start gap-2 bg-[#C2611F]/20 rounded-md p-2">
                         {/* ICON DU USER */}
                         <div className="bg-[#C2611F] w-10 h-10 rounded-full flex justify-center items-center">
-                            <img className='h-6 h-6' src={user_icon} alt="Logo d'utilisateur" />
+                            <img className='h-6 w-6' src={user_icon} alt="Logo d'utilisateur" />
                         </div>
                         {/* NOM ET TYPE DU USER */}
                         <div className="flex flex-col">
@@ -153,6 +153,16 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
                                 onClick={() => navigate(`/calendrier`)}
                             >
                                 Calendrier
+                            </button>
+                        </div>
+                        {/* Mes Billets */}
+                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                            <img className='h-5 w-5' src={align_text} alt="Logo de mes billets" />
+                            <button 
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/billets/`)}
+                            >
+                                Mes billets
                             </button>
                         </div>
                         {/* Paramètres */}

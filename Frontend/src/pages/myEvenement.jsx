@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from "../components/shared/sidebar";
+import Toast from '../components/shared/Toast';
 import axios from 'axios'
 // import { QRCodeCanvas } from 'qrcode.react'
 import logo from '../assets/logos/OtakuKamer_logo.png'
@@ -11,7 +12,6 @@ import eye from '../assets/icons/eye.svg'
 import map from '../assets/icons/map-check.svg'
 import info from '../assets/icons/info.svg'
 import pen from '../assets/icons/pen.svg'
-import trash from '../assets/icons/trash.svg'
 import plus from '../assets/icons/badge-plus.svg'
 
 // import qrcode from '../assets/icons/scan-qr-code.svg'
@@ -23,10 +23,67 @@ export default function MyEvenement() {
 
     const [evenements, setEvenements] = useState([])
     const [enAttente, setEnAttente] = useState(false)
+    const [modalOuvert, setModalOuvert] = useState(false)
+    const [messageConfirmation, setMessageConfirmation] = useState(false)
+    const [evenementAnnuler, setEvenementAnnuler] = useState(null)
+    // Nouveau state pour les stats de calcul
+    const [stats, setStats] = useState({})
     // UseState qui va se charger de la liste des billets selon le type
     // const [billets, setbillets] = useState([])
     // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const chargerStats = async () => {
+            const token = localStorage.getItem('access')
+            // Pour chaque événement, on fait une requête stats
+            for (const evenement of evenements) {
+                try {
+                    const reponse = await axios.get(
+                        `http://localhost:8000/api/evenements/${evenement.id}/stats/`,
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    )
+                    // On ajoute les stats de cet événement dans le state
+                    // en gardant les stats des autres événements déjà chargés
+                    setStats(prev => ({
+                        // Sans prev, chaque setStats écraserait les stats des événements précédents. prev représente l'état actuel du state
+                        ...prev,
+                        [evenement.id]: reponse.data
+                    }))
+                } catch (_err) {
+                    console.error(_err)
+                }
+            }
+        }
+        // On attend que la liste soit chargée avant de charger les stats
+        if (evenements.length > 0) {
+            chargerStats()
+        }
+    }, [evenements])  // ← se déclenche quand evenements change
+
+    // POUR ANNULER UN BILLET
+    const annulerEvenement = async (evenementId) => {
+        try {
+                const token = localStorage.getItem('access')
+                const reponse = await axios.patch(
+                        `http://localhost:8000/api/evenements/${evenementId}/`,
+                        { statut: 'annule' },
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    )
+                setEvenements(evenements.map(e => 
+                    e.id === evenementId ? { ...e, statut: 'annule' } : e
+                ))
+            } catch (_err) {
+                if (_err.response?.status === 401) {
+                localStorage.removeItem('access')
+                localStorage.removeItem('refresh')
+                navigate('/login')
+            }
+                console.error(_err)
+            } finally {
+                setEnAttente(false)
+        }
+    }
 
     // POUR SUPPRIMER UN EVENEMENT DEJA ANNULER
     const supprimerEvenement = async (evenementsId) => {
@@ -102,13 +159,13 @@ export default function MyEvenement() {
                     {/* Nombre Billets Vendus */}
                     <div className='flex flex-col justify-evenly items-start w-70 h-40 rounded-xl border-1 border-[#C2611F] py-4 px-8'>
                         <div><img className='h-7 w-7' src={ticket} alt="Logo du ticket" /></div>
-                        <div>0</div>
+                        <div>{Object.values(stats).reduce((total, s) => total + (s.billets_vendus ?? 0), 0)}</div>
                         <div>Billets Vendus</div>
                     </div>
                     {/* Revenus (FCFA) */}
                     <div className='flex flex-col justify-evenly items-start w-70 h-40 rounded-xl border-1 border-[#C2611F] py-4 px-8'>
                         <div><img className='h-7 w-7' src={gain} alt="Logo de l'information" /></div>
-                        <div>{evenements.reduce((total, e) => total + parseFloat(e.prix), 0).toFixed(0)} FCFA</div>
+                        <div>{Object.values(stats).reduce((total, s) => total + parseFloat(s.revenus ?? 0), 0).toFixed(0)} FCFA</div>
                         <div>Revenus (FCFA)</div>
                     </div>
                     {/* Événements Actifs */}
@@ -134,12 +191,19 @@ export default function MyEvenement() {
                                 key={evenement.id}
                                 className='animate__animated animate__zoomInDown relative card h-90 md:h-75 md:w-[95%] flex flex-col md:flex-row justify-start items-center gap-4 border-1 border-[#C2611F] rounded-xl border-2 border-[#C2611F] font-bold bg-cover bg-center transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/10 p-4'>
                                 {/* BACKGROUND DE L'EVENEMENT */}
-                                <div className='w-1/3 h-full rounded-xl bg-cover bg-center'
+                                <div className='relative w-1/3 h-full rounded-xl bg-cover bg-center'
                                     style={{ backgroundImage: `url(${evenement?.image})` }}>
-                                {/* OVERLAY SI UTILISE */}
-                                {evenement.statut === 'utilise' && (
+                                {/* OVERLAY SI ANNULE */}
+                                {evenement.statut === 'annule' && (
                                     <div className='absolute inset-0 bg-black/70 rounded-xl flex justify-center items-center'>
-                                        <p className='text-gray-400 font-bold text-xl'>Utilisé</p>
+                                        <p className='text-red-500 font-bold text-xl'>Annulé</p>
+                                    </div>
+                                )}
+                                
+                                {/* OVERLAY SI TERMINE */}
+                                {evenement.statut === 'termine' && (
+                                    <div className='absolute inset-0 bg-black/70 rounded-xl flex justify-center items-center'>
+                                        <p className='text-gray-400 font-bold text-xl'>termine</p>
                                     </div>
                                 )}
                                 </div>
@@ -184,16 +248,30 @@ export default function MyEvenement() {
                                                     {/* BILLET VENDU */}
                                                     <div className='w-1/2 flex flex-col justify-center items-center'>
                                                         <p className='text-black'>Billets vendus</p>
-                                                        <p className='text-xl'>234/500</p>
-                                                        {/* BARRE DE REMPLISSAGE */}
+                                                        <p className='text-xl'>
+                                                            {stats[evenement.id]?.billets_vendus ?? 0}
+                                                            /
+                                                            {stats[evenement.id]?.total_places ?? 0}
+                                                        </p>
+                                                        {/* BARRE DE REMPLISSAGE — calcul dynamique du pourcentage */}
                                                         <div className='border-1 border-[#C2611F] w-[90%] h-[6px] rounded-md'>
-                                                            <div className='bg-[#C2611F] w-[60%] h-full'></div>
+                                                            <div 
+                                                                className='bg-[#C2611F] h-full rounded-md transition-all'
+                                                                style={{ 
+                                                                    width: `${stats[evenement.id]?.total_places 
+                                                                        ? (stats[evenement.id].billets_vendus / stats[evenement.id].total_places * 100) 
+                                                                        : 0}%` 
+                                                                }}
+                                                            />
                                                         </div>
                                                     </div>
                                                     {/* REVENUS */}
                                                     <div className='w-1/2 flex flex-col justify-center items-center'>
                                                         <p className='text-black'>Revenus</p>
-                                                        <p className='text-xl text-green-800'>FCFA</p>
+                                                        <p className='text-xl text-green-800'>
+                                                            {/* Le ?? est le nullish coalescing operator il retourne 0 si la valeur est null ou undefined, ce qui évite d'afficher undefined pendant le chargement. */}
+                                                            {stats[evenement.id]?.revenus ?? 0} FCFA
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -206,10 +284,25 @@ export default function MyEvenement() {
                                                     <img className='h-4 w-4' src={pen} alt="Logo du calendrier" />
                                                     Modifier
                                                 </button>
-                                                <button onClick={() => supprimerEvenement(evenement.id)} className='flex justify-center items-center gap-1 text-md bg-red-500 w-25 h-10 rounded-md hover:bg-red-600 cursor-pointer transition-all duration-300'>
-                                                    <img className='h-4 w-4' src={trash} alt="Logo du calendrier" />
-                                                    Supprimer
-                                                </button>
+                                                {(evenement.statut === 'en_preparation' || evenement.statut === 'en_cours') && (
+                                                    <button 
+                                                        className='flex justify-center items-center gap-1 text-md bg-red-600 w-25 h-10 rounded-md hover:bg-red-800 cursor-pointer transition-all duration-300'
+                                                        onClick={() => {
+                                                        setEvenementAnnuler(evenement.id) 
+                                                        setModalOuvert(true)
+                                                    }}>
+                                                        Annuler
+                                                    </button>
+                                                )}
+                                                {/* Supprimer — visible seulement si annulé */}
+                                                {(evenement.statut === 'annule' || evenement.statut === 'termine') && (
+                                                    <button 
+                                                        className='flex justify-center items-center gap-1 text-md bg-red-600 w-25 h-10 rounded-md hover:bg-red-800 cursor-pointer transition-all duration-300'
+                                                        onClick={() => supprimerEvenement(evenement.id)}
+                                                    >
+                                                        Supprimer
+                                                    </button>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
@@ -219,6 +312,44 @@ export default function MyEvenement() {
                     }
                 </div>
             </section>
+            {/* MODAL DE CONFIRMATION */}
+            {modalOuvert && (
+                <div className='fixed inset-0 bg-black/60 z-50 flex justify-center items-center'>
+                    <div className='bg-white rounded-xl p-8 w-96 flex flex-col gap-6'>
+                        <h2 className='text-xl font-bold'>Confirmer l'annulation</h2>
+                        <p className='text-gray-600'>Cette action est irréversible.</p>
+                        <div className='flex gap-4'>
+                            {/* Ferme le modal sans rien faire */}
+                            <button 
+                                onClick={() => setModalOuvert(false)}
+                                className='w-1/2 py-3 border border-gray-300 rounded-xl'
+                            >
+                                Retour
+                            </button>
+                            {/* Confirme l'annulation */}
+                            <button 
+                                onClick={async () => {
+                                    await annulerEvenement(evenementAnnuler)
+                                    setModalOuvert(false)
+                                    setMessageConfirmation(true)
+                                    setTimeout(() => setMessageConfirmation(false), 2000)
+                                }}
+                                className='w-1/2 py-3 bg-red-500 text-white rounded-xl'
+                            >
+                                Confirmer l'annulation
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* MESSAGE DE CONFIRMATION */}
+            {messageConfirmation && (
+                <div className='fixed inset-0 z-50 flex justify-center items-start md:pt-10'>
+                    <div className='bg-white/40 rounded-xl p-8 w-96 flex flex-col justify-center items-center gap-6'>
+                        <h2 className='text-xl font-bold text-green-800'>Votre événement a bien été annulé</h2>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }
