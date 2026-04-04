@@ -74,11 +74,11 @@ function Register() {
 
   return (
     // Structure de la page de connexion avec deux sections : une pour l'accueil et une pour le formulaire de connexion
-    <div className='flex md:flex-row flex-col bg-[#0D0D0D] h-full w-full flex items-center justify-center'>
+    <div className='flex md:flex-row flex-col h-full w-full flex items-center justify-center'>
 
         {/* SECTION DE GAUCHE - ACCUEIL */}
         <section className='w-full md:w-1/2 h-screen flex flex-col items-center justify-center gap-2'>
-            <div className='flex items-center justify-center text-[#F1F1F1] gap-2 p-4'>
+            <div className='flex items-center justify-center gap-2 p-4'>
                 <img className='h-10 h-10' src={logo} alt="Logo d'OtakuKamer" />
                 <h1 className='md:text-2xl font-bold'>OtakuKamer</h1>
             </div>
@@ -96,7 +96,7 @@ function Register() {
             </div>
             <div className='flex flex-col items-center justify-center'>
                 <div className='w-70'>
-                    <h2 className='text-2xl text-center text-[#F1F1F1] mb-2 px-3'>OtakuKamer : Actus & Billetterie.</h2>
+                    <h2 className='text-2xl text-center text-[#0D0D0D] mb-2 px-3'>OtakuKamer : Actus & Billetterie.</h2>
                 </div>
                 <div className='w-100'>
                     <p className='text-center text-[#9CA3AF] px-5'>Vivez l’expérience Otaku à 100 % : suivez les news de la communauté et réservez vos places pour les plus grands festivals du pays.</p>
@@ -105,22 +105,22 @@ function Register() {
         </section>
 
         {/* SECTION DE DROITE - FORMULAIRE DE CONNEXION */}
-        <section className='md:w-1/2 bg-[#1A1A2E] h-screen w-full flex flex-col items-center justify-center gap-2'>
+        <section className='md:w-1/2 h-screen w-full flex flex-col items-center justify-center gap-2'>
 
             {/* MOT DE BIENVENUE */}
             <div className='w-80 py-4'>
-                <h1 className='text-3xl text-center text-[#F1F1F1] font-bold'>Ton nindo commence ici. Bienvenue parmi nous, jeune ninja !</h1>
+                <h1 className='text-3xl text-center text-[#0D0D0D] font-bold'>Ton nindo commence ici. Bienvenue parmi nous, jeune ninja !</h1>
             </div>
             {/* BOUTONS DE CONNEXION AVEC GOOGLE OU GITHUB */}
             <div className='flex items-center justify-center gap-4 text-[12px]'>
-                <button className='w-41 bg-[#9CA3AF] text-[#0D0D0D] p-3 rounded-md border-[1px solid #2D2D2D]'>Se connecter avec Google</button>
-                <button className='w-41 bg-[#9CA3AF] text-[#0D0D0D] p-3 rounded-md border-[1px solid #2D2D2D]'>Se connecter avec GitHub</button>
+                <button className='w-41 bg-[#C2611F] text-[#0D0D0D] p-3 rounded-md border-[1px solid #C2611F]'>Se connecter avec Google</button>
+                <button className='w-41 bg-[#C2611F] text-[#0D0D0D] p-3 rounded-md border-[1px solid #C2611F]'>Se connecter avec GitHub</button>
             </div>
             <div className='w-88 rounded-[10px]'>
                 <form action="" method="post" className="space-y-2">
                     {/* SECTION NOM */}
                     <div>
-                        <label htmlFor="nom" className="block text-sm text-[#9CA3AF] mb-1"
+                        <label htmlFor="nom" className="block text-sm  mb-1"
                         >Nom</label
                         >
                         <input
@@ -133,14 +133,14 @@ function Register() {
                         type="text"
                         id="nom"
                         name="nom"
-                        className="w-full px-4 py-2 border border-gray-300 text-[#9CA3AF] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         required
                         />
                     </div>
 
                     {/* SECTION PRENOM */}
                     <div>
-                        <label htmlFor="nom" className="block text-sm text-[#9CA3AF] mb-1"
+                        <label htmlFor="nom" className="block text-sm  mb-1"
                         >Prenom</label
                         >
                         <input
@@ -153,14 +153,14 @@ function Register() {
                         type="text"
                         id="prenom"
                         name="prenom"
-                        className="w-full px-4 py-2 border border-gray-300 text-[#9CA3AF] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         required
                         />
                     </div>
 
                     {/* SECTION EMAIL */}
                     <div>
-                        <label htmlFor="email" className="block text-sm text-[#9CA3AF] mb-1"
+                        <label htmlFor="email" className="block text-sm  mb-1"
                         >Email</label
                         >
                         <input
@@ -173,7 +173,7 @@ function Register() {
                         type="email"
                         id="email"
                         name="email"
-                        className="w-full px-4 py-2 border border-gray-300 text-[#9CA3AF] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         required
                         />
                     </div>
@@ -181,7 +181,7 @@ function Register() {
                     {/* DATE DE NAISSANCE ET ROLE */}
                     <div className='flex justify-between items-center gap-4'>
                         <div className=''>
-                            <label htmlFor="datenaiss" className="block text-sm text-[#9CA3AF] mb-1"
+                            <label htmlFor="datenaiss" className="block text-sm  mb-1"
                             >Date de naissance</label
                             >
                             <input
@@ -194,12 +194,12 @@ function Register() {
                             type="date"
                             id="datenaiss"
                             name="datenaiss"
-                            className="text-[#9CA3AF] w-full px-4 py-2 border border-gray-300 text-[#9CA3AF] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className=" w-full px-4 py-2 border border-gray-300  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             required
                             />
                         </div>
                         <div className=''>
-                            <label htmlFor="role" className="block text-sm text-[#9CA3AF] mb-1"
+                            <label htmlFor="role" className="block text-sm  mb-1"
                             >Vous êtes :</label
                             >
                             <select
@@ -210,19 +210,19 @@ function Register() {
                             } 
                             id="role"
                             name="role"
-                            className="text-[#9CA3AF] w-full px-4 py-2 border border-gray-300 text-[#9CA3AF] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className=" w-full px-4 py-2 border border-gray-300  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             required
                             >
-                                <option value="" className='bg-[#0D0D0D]'>Rôle</option>
-                                <option value="membre" className='bg-[#0D0D0D] text-[12px]'>Utilisateur</option>
-                                <option value="organisateur" className='bg-[#0D0D0D] text-[12px]'>Organisateur</option>
+                                <option value="" className=''>Rôle</option>
+                                <option value="membre" className='text-[12px]'>Utilisateur</option>
+                                <option value="organisateur" className='text-[12px]'>Organisateur</option>
                             </select>
                         </div>
                     </div>
 
                     {/* SECTION MOT DE PASSE */}
                     <div>
-                        <label htmlFor="password" className="block text-sm text-[#9CA3AF] mb-1"
+                        <label htmlFor="password" className="block text-sm  mb-1"
                         >Password</label
                         >
                         <input
@@ -237,14 +237,14 @@ function Register() {
                         id="password"
                         name="password"
                         placeholder=""
-                        className="w-full px-4 py-2 border border-gray-300 text-[#9CA3AF] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         required
                         />
                     </div>
 
                     {/* CONFIRMER LE MOT DE PASSE */}
                     <div>
-                        <label htmlFor="confirmPassword" className="block text-sm text-[#9CA3AF] mb-1"
+                        <label htmlFor="confirmPassword" className="block text-sm  mb-1"
                         >Confirmer le mot de passe</label
                         >
                         <input
@@ -258,7 +258,7 @@ function Register() {
                         id="confirmPassword"
                         name="confirmPassword"
                         placeholder=""
-                        className="w-full px-4 py-2 border border-gray-300 text-[#9CA3AF] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-2 border border-gray-300  rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         required
                         />
                     </div>
@@ -267,7 +267,7 @@ function Register() {
 
                     <div className='flex justify-between'>
                         <div className='flex justify-start items-center gap-3'>
-                            <label htmlFor="check" className="block text-sm text-[#9CA3AF] mb-1">
+                            <label htmlFor="check" className="block text-sm  mb-1">
                                 Se souvenir de moi
                             </label>
                             <input
@@ -278,36 +278,17 @@ function Register() {
                             />
                         </div>
                         <div>
-                            <a href='#' className='text-[#9CA3AF] text-sm'>Mot de passe oublié ?</a>
+                            <a href='#' className='text-sm'>Mot de passe oublié ?</a>
                         </div>
 
                     </div>
-                    {/* <div className="mt-2">
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div 
-                                className={`h-2 rounded-full ${
-                                    calculerForcePassword(motDePasse) === "Très faible" ? 'bg-red-500' :
-                                    calculerForcePassword(motDePasse) === "Faible" ? 'bg-orange-500' :
-                                    calculerForcePassword(motDePasse) === "Moyen" ? 'bg-yellow-500' :
-                                    calculerForcePassword(motDePasse) === "Fort" ? 'bg-green-500' : 'bg-blue-500'
-                                }`}
-                                style={{ width: `${calculerForcePassword(motDePasse) * 25}%` }}
-                            ></div>
-                        </div>
-                        <p className="text-xs mt-1 text-[#9CA3AF]">
-                            {calculerForcePassword(motDePasse) === "Très faible" ? "Très faible" :
-                             calculerForcePassword(motDePasse) === "Faible" ? "Faible" :
-                             calculerForcePassword(motDePasse) === "Moyen" ? "Moyen" :
-                             calculerForcePassword(motDePasse) === "Fort" ? "Fort" : "Très fort"}
-                        </p>
-                    </div> */}
 
                     <button
                         onMouseEnter={() => setEstSurvole(true)}
                         onMouseLeave={() => setEstSurvole(false)}
                         onClick={handleSubmit}
                         type="submit"
-                        className="w-full bg-gray-900 text-white py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors"
+                        className="w-full bg-[#C2611F] text-white py-2 rounded-lg font-medium hover:bg-gray-800 transition-colors"
                     >
                         S'INSCRIRE
                     </button>
@@ -321,7 +302,7 @@ function Register() {
         </section>
         {/* L'IMAGE QU'ON AFFICHE SI UNE REQUETTE EST EN COURS */}
         {enAttente && (
-            <div className="flex flex-col fixed inset-0 bg-[#0D0D0D] flex items-center justify-center z-50">
+            <div className="flex flex-col fixed inset-0 bg-[#C2611F] flex items-center justify-center z-50">
                 <img className='w-80 h-auto anime-flotter' src={goku_attend} />
                 <p className="text-[#9CA3AF] text-lg">Chargement en cours...</p>
             </div>

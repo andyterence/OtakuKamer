@@ -175,13 +175,6 @@ export default function MyEvenement() {
                         <div>Événements Actifs</div>
                     </div>
                 </div>
-                {/* ECRAN DE CHARGEMENT LORS D'UNE REQUETE */}
-                {enAttente && (
-                    <div className="fixed inset-0 bg-[#0D0D0D] flex flex-col items-center justify-center z-50">
-                        <img className='w-80 h-auto anime-flotter' src={logo} />
-                        <p className="text-white text-lg">Chargement en cours...</p>
-                    </div>
-                )}
                 {/* PRESENTATION DES CARTES EVENEMENTS */}
                 <div className='md:flex flex-col justify-center items-center gap-10 my-10 rounded-xl'>
                     {evenements.length === 0 

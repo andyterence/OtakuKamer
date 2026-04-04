@@ -80,7 +80,7 @@ export default function Hero() {
                 </div>
                 <div className='w-full font-bold flex md:justify-start items-center gap-3'>
                     <a
-                        onClick={() => navigate(`/evenements/${evenements.id}`)}
+                        onClick={() => navigate(`/evenement/${evenementsVedettes.id}`)}
                         className='bg-[#C2611F] text-[10px] md:text-[12px] text-[#F1F1F1] px-4 md:px-4 py-4 md:py-3 rounded-xl font-bold cursor-pointer hover:shadow-sm shadow-black-500/50 hover:opacity-95 transition'>
                         RÉSERVER MA PLACE
                     </a>

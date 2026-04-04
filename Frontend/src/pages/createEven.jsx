@@ -37,6 +37,7 @@ export default function CreateEven() {
     const [enAttente, setEnAttente] = useState(false)
     // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
+    const [modalOuvert, setModalOuvert] = useState(false)
     // Pour afficher les messages de succes ou d'erreur après la création de l'événement avec la fonction Toast.jsx dans le dossier shared
     const [toastMessage, setToastMessage] = useState('')
     const [toastType, setToastType] = useState('succes')
@@ -478,6 +479,9 @@ export default function CreateEven() {
                             <button 
                                 type="button" 
                                 disabled={enAttente}
+                                onClick={() => {
+                                    setModalOuvert(true)
+                                }}
                                 className='text-black border-1 border-[#C2611F] px-4 h-6 w-1/3 md:h-10 rounded-sm font-bold md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/90 hover:text-white'
                             >
                                 {enAttente ? 'Création en cours...' : 'Enregistrer comme brouillon'}
@@ -493,6 +497,23 @@ export default function CreateEven() {
                     setMessage={setToastMessage} 
                     type={toastType} 
                 />
+            )}
+            {/* MODAL DE CONFIRMATION */}
+            {modalOuvert && (
+                <div className='fixed inset-0 bg-black/60 z-50 flex justify-center items-center'>
+                    <div className='bg-white rounded-xl p-8 w-96 flex flex-col gap-6'>
+                        <h2 className='text-xl font-bold'>Cette action n'est pas encore permise</h2>
+                        <p className='text-gray-600'>Bientot disponible.</p>
+                        <div className='flex justify-center items-center'>
+                            <button 
+                                onClick={() => setModalOuvert(false)}
+                                className='w-1/2 py-3 border border-gray-300 rounded-xl cursor-pointer hover:bg-gray-100 transition-all font-bold'
+                            >
+                                Retour
+                            </button>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     )

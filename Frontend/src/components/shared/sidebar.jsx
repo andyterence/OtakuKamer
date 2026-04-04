@@ -156,11 +156,14 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
                             </button>
                         </div>
                         {/* Mes Billets */}
-                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                        <div className={location.pathname === '/billets' 
+                            ? 'active border-l-4 border-[#C2611F] bg-[#C2611F]/70 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                            : 'border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                        }>
                             <img className='h-5 w-5' src={align_text} alt="Logo de mes billets" />
                             <button 
                                 className="cursor-pointer"
-                                onClick={() => navigate(`/billets/`)}
+                                onClick={() => navigate(`/billets`)}
                             >
                                 Mes billets
                             </button>
