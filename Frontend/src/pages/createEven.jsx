@@ -12,7 +12,7 @@ import tags from '../assets/icons/tags.svg'
 import tag from '../assets/icons/tag.svg'
 import clock from '../assets/icons/clock.svg'
 import x from '../assets/icons/x.svg'
-// import notif from '../../assets/icons/bell.svg'
+import categorie from '../assets/icons/chart-column-stacked.svg'
 // import background from '../assets/imgs/background.jpg'
 // import move_left from '../assets/icons/move-left.svg'
 // import star from '../assets/icons/star.svg'
@@ -395,7 +395,7 @@ export default function CreateEven() {
                             {/* TITRE */}
                             <div className='w-full flex justify-between items-center font-[500]'>
                                 <div className='flex items-center gap-2'>
-                                    <img className='h-6 w-6' src={tag} alt="Icone des catégories" />
+                                    <img className='h-6 w-6' src={categorie} alt="Icone des catégories" />
                                     <h1>Catégories de billets</h1>
                                 </div>
                                 <button

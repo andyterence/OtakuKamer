@@ -1,23 +1,17 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
-import axios from 'axios'
-import Sidebar from "../components/shared/sidebar"
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import Sidebar from "../components/shared/sidebar";
+import Toast from '../components/shared/Toast';
 import menu from '../assets/icons/menu.svg'
-import user_icon from "../assets/icons/user-svgrepo-com.svg";
+import user_icon from "../assets/icons/user_black.svg";
 import mail from "../assets/icons/mail.svg";
 import phone from "../assets/icons/phone.svg";
 import lock from "../assets/icons/lock.svg";
 import calendar_clock from "../assets/icons/calendar-clock.svg";
-import bell from "../assets/icons/bell.svg";
+import bell from "../assets/icons/bell-ring.svg";
 import money from "../assets/icons/money.svg";
-// import imageIcon from '../assets/icons/image.svg'
-// import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
-// import map from '../assets/icons/map-check.svg'
-// import note from '../assets/icons/note.svg'
-// import tags from '../assets/icons/tags.svg'
-// import tag from '../assets/icons/tag.svg'
-// import clock from '../assets/icons/clock.svg'
-// import x from '../assets/icons/x.svg'
+import landmark from "../assets/icons/landmark.svg";
 
 export default function Setting() {
     const { id } = useParams()
@@ -32,6 +26,9 @@ export default function Setting() {
     const [ancienMotDePasse, setAncienMotDePasse] = useState('')
     const [nouveauMotDePasse, setNouveauMotDePasse] = useState('')
     const [confirmMotDePasse, setConfirmMotDePasse] = useState('')
+    const [toastMessage, setToastMessage] = useState('')
+    const [toastType, setToastType] = useState('succes')
+    const [nouvellePhoto, setNouvellePhoto] = useState(null)
     
     // USEEFFECT POUR CHARGER LES INFORMATIONS DE L'UTILISATEUR CONNECTER ET LES AFFICHER DANS LE FORMULAIRE DE PARAMETRE
     useEffect(() => {
@@ -58,7 +55,8 @@ export default function Setting() {
     const changerMotDePasse = async (e) => {
         e.preventDefault()
         if (nouveauMotDePasse !== confirmMotDePasse) {
-            // Toast erreur
+            setToastMessage('Les mots de passe ne correspondent pas')
+            setToastType('erreur')
             return
         }
         try {
@@ -70,13 +68,42 @@ export default function Setting() {
                 },
                 { headers: { Authorization: `Bearer ${token}` } }
             )
-            // Toast succès + vider les champs
             setAncienMotDePasse('')
             setNouveauMotDePasse('')
             setConfirmMotDePasse('')
+            setToastMessage('Mot de passe changé avec succès !')
+            setToastType('succes')
         } catch (_err) {
             console.error(_err.response?.data)
-            // Toast erreur
+            setToastMessage('Une erreur est survenue')
+            setToastType('erreur')
+        }
+    }
+
+    // FONCTION POUR CHANGER LA PHOTO DE PROFIL DE L'UTILISATEUR
+    const changerPhoto = async () => {
+        if (!nouvellePhoto) return
+        
+        const formData = new FormData()
+        formData.append('photoProfil', nouvellePhoto)
+        
+        try {
+            const reponse = await axios.patch(
+                `http://localhost:8000/api/utilisateurs/${utilisateur.id}/`,
+                formData,
+                { headers: { 
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
+                }}
+            )
+            setUtilisateur(reponse.data)  // ← met à jour le state avec la nouvelle photo
+            setNouvellePhoto(null)
+            setToastMessage('Photo mise à jour !')
+            setToastType('succes')
+        } catch (_err) {
+            console.error(_err)
+            setToastMessage('Erreur lors de la mise à jour de la photo')
+            setToastType('erreur')
         }
     }
 
@@ -94,9 +121,12 @@ export default function Setting() {
                 },
                 { headers: { Authorization: `Bearer ${token}` } }
             )
-            // Toast succès ici si tu veux
+            setToastMessage('Profil mis à jour avec succès !')
+            setToastType('succes')
         } catch (_err) {
             console.error(_err)
+            setToastMessage('Une erreur est survenue')
+            setToastType('erreur')
         }
 }
 
@@ -141,16 +171,65 @@ export default function Setting() {
                         <div className='w-full flex flex-col gap-4 bg-[#C2611F]/10 rounded-xl p-6'>
                             {/* PRESENTATION DE LA PHOTO DE PROFILE */}
                             <div className='flex justify-start items-center gap-1'>
-                                <div className='bg-[#C2611F] flex justify-center items-center h-20 w-20 rounded-full'>
-                                    <img className='h-10 w-10' src={user_icon} alt="Logo d'utilisateur" />
+                                <div className='bg-[#C2611F] flex justify-center items-center h-20 w-20 rounded-full overflow-hidden'>
+                                    {utilisateur?.photoProfil ? (
+                                        // Si photo existe — affiche la vraie photo
+                                        <img 
+                                            src={utilisateur.photoProfil} 
+                                            className='h-full w-full object-cover'
+                                            alt="Photo de profil"
+                                        />
+                                    ) : nouvellePhoto ? (
+                                        // Si nouvelle photo sélectionnée — aperçu local
+                                        <img 
+                                            src={URL.createObjectURL(nouvellePhoto)} 
+                                            className='h-full w-full object-cover'
+                                            alt="Aperçu"
+                                        />
+                                    ) : (
+                                        // Sinon — icône par défaut
+                                        <img className='h-10 w-10' src={user_icon} alt="Utilisateur" />
+                                    )}
                                 </div>
-                                <div className='flex flex-col items-start justify-center'>
-                                    <div className='font-bold'>{utilisateur?.first_name}</div>
-                                    <button
-                                        className='w-35 h-8 bg-[#C2611F]/90 text-[14px] font-[600] rounded-xl cursor-pointer hover:bg-[#C2611F] transition-all duration-200'
-                                    >
-                                        Changer la photo
-                                    </button>
+                                {/* INFOS DE L'UTILISATEUR */}
+                                <div className='flex flex-col justify-center items-start'>
+                                    {/* NOM */}
+                                    <div className='flex flex-col items-start justify-center'>
+                                        <div className='font-bold pl-2'>{utilisateur?.first_name}</div>
+                                    </div>
+                                    <div className='flex justify-center items-center gap-2'>
+                                        {/* Bouton pour changer la photo */}
+                                        <label htmlFor="photo-profil" className='w-35 h-8 bg-[#C2611F]/90 text-[14px] font-[600] rounded-xl cursor-pointer hover:bg-[#C2611F] transition-all duration-200 flex justify-center items-center'>
+                                            Changer la photo
+                                        </label>
+                                        {/* Input caché déclenché par le bouton */}
+                                        <input
+                                            type="file"
+                                            id="photo-profil"
+                                            accept="image/*"
+                                            className='hidden'
+                                            onChange={(e) => setNouvellePhoto(e.target.files[0] || null)}
+                                        />
+                                        {/* Bouton de confirmation */}
+                                        {nouvellePhoto && (
+                                            <button
+                                                type="button"
+                                                onClick={changerPhoto}
+                                                className='w-35 h-8 bg-green-600 text-white text-[14px] font-[600] rounded-xl cursor-pointer hover:bg-green-700 transition-all'
+                                            >
+                                                Confirmer
+                                            </button>
+                                        )}
+                                        {nouvellePhoto && (
+                                            <button
+                                                type="button"
+                                                onClick={changerPhoto}
+                                                className='w-35 h-8 bg-red-600 text-white text-[14px] font-[600] rounded-xl cursor-pointer hover:bg-green-700 transition-all'
+                                            >
+                                                Annuler
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
                             <div className='flex flex-col gap-10'>
@@ -348,7 +427,7 @@ export default function Setting() {
                         <div className='w-full flex flex-col justify-center items-center gap-4 bg-[#C2611F]/10 rounded-xl px-10 py-6'>
                             {/* MOT DE PAIEMENT */}
                             <div className='w-full flex justify-start items-center gap-2'>
-                                <img className='h-6 w-6' src={bell} alt="Logo de Notifications" />
+                                <img className='h-6 w-6' src={landmark} alt="Logo de Notifications" />
                                 <h2 className='font-bold text-xl'>Option de paiement</h2>
                             </div>
                             {/* OPTIONS DE PAIEMENT */}
@@ -379,6 +458,9 @@ export default function Setting() {
                 </div>
             </section>
         </main>
+        {toastMessage && (
+            <Toast message={toastMessage} setMessage={setToastMessage} type={toastType} />
+        )}
         </div>
     )
 }

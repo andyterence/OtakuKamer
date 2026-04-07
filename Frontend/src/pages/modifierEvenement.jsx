@@ -11,6 +11,7 @@ import tags from '../assets/icons/tags.svg'
 import tag from '../assets/icons/tag.svg'
 import clock from '../assets/icons/clock.svg'
 import x from '../assets/icons/x.svg'
+import categorie from '../assets/icons/chart-column-stacked.svg'
 
 export default function ModifierEvenement() {
     const { id } = useParams()
@@ -422,7 +423,7 @@ export default function ModifierEvenement() {
                             {/* TITRE */}
                             <div className='w-full flex justify-between items-center font-[500]'>
                                 <div className='flex items-center gap-2'>
-                                    <img className='h-6 w-6' src={tag} alt="Icone des catégories" />
+                                    <img className='h-6 w-6' src={categorie} alt="Icone des catégories" />
                                     <h1>Catégories de billets</h1>
                                 </div>
                                 <button
