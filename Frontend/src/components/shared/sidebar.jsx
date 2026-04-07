@@ -10,7 +10,7 @@ import create_even from "../../assets/icons/plus-circle-add-new-create-cross-svg
 import calendrier from "../../assets/icons/calendar-days-svgrepo-com.svg";
 import setting from "../../assets/icons/setting-svgrepo-com.svg";
 import exit from "../../assets/icons/exit.svg";
-import menu from "../../assets/icons/menu.svg";
+// import menu from "../../assets/icons/menu.svg";
 
 
 function Sidebar({ menuOuvert, setMenuOuvert }) {
@@ -19,31 +19,48 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
     const navigate = useNavigate()
     const location = useLocation()
 
-    useEffect(() => {
-        const seConnecter = async() => {
-            try {
-                const token = localStorage.getItem('access')
-                const reponse = await axios.get('http://localhost:8000/api/utilisateurs/me/', {
+    // Fonction pour vérifier si l'utilisateur est connecté en récupérant les données de l'utilisateur à partir de l'API. Si la requête échoue avec une erreur 401 (non autorisé), cela signifie que le token d'accès n'est plus valide, donc les tokens sont supprimés du localStorage et l'utilisateur est redirigé vers la page de connexion. Cette fonction est appelée à la fois lors du chargement initial du composant et chaque fois qu'un événement 'profilMisAJour' est déclenché, ce qui permet de maintenir les informations de l'utilisateur à jour dans la barre latérale.
+    const seConnecter = async() => {
+        try {
+            const token = localStorage.getItem('access')
+            const reponse = await axios.get('http://localhost:8000/api/utilisateurs/me/', {
                 headers: { Authorization: `Bearer ${token}` }
             })
             setUtilisateur(reponse.data)
-            } catch (_err) {
-                if (_err.response?.status === 401) {
-                    localStorage.removeItem('access')
-                    localStorage.removeItem('refresh')
-                    navigate('/login')
-                }
-                console.error(_err)
+        } catch (_err) {
+            if (_err.response?.status === 401) {
+                localStorage.removeItem('access')
+                localStorage.removeItem('refresh')
+                navigate('/login')
             }
-                    }
-                    seConnecter()
-            },[])
+            console.error(_err)
+        }
+    }
+
+    // Premier useEffect — chargement initial
+    useEffect(() => {
+        // Appel de la fonction seConnecter pour vérifier si l'utilisateur est connecté et récupérer ses données lors du chargement initial du composant
+        seConnecter()
+    }, [])
+
+    // Deuxième useEffect — écoute les mises à jour
+    useEffect(() => {
+        window.addEventListener('profilMisAJour', seConnecter)
+        return () => window.removeEventListener('profilMisAJour', seConnecter)
+    }, [])
 
     function seDeconnecter(){
         localStorage.removeItem('access')
         localStorage.removeItem('refresh')
         navigate('/login')
     }
+
+    // UseEffect pour écouter les événements de mise à jour du profil et recharger les données de l'utilisateur en conséquence. Cela permet de s'assurer que les informations affichées dans la barre latérale sont toujours à jour, même après une modification du profil (comme le changement de photo). Lorsqu'un événement 'profilMisAJour' est déclenché, la fonction seConnecter est appelée pour récupérer les dernières données de l'utilisateur et mettre à jour le state utilisateur avec ces nouvelles informations.
+    useEffect(() => {
+        const recharger = () => seConnecter()
+        window.addEventListener('profilMisAJour', recharger)
+        return () => window.removeEventListener('profilMisAJour', recharger)
+    }, [])
 
     return(
         <div 
@@ -87,7 +104,7 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
                     <div className="w-full flex items-center justify-start gap-2 bg-[#C2611F]/20 rounded-md p-2">
                         {/* ICON DU USER */}
                         <div className="bg-[#C2611F] w-10 h-10 rounded-full flex justify-center items-center">
-                            <img className='h-6 w-6' src={user_icon} alt="Logo d'utilisateur" />
+                                <img className='h-7 w-7' src={user_icon} alt="Utilisateur" />
                         </div>
                         {/* NOM ET TYPE DU USER */}
                         <div className="flex flex-col">

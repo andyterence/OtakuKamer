@@ -12,6 +12,7 @@ import Calendrier from './pages/calendrier'
 import About from './pages/about'
 import ModifierEvenement from './pages/modifierEvenement'
 import Setting from './pages/setting';
+import ConditionUser from './pages/conditionUser';
 
 function App() {
   const location = useLocation();
@@ -34,6 +35,7 @@ function App() {
       <Route path="/calendrier/" element={<PrivateRoute><Calendrier /></PrivateRoute>} />
       <Route path="/about/" element={<PrivateRoute><About /></PrivateRoute>} />
       <Route path="/setting/" element={<PrivateRoute><Setting /></PrivateRoute>} />
+      <Route path="/conditionUser/" element={<PrivateRoute><ConditionUser /></PrivateRoute>} />
     </Routes>
   )
 }

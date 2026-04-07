@@ -1,26 +1,14 @@
-import { useState, useEffect } from "react";
-// import logo2 from '../../assets/logos/logo-orange.png'
-import axios from 'axios'
-import { useNavigate, useLocation } from 'react-router-dom'
-import logo from '../../assets/logos/logo-orange.png'
+// import { useNavigate } from 'react-router-dom'
 import facebook from '../../assets/logos/facebook.svg'
 import twitter from '../../assets/logos/twitter.svg'
 import instagram from '../../assets/logos/instagram.svg'
 import youtube from '../../assets/logos/youtube.svg'
 import send from '../../assets/icons/send.svg'
-import accueil from "../../assets/icons/home-1-svgrepo-com.svg";
-import user_icon from "../../assets/icons/user-svgrepo-com.svg";
-import align_text from "../../assets/icons/align-text-left-svgrepo-com.svg";
-import create_even from "../../assets/icons/plus-circle-add-new-create-cross-svgrepo-com.svg";
-import calendrier from "../../assets/icons/calendar-days-svgrepo-com.svg";
-import setting from "../../assets/icons/setting-svgrepo-com.svg";
-import exit from "../../assets/icons/exit.svg";
-import menu from "../../assets/icons/menu.svg";
 
 
 function Footer() {
 
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
 
     return(
         <div className="w-full flex flex-col justify-center items-center gap-10 md:pt-10 my-10">
@@ -64,10 +52,10 @@ function Footer() {
                     </div>
                     {/* Lien */}
                     <div className="text-[10px] flex flex-col justify-center items-start gap-4">
-                        <a className="hover:text-[#C2611F] transition-all duration-300" href="">Accueil</a>
-                        <a className="hover:text-[#C2611F] transition-all duration-300" href="">Événements</a>
-                        <a className="hover:text-[#C2611F] transition-all duration-300" href="">Actualités</a>
-                        <a className="hover:text-[#C2611F] transition-all duration-300" href="">À propos</a>
+                        <a onClick={() => navigate(`/accueil`)} className="hover:text-[#C2611F] transition-all duration-300" href="">Accueil</a>
+                        <a onClick={() => navigate(`/accueil`)} className="hover:text-[#C2611F] transition-all duration-300" href="">Événements</a>
+                        <a onClick={() => navigate(`/ListeNews`)} className="hover:text-[#C2611F] transition-all duration-300" href="">Actualités</a>
+                        <a onClick={() => navigate(`/about`)} className="hover:text-[#C2611F] transition-all duration-300" href="">À propos</a>
                     </div>
                 </div>
                 {/* Support */}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from "../components/shared/sidebar";
 import Toast from '../components/shared/Toast';
@@ -14,11 +14,10 @@ import money from "../assets/icons/money.svg";
 import landmark from "../assets/icons/landmark.svg";
 
 export default function Setting() {
-    const { id } = useParams()
     const navigate = useNavigate()
     const [utilisateur, setUtilisateur] = useState(null)
     // État pour indiquer si la connexion est en cours d'attente, utilisé pour afficher une image différente pendant le processus de connexion
-    const [enAttente, setEnAttente] = useState(false)
+    // const [enAttente, setEnAttente] = useState(false)
     // Etat pour refuser l'autorisation du sidebar aux personnes qui ne sont pas connecter
     const token = localStorage.getItem('access')
     // Menu ouvert ou pas
@@ -97,6 +96,7 @@ export default function Setting() {
                 }}
             )
             setUtilisateur(reponse.data)  // ← met à jour le state avec la nouvelle photo
+            window.dispatchEvent(new Event('profilMisAJour'))
             setNouvellePhoto(null)
             setToastMessage('Photo mise à jour !')
             setToastType('succes')
@@ -171,7 +171,7 @@ export default function Setting() {
                         <div className='w-full flex flex-col gap-4 bg-[#C2611F]/10 rounded-xl p-6'>
                             {/* PRESENTATION DE LA PHOTO DE PROFILE */}
                             <div className='flex justify-start items-center gap-1'>
-                                <div className='bg-[#C2611F] flex justify-center items-center h-20 w-20 rounded-full overflow-hidden'>
+                                <div className='bg-[#C2611F]/50 flex justify-center items-center h-20 w-20 rounded-full overflow-hidden'>
                                     {utilisateur?.photoProfil ? (
                                         // Si photo existe — affiche la vraie photo
                                         <img 
@@ -199,7 +199,7 @@ export default function Setting() {
                                     </div>
                                     <div className='flex justify-center items-center gap-2'>
                                         {/* Bouton pour changer la photo */}
-                                        <label htmlFor="photo-profil" className='w-35 h-8 bg-[#C2611F]/90 text-[14px] font-[600] rounded-xl cursor-pointer hover:bg-[#C2611F] transition-all duration-200 flex justify-center items-center'>
+                                        <label htmlFor="photo-profil" className='w-35 h-8 bg-[#C2611F]/80 text-[14px] font-[600] rounded-xl cursor-pointer hover:bg-[#C2611F] transition-all duration-200 flex justify-center items-center'>
                                             Changer la photo
                                         </label>
                                         {/* Input caché déclenché par le bouton */}
@@ -223,7 +223,7 @@ export default function Setting() {
                                         {nouvellePhoto && (
                                             <button
                                                 type="button"
-                                                onClick={changerPhoto}
+                                                onClick={() => setNouvellePhoto(null)}
                                                 className='w-35 h-8 bg-red-600 text-white text-[14px] font-[600] rounded-xl cursor-pointer hover:bg-green-700 transition-all'
                                             >
                                                 Annuler
@@ -246,7 +246,7 @@ export default function Setting() {
                                         <div>
                                             <input 
                                                 type="text"
-                                                value={utilisateur?.first_name}
+                                                value={utilisateur?.first_name ?? ''}
                                                 placeholder='Votre nom complet'
                                                 onChange={(e) => setUtilisateur({...utilisateur, first_name: e.target.value})}
                                                 className='bg-white w-full h-8 rounded-md px-4 focus:outline-none focus:ring-1 focus:ring-[#C2611F]/50'
@@ -264,7 +264,7 @@ export default function Setting() {
                                         <div>
                                             <input 
                                                 type="text"
-                                                value={utilisateur?.email}
+                                               value={utilisateur?.email ?? ''}
                                                 placeholder='Exemple@email.com'
                                                 onChange={(e) => setUtilisateur({...utilisateur, email: e.target.value})}
                                                 className='bg-white w-full h-8 rounded-md px-4 focus:outline-none focus:ring-1 focus:ring-[#C2611F]/50'
@@ -285,7 +285,7 @@ export default function Setting() {
                                         <div>
                                             <input 
                                                 type="number"
-                                                value={utilisateur?.phone}
+                                                value={utilisateur?.phone ?? ''}
                                                 placeholder='Votre numéro de téléphone'
                                                 onChange={(e) => setUtilisateur({...utilisateur, phone: e.target.value})}
                                                 className='bg-white w-full h-8 rounded-md px-4 focus:outline-none focus:ring-1 focus:ring-[#C2611F]/50'
