@@ -8,7 +8,7 @@ import menu from '../assets/icons/menu.svg'
 import left from '../assets/icons/left.svg'
 import logo_2 from '../assets/logos/logo-orange.png'
 
-function conditionUser() {
+function ConditionUser() {
 
     // Etat pour refuser l'autorisation du sidebar aux personnes qui ne sont pas connecter
     const token = localStorage.getItem('access')
@@ -47,7 +47,7 @@ function conditionUser() {
                 {/* TITRE ET SOUS TITRE DE BIENVENUE */}
                 <div className='flex justify-between items-center md:mt-30'>
                     <div className='w-full flex flex-col justify-center items-start font-bold md:p-10'>
-                        <h1 className='text-4xl'>À Propos d'OtakuKamer</h1>
+                        <h1 className='text-4xl'>Conditions d'Utilisation</h1>
                         <p className='text-md text-[#C2611F]'>La première plateforme dédiée aux événements Otaku au Cameroun</p>
                     </div>
                     <div className='pr-10 flex justify-center items-center'>
@@ -60,7 +60,7 @@ function conditionUser() {
                 {/* 1. Acceptation des Conditions */}
                 <div className="h-full relative flex justify-center items-start md:p-10">
                     {/* CONTENEUR DU TEXT */}
-                    <div className="w-1/2 h-full flex flex-col justify-center items-center gap-10">
+                    <div className="max-w-3xl mx-auto flex flex-col gap-10 px-6 py-10">
                         {/* CONDITION 1 */}
                         <div className="flex flex-col justify-center items-start gap-4 md:px-20">
                             <h1 className="font-bold text-xl">1. Acceptation des Conditions</h1>
@@ -75,7 +75,7 @@ function conditionUser() {
                         <div className="w-full flex flex-col justify-center items-start gap-4 md:px-20">
                             <h1 className="font-bold text-xl">3. Inscription et Compte</h1>
                             <p className="text-justify text-[12px] w-[80%]">Pour utiliser certaines fonctionnalités, vous devez créer un compte :</p>
-                            <ol className="text-justify text-[12px] w-[80%]">
+                            <ol className="list-decimal list-inside flex flex-col gap-2 text-[13px] text-gray-700 w-full">
                                 <li>Vous devez fournir des informations exactes et à jour</li>
                                 <li>Vous êtes responsable de la confidentialité de votre mot de passe</li>
                                 <li>Vous devez avoir au moins 18 ans pour créer un compte</li>
@@ -90,7 +90,7 @@ function conditionUser() {
                         <div className="w-full flex flex-col justify-center items-start gap-4 md:px-20">
                             <h1 className="font-bold text-xl">4. Achat de Billets</h1>
                             <p className="text-justify text-[12px] w-[80%]">Concernant l'achat de billets :</p>
-                            <ol className="text-justify text-[12px] w-[80%]">
+                            <ol className="list-decimal list-inside flex flex-col gap-2 text-[13px] text-gray-700 w-full">
                                 <li>Tous les achats sont définitifs sauf indication contraire de l'organisateur</li>
                                 <li>Les prix sont indiqués en FCFA et incluent toutes les taxes applicables</li>
                                 <li>Les billets ne peuvent être revendus qu'avec l'autorisation de l'organisateur</li>
@@ -105,7 +105,7 @@ function conditionUser() {
                         <div className="w-full flex flex-col justify-center items-start gap-4 md:px-20">
                             <h1 className="font-bold text-xl">5. Règles pour les Organisateurs</h1>
                             <p className="text-justify text-[12px] w-[80%]">Les organisateurs d'événements doivent :</p>
-                            <ol className="text-justify text-[12px] w-[80%]">
+                            <ol className="list-decimal list-inside flex flex-col gap-2 text-[13px] text-gray-700 w-full">
                                 <li>Fournir des informations exactes sur leurs événements</li>
                                 <li>Respecter toutes les lois et réglementations applicables</li>
                                 <li>Honorer tous les billets vendus via la plateforme</li>
@@ -120,7 +120,7 @@ function conditionUser() {
                         <div className="w-full flex flex-col justify-center items-start gap-4 md:px-20">
                             <h1 className="font-bold text-xl">6. Conduite Interdite</h1>
                             <p className="text-justify text-[12px] w-[80%]">Il est strictement interdit de :</p>
-                            <ol className="text-justify text-[12px] w-[80%]">
+                            <ol className="list-decimal list-inside flex flex-col gap-2 text-[13px] text-gray-700 w-full">
                                 <li>Utiliser la plateforme à des fins illégales</li>
                                 <li>Publier du contenu offensant, discriminatoire ou inapproprié</li>
                                 <li>Usurper l'identité d'une autre personne ou entité</li>
@@ -153,23 +153,28 @@ function conditionUser() {
                         </div>
                         {/* CONDITION 12*/}
                         <div className="flex flex-col justify-center items-start gap-4 md:px-20">
-                            <h1 className="font-bold text-xl">10. Résiliation</h1>
+                            <h1 className="font-bold text-xl">11. Résiliation</h1>
                             <p className="text-justify text-[12px] w-[80%]">Nous pouvons suspendre ou résilier votre compte à tout moment si vous violez ces conditions d'utilisation. Vous pouvez également fermer votre compte à tout moment depuis les paramètres.</p>
                         </div>
                         {/* CONDITION 13*/}
                         <div className="flex flex-col justify-center items-start gap-4 md:px-20">
-                            <h1 className="font-bold text-xl">11. Loi Applicable</h1>
+                            <h1 className="font-bold text-xl">12. Loi Applicable</h1>
                             <p className="text-justify text-[12px] w-[80%]">Ces conditions sont régies par la loi camerounaise. Tout litige relatif à l'utilisation de la plateforme sera soumis à la compétence des tribunaux camerounais.</p>
                         </div>
                         {/* CONDITION 14*/}
                         <div className="flex flex-col justify-center items-start gap-4 md:px-20">
-                            <h1 className="font-bold text-xl">12. Contact</h1>
-                            <p className="text-justify text-[12px] w-[80%]">Pour toute question concernant ces conditions d'utilisation : contact@otakukamer.com</p>
+                            <h1 className="font-bold text-xl">13. Contact</h1>
+                            <p className="text-justify text-[12px] w-[80%]">Pour toute question concernant ces conditions d'utilisation : <span className="font-bold text-[#C2611F]">contact@otakukamer.com</span></p>
                         </div>
                     </div>
                     {/* ZONE IMAGE */}
-                    <div className="w-1/2 h-full sticky top-60 flex justify-center items-start">
-                            <img className='h-100 w-100 anime-flotter' src={logo_2} alt="Logo du calendrier" />
+                    {/* Bannière hero au lieu de l'image sticky */}
+                    <div className="w-full sticky top-70 h-40 bg-[#C2611F]/10 flex justify-center items-center gap-4">
+                        <img className='h-30 w-30' src={logo_2} />
+                        <div>
+                            <h1 className="text-3xl font-bold">Conditions d'utilisation</h1>
+                            <p className="text-[#C2611F]">Dernière mise à jour : <span className="font-bold textt-sm">08 Avril 2026</span></p>
+                        </div>
                     </div>
                 </div>
                 <Footer />
@@ -178,4 +183,4 @@ function conditionUser() {
     )
 }
 
-export default conditionUser
+export default ConditionUser

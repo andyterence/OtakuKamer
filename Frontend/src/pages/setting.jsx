@@ -375,9 +375,18 @@ export default function Setting() {
                         {/* NOTIFICATION */}
                         <div className='w-full h-full flex flex-col justify-center items-center gap-4 w-[70%] h-[70vh] bg-[#C2611F]/10 rounded-xl p-10'>
                             {/* MOT DE Notifications */}
+                            {/* <div className='w-full flex justify-start items-center gap-2'>
+                                <img className='h-6 w-6' src={bell} alt="Logo de Notifications" />
+                                <h2 className='font-bold text-xl'>Notifications</h2>
+                            </div> */}
+                            {/* MOT DE Notifications */}
                             <div className='w-full flex justify-start items-center gap-2'>
                                 <img className='h-6 w-6' src={bell} alt="Logo de Notifications" />
                                 <h2 className='font-bold text-xl'>Notifications</h2>
+                                {/* Badge bientôt disponible */}
+                                <span className='text-[10px] bg-[#C2611F]/20 text-[#C2611F] px-2 py-1 rounded-full font-bold'>
+                                    Bientôt disponible
+                                </span>
                             </div>
                             {/* OPTIONS DE NOTIFICATION */}
                             <div className='w-full h-full flex flex-col gap-5 justify-center items-center'>
@@ -385,7 +394,8 @@ export default function Setting() {
                                 <div className='w-full h-10 flex justify-between items-center bg-[#C2611F]/10 rounded-xl px-10'>
                                     <p>Nouveaux événements</p>
                                     <input 
-                                        type="checkbox" 
+                                        type="checkbox"
+                                        disabled
                                         name="" 
                                         id="" 
                                         className='w-5 h-full'
@@ -395,7 +405,8 @@ export default function Setting() {
                                 <div className='w-full h-10 flex justify-between items-center bg-[#C2611F]/10 rounded-xl px-10'>
                                     <p>Rappels d'événements</p>
                                     <input 
-                                        type="checkbox" 
+                                        type="checkbox"
+                                        disabled
                                         name="" 
                                         id="" 
                                         className='w-5 h-full'
@@ -405,7 +416,8 @@ export default function Setting() {
                                 <div className='w-full h-10 flex justify-between items-center bg-[#C2611F]/10 rounded-xl px-10'>
                                     <p>Actualités</p>
                                     <input 
-                                        type="checkbox" 
+                                        type="checkbox"
+                                        disabled 
                                         name="" 
                                         id="" 
                                         className='w-5 h-full'
@@ -415,7 +427,8 @@ export default function Setting() {
                                 <div className='w-full h-10 flex justify-between items-center bg-[#C2611F]/10 rounded-xl px-10'>
                                     <p>Offre spéciales</p>
                                     <input 
-                                        type="checkbox" 
+                                        type="checkbox"
+                                        disabled 
                                         name="" 
                                         id="" 
                                         className='w-5 h-full'
@@ -429,6 +442,9 @@ export default function Setting() {
                             <div className='w-full flex justify-start items-center gap-2'>
                                 <img className='h-6 w-6' src={landmark} alt="Logo de Notifications" />
                                 <h2 className='font-bold text-xl'>Option de paiement</h2>
+                                <span className='text-[10px] bg-[#C2611F]/20 text-[#C2611F] px-2 py-1 rounded-full font-bold'>
+                                    Bientôt disponible
+                                </span>
                             </div>
                             {/* OPTIONS DE PAIEMENT */}
                             <div className='w-full h-full flex flex-col gap-5 justify-center items-start'>

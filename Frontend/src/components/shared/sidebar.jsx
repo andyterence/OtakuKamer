@@ -43,7 +43,7 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
         seConnecter()
     }, [])
 
-    // Deuxième useEffect — écoute les mises à jour
+    // UseEffect pour écouter les événements de mise à jour du profil et recharger les données de l'utilisateur en conséquence. Cela permet de s'assurer que les informations affichées dans la barre latérale sont toujours à jour, même après une modification du profil (comme le changement de photo). Lorsqu'un événement 'profilMisAJour' est déclenché, la fonction seConnecter est appelée pour récupérer les dernières données de l'utilisateur et mettre à jour le state utilisateur avec ces nouvelles informations.
     useEffect(() => {
         window.addEventListener('profilMisAJour', seConnecter)
         return () => window.removeEventListener('profilMisAJour', seConnecter)
@@ -54,13 +54,6 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
         localStorage.removeItem('refresh')
         navigate('/login')
     }
-
-    // UseEffect pour écouter les événements de mise à jour du profil et recharger les données de l'utilisateur en conséquence. Cela permet de s'assurer que les informations affichées dans la barre latérale sont toujours à jour, même après une modification du profil (comme le changement de photo). Lorsqu'un événement 'profilMisAJour' est déclenché, la fonction seConnecter est appelée pour récupérer les dernières données de l'utilisateur et mettre à jour le state utilisateur avec ces nouvelles informations.
-    useEffect(() => {
-        const recharger = () => seConnecter()
-        window.addEventListener('profilMisAJour', recharger)
-        return () => window.removeEventListener('profilMisAJour', recharger)
-    }, [])
 
     return(
         <div 
@@ -103,8 +96,16 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
                     {/* PROFIL DU USER */}
                     <div className="w-full flex items-center justify-start gap-2 bg-[#C2611F]/20 rounded-md p-2">
                         {/* ICON DU USER */}
-                        <div className="bg-[#C2611F] w-10 h-10 rounded-full flex justify-center items-center">
+                        <div className="bg-[#C2611F] w-10 h-10 rounded-full flex justify-center items-center overflow-hidden">
+                            {utilisateur?.photoProfil ? (
+                                <img 
+                                    src={utilisateur.photoProfil} 
+                                    className='h-full w-full object-cover rounded-full'
+                                    alt="Photo de profil"
+                                />
+                            ) : (
                                 <img className='h-7 w-7' src={user_icon} alt="Utilisateur" />
+                            )}
                         </div>
                         {/* NOM ET TYPE DU USER */}
                         <div className="flex flex-col">
@@ -215,31 +216,40 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
                     {/* DEUXIEME GRANDE SECTION */}
                     <div className="flex-1 flex flex-col gap-4 font-bold">
                         {/* Accueil */}
-                        <div className="active border-l-4 border-[#C2611F] bg-[#C2611F]/50 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                        <div className={location.pathname === '/accueil' 
+                            ? 'active border-l-4 border-[#C2611F] bg-[#C2611F]/70 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                            : 'border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                        }>
                             <img className='h-5 w-5' src={accueil} alt="Logo d'accueil" />
                             <button 
                                 className="cursor-pointer"
-                                onClick={() => navigate(`/accueil/`)}
+                                onClick={() => navigate(`/accueil`)}
                             >
                                 Accueil
-                            </button>
+                            </button> 
                         </div>
                         {/* Mes Billets */}
-                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
+                        <div className={location.pathname === '/billets' 
+                            ? 'active border-l-4 border-[#C2611F] bg-[#C2611F]/70 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                            : 'border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                        }>
                             <img className='h-5 w-5' src={align_text} alt="Logo de mes billets" />
                             <button 
                                 className="cursor-pointer"
-                                onClick={() => navigate(`/billets/`)}
+                                onClick={() => navigate(`/billets`)}
                             >
                                 Mes billets
                             </button>
                         </div>
                         {/* Paramètres */}
-                        <div className="border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80">
-                            <img className='h-5 w-5' src={setting} alt="Logo des parametres" />
+                        <div className={location.pathname === '/setting' 
+                            ? 'active border-l-4 border-[#C2611F] bg-[#C2611F]/70 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                            : 'border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                        }>
+                            <img className='h-5 w-5' src={setting} alt="Logo d'accueil" />
                             <button 
                                 className="cursor-pointer"
-                                onClick={() => navigate(`/setting/`)}
+                                onClick={() => navigate(`/setting`)}
                             >
                                 Paramètres
                             </button>

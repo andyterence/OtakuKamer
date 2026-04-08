@@ -1,4 +1,4 @@
-// import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import facebook from '../../assets/logos/facebook.svg'
 import twitter from '../../assets/logos/twitter.svg'
 import instagram from '../../assets/logos/instagram.svg'
@@ -8,7 +8,7 @@ import send from '../../assets/icons/send.svg'
 
 function Footer() {
 
-    // const navigate = useNavigate()
+    const navigate = useNavigate()
 
     return(
         <div className="w-full flex flex-col justify-center items-center gap-10 md:pt-10 my-10">
@@ -67,8 +67,8 @@ function Footer() {
                     {/* Lien */}
                     <div className="text-[10px] flex flex-col justify-center items-start gap-4">
                         <a className="hover:text-[#C2611F] transition-all duration-300" href="">Contact</a>
-                        <a className="hover:text-[#C2611F] transition-all duration-300" href="">Confidentialité</a>
-                        <a className="hover:text-[#C2611F] transition-all duration-300" href="">Conditions</a>
+                        <a onClick={() => navigate(`/privatyPolicy`)} className="hover:text-[#C2611F] transition-all duration-300" href="">Confidentialité</a>
+                        <a onClick={() => navigate(`/conditionUser`)} className="hover:text-[#C2611F] transition-all duration-300" href="">Conditions</a>
                         <a className="hover:text-[#C2611F] transition-all duration-300" href="">FAQ</a>
                     </div>
                 </div>

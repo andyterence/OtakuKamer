@@ -13,6 +13,7 @@ import About from './pages/about'
 import ModifierEvenement from './pages/modifierEvenement'
 import Setting from './pages/setting';
 import ConditionUser from './pages/conditionUser';
+import PrivatyPolicy from './pages/privatyPolicy';
 
 function App() {
   const location = useLocation();
@@ -36,6 +37,7 @@ function App() {
       <Route path="/about/" element={<PrivateRoute><About /></PrivateRoute>} />
       <Route path="/setting/" element={<PrivateRoute><Setting /></PrivateRoute>} />
       <Route path="/conditionUser/" element={<PrivateRoute><ConditionUser /></PrivateRoute>} />
+      <Route path="/privatyPolicy/" element={<PrivateRoute><PrivatyPolicy /></PrivateRoute>} />
     </Routes>
   )
 }
