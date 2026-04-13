@@ -1,6 +1,6 @@
 import { useState } from 'react'
-// Ajoute cet import
 import { useNavigate } from 'react-router-dom'
+import API_URL from '../utils/api'
 import Sidebar from "../components/shared/sidebar";
 import Toast from '../components/shared/Toast'
 import axios from 'axios'
@@ -13,11 +13,6 @@ import tag from '../assets/icons/tag.svg'
 import clock from '../assets/icons/clock.svg'
 import x from '../assets/icons/x.svg'
 import categorie from '../assets/icons/chart-column-stacked.svg'
-// import background from '../assets/imgs/background.jpg'
-// import move_left from '../assets/icons/move-left.svg'
-// import star from '../assets/icons/star.svg'
-// import users from '../assets/icons/users.svg'
-// import money from '../assets/icons/money.svg'
 
 export default function CreateEven() {
 
@@ -113,9 +108,8 @@ export default function CreateEven() {
         try {
             setEnAttente(true);
             const token = localStorage.getItem('access')
-            // console.log("formData:", formData);
             // ETAPE 1 — Créer l'événement
-            const response = await axios.post('http://localhost:8000/api/evenements/', formData, {
+            const response = await axios.post(`${API_URL}/api/evenements/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
@@ -127,7 +121,7 @@ export default function CreateEven() {
             // ETAPE 2 — Créer chaque catégorie liée à cet événement
             for (const categorie of categories) {
                 if (categorie.nom && categorie.prix && categorie.nombreteTotale) {
-                    await axios.post('http://localhost:8000/api/categorie/', {
+                    await axios.post(`${API_URL}/api/categorie/`, {
                         evenement_id: parseInt(evenementId),
                         nom: categorie.nom,
                         prix: parseFloat(categorie.prix),
@@ -138,8 +132,6 @@ export default function CreateEven() {
                     })
                 }
             }
-
-            console.log("Succès !", response.data);
             // Succès
             setToastMessage('Événement créé avec succès !')
             setToastType('succes')
@@ -161,7 +153,7 @@ export default function CreateEven() {
                 <Sidebar />
             </aside>
             {/* SECTION PRINCIPALE */}
-            <section className="w-6/7 h- bg-gray-200 flex flex-col justify-center items-center gap-10">
+            <section className="w-6/7 flex flex-col justify-center items-center gap-10">
                 {/* TITRE ET SOUS TITRE */}
                 <div className='w-full flex flex-col justify-center items-start font-bold md:p-10 md:pb-0'>
                     <h1 className='text-4xl'>Créer un Événement</h1>

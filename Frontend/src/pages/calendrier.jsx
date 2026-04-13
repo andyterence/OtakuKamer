@@ -1,18 +1,11 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import API_URL from '../utils/api'
+import formaterStatut from '../utils/formaterStatut'
 import Sidebar from "../components/shared/sidebar";
-import Footer from "../components/shared/Footer";
 import axios from 'axios'
-// import info from '../assets/icons/info.svg'
 import logo from '../assets/logos/OtakuKamer_logo.png'
 import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
-// import ticket from '../assets/icons/ticket-check.svg'
-// import download from '../assets/icons/download.svg'
-// import qrcode from '../assets/icons/scan-qr-code.svg'
-// import background from '../assets/imgs/background.jpg'
-// import map from '../assets/icons/map-check.svg'
-
-// import notif from '../../assets/icons/bell.svg'
 
 export default function Calendrier() {
 
@@ -35,7 +28,7 @@ export default function Calendrier() {
             setEnAttente(true)
             try {
                 const token = localStorage.getItem('access')
-                const reponse = await axios.get('http://localhost:8000/api/evenements/', {
+                const reponse = await axios.get(`${API_URL}/api/evenements/`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 setEvenements(reponse.data)
@@ -58,7 +51,7 @@ export default function Calendrier() {
             <aside className="w-1/7 sticky top-0 h-screen">
                 <Sidebar />
             </aside>
-            <section className="w-6/7 bg-gray-200 flex flex-col items-center">
+            <section className="w-6/7 flex flex-col items-center">
             {/* TITRE ET SOUS TITRE DE BIENVENUE */}
                 <div className='w-full flex flex-col justify-center items-start font-bold md:p-10'>
                     <h1 className='text-4xl'>Calendrier</h1>
@@ -84,7 +77,7 @@ export default function Calendrier() {
                             <div key={evenement.id} className='bg-[#C2611F]/20 flex justify-between items-center rounded-md p-4'>
                                 <p className='h-12 w-16 rounded-md shadow-[#C2611F]/20 shadow-md flex justify-center items-center'>{new Date(evenement.dateLancement).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}</p>
                                 <h1 className='font-bold'>{evenement.titre}</h1>
-                                <p  className='h-8 w-40 rounded-md shadow-[#C2611F]/20 shadow-md flex justify-center items-center'>{evenement.statut}</p>
+                                <p  className='h-8 w-40 rounded-md shadow-[#C2611F]/20 shadow-md flex justify-center items-center'>{formaterStatut(evenement?.statut)}</p>
                             </div>
                         ))}
                     </div>

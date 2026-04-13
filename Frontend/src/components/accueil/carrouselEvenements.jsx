@@ -1,6 +1,4 @@
 import { useState } from 'react'
-// import axios from 'axios'
-// import localisation from '../../assets/icons/map.svg'
 import chevron_droite from '../../assets/icons/droit.svg'
 import chevron_gauche from '../../assets/icons/gauche.svg'
 

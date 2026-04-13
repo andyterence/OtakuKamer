@@ -34,10 +34,10 @@ function App() {
       <Route path="/modifierEvenement/:id" element={<PrivateRoute><ModifierEvenement /></PrivateRoute>} />
       <Route path="/myEvenement/" element={<PrivateRoute><MyEvenement /></PrivateRoute>} />
       <Route path="/calendrier/" element={<PrivateRoute><Calendrier /></PrivateRoute>} />
-      <Route path="/about/" element={<PrivateRoute><About /></PrivateRoute>} />
       <Route path="/setting/" element={<PrivateRoute><Setting /></PrivateRoute>} />
-      <Route path="/conditionUser/" element={<PrivateRoute><ConditionUser /></PrivateRoute>} />
-      <Route path="/privatyPolicy/" element={<PrivateRoute><PrivatyPolicy /></PrivateRoute>} />
+      <Route path="/about/" element={<About />} />
+      <Route path="/conditionUser/" element={<ConditionUser />} />
+      <Route path="/privatyPolicy/" element={<PrivatyPolicy />} />
     </Routes>
   )
 }

@@ -1,8 +1,4 @@
-import { useState, useEffect } from "react";
-// import logo2 from '../../assets/logos/logo-orange.png'
-import axios from 'axios'
-import { useNavigate, useLocation } from 'react-router-dom'
-import accueil from "../../assets/icons/home-1-svgrepo-com.svg";
+import { useEffect } from "react";
 
 
 function Toast({ message, setMessage, type }) {

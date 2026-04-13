@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-// import logo2 from '../../assets/logos/logo-orange.png'
 import axios from 'axios'
+import API_URL from '../../utils/api'
 import { useNavigate, useLocation } from 'react-router-dom'
 import accueil from "../../assets/icons/home-1-svgrepo-com.svg";
 import logo from '../../assets/logos/logo-orange.png'
@@ -10,7 +10,6 @@ import create_even from "../../assets/icons/plus-circle-add-new-create-cross-svg
 import calendrier from "../../assets/icons/calendar-days-svgrepo-com.svg";
 import setting from "../../assets/icons/setting-svgrepo-com.svg";
 import exit from "../../assets/icons/exit.svg";
-// import menu from "../../assets/icons/menu.svg";
 
 
 function Sidebar({ menuOuvert, setMenuOuvert }) {
@@ -23,7 +22,7 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
     const seConnecter = async() => {
         try {
             const token = localStorage.getItem('access')
-            const reponse = await axios.get('http://localhost:8000/api/utilisateurs/me/', {
+            const reponse = await axios.get(`${API_URL}/api/utilisateurs/me/`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             setUtilisateur(reponse.data)
@@ -57,7 +56,7 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
 
     return(
         <div 
-            className={`bg-[#EDEDF5] border-r border-[#C2611F] flex flex-col justify-start 
+            className={`border-r border-[#C2611F] flex flex-col justify-start 
                         w-[70%] md:w-full h-screen p-4 text-[#1A1A2E] 
                         fixed md:relative z-40 transition-transform duration-300
                         ${menuOuvert ? 'translate-x-0' : '-translate-x-full'} 
@@ -173,19 +172,6 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
                                 Calendrier
                             </button>
                         </div>
-                        {/* Mes Billets */}
-                        <div className={location.pathname === '/billets' 
-                            ? 'active border-l-4 border-[#C2611F] bg-[#C2611F]/70 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
-                            : 'border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
-                        }>
-                            <img className='h-5 w-5' src={align_text} alt="Logo de mes billets" />
-                            <button 
-                                className="cursor-pointer"
-                                onClick={() => navigate(`/billets`)}
-                            >
-                                Mes billets
-                            </button>
-                        </div>
                         {/* Paramètres */}
                         <div className={location.pathname === '/setting' 
                             ? 'active border-l-4 border-[#C2611F] bg-[#C2611F]/70 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
@@ -239,6 +225,19 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
                                 onClick={() => navigate(`/billets`)}
                             >
                                 Mes billets
+                            </button>
+                        </div>
+                        {/* Calendrier */}
+                        <div className={location.pathname === '/calendrier' 
+                            ? 'active border-l-4 border-[#C2611F] bg-[#C2611F]/70 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                            : 'border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                        }>
+                            <img className='h-5 w-5' src={calendrier} alt="Logo du calendrier" />
+                            <button 
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/calendrier`)}
+                            >
+                                Calendrier
                             </button>
                         </div>
                         {/* Paramètres */}

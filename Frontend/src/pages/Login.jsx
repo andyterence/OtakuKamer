@@ -1,11 +1,9 @@
 import { useState } from 'react'
+import API_URL from '../utils/api'
 import logo from '../assets/logos/logo-orange.png'
-// import goku from '../assets/imgs/goku_bienvenue.png'
 import naruto from '../assets/imgs/naruto_bienvenue.png'
-// import goku_hover from '../assets/imgs/goku_hover.png'
 import naruto_hover from '../assets/imgs/naruto_entre.png'
 import sakura_erreur from '../assets/imgs/sakura_erreur.png'
-import kurama_attend from '../assets/imgs/goku_attend.png'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 
@@ -30,7 +28,7 @@ function Login() {
     // Indiquer que la connexion est en cours d'attente pour afficher une image de chargement
     setEnAttente(true)
     try {
-            const reponse = await axios.post('http://localhost:8000/api/token/', {
+            const reponse = await axios.post(`${API_URL}/api/token/`, {
                 email: email,
                 password: motDePasse
             })

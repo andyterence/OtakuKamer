@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
+import API_URL from '../utils/api'
 import Sidebar from "../components/shared/sidebar"
 import menu from '../assets/icons/menu.svg'
 import imageIcon from '../assets/icons/image.svg'
@@ -19,7 +20,6 @@ export default function ModifierEvenement() {
     // État pour indiquer si la connexion est en cours d'attente, utilisé pour afficher une image différente pendant le processus de connexion
     const [enAttente, setEnAttente] = useState(false)
     const [modifierEven, setModifierEven] = useState(null)
-    const [evenements, setEvenements] = useState([])
     // Etat pour refuser l'autorisation du sidebar aux personnes qui ne sont pas connecter
     const token = localStorage.getItem('access')
     // Menu ouvert ou pas
@@ -57,7 +57,7 @@ export default function ModifierEvenement() {
 
         try {
             // mettre à jour l'événement
-            await axios.patch(`http://localhost:8000/api/evenements/${id}/`, formData, {
+            await axios.patch(`${API_URL}/api/evenements/${id}/`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
@@ -69,7 +69,7 @@ export default function ModifierEvenement() {
                 if (!categorie.nom || !categorie.prix || !categorie.nombreteTotale) continue
                 
                 if (categorie.id) {
-                    await axios.patch(`http://localhost:8000/api/categorie/${categorie.id}/`, {
+                    await axios.patch(`${API_URL}/api/categorie/${categorie.id}/`, {
                         evenement_id: parseInt(id),
                         nom: categorie.nom,
                         prix: parseFloat(categorie.prix),
@@ -78,7 +78,7 @@ export default function ModifierEvenement() {
                         headers: { Authorization: `Bearer ${token}` }
                     })
                 } else {
-                   await axios.post('http://localhost:8000/api/categorie/', {
+                   await axios.post(`${API_URL}/api/categorie/`, {
                         evenement_id: parseInt(id),
                         nom: categorie.nom,
                         prix: parseFloat(categorie.prix),
@@ -118,7 +118,7 @@ export default function ModifierEvenement() {
         const chargerModification = async() => {
             setEnAttente(true)
             try {
-                const reponse = await axios.get(`http://localhost:8000/api/evenements/${id}/`, {
+                const reponse = await axios.get(`${API_URL}/api/evenements/${id}/`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 setModifierEven(reponse.data)

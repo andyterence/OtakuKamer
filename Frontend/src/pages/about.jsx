@@ -1,16 +1,12 @@
-import { useState } from "react";
-import logo from '../assets/logos/OtakuKamer_logo.png'
-import axios from 'axios'
+import { useState } from "react"
 import { useNavigate } from 'react-router-dom'
-import Sidebar from "../components/shared/sidebar";
-import Footer from "../components/shared/Footer";
-import Navbar from "../components/shared/Navbar";
-import kurama_attend from '../assets/imgs/goku_attend.png'
+import Sidebar from "../components/shared/sidebar"
+import Footer from "../components/shared/Footer"
+import Navbar from "../components/shared/Navbar"
 import menu from '../assets/icons/menu.svg'
 import left from '../assets/icons/left.svg'
 import heart from '../assets/icons/heart.svg'
 import tags from '../assets/icons/users-2.svg'
-import target from '../assets/icons/target.svg'
 import excellence from '../assets/icons/target.svg'
 import innov from '../assets/icons/innov.svg'
 import logo_2 from '../assets/logos/logo-orange.png'
@@ -18,9 +14,6 @@ import background from '../assets/imgs/background.jpg'
 
 function About() {
 
-    const [evenements, setEvenements] = useState([])
-    // État pour indiquer si la connexion est en cours d'attente, utilisé pour afficher une image différente pendant le processus de connexion
-    const [enAttente, setEnAttente] = useState(false)
     // Etat pour refuser l'autorisation du sidebar aux personnes qui ne sont pas connecter
     const token = localStorage.getItem('access')
     // Menu ouvert ou pas
@@ -225,14 +218,6 @@ function About() {
                 </div>
                 <Footer />
             </main>
-            
-            {/* L'IMAGE QU'ON AFFICHE SI UNE REQUETTE EST EN COURS */}
-            {enAttente && (
-                <div className="flex flex-col fixed inset-0 bg-[#0D0D0D] flex items-center justify-center z-50">
-                    <img className='w-80 h-auto anime-flotter' src={kurama_attend} />
-                        <p className="text-white text-lg">Chargement en cours...</p>
-                </div>
-            )}
         </div>
     )
 }

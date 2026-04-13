@@ -1,25 +1,35 @@
-# Created by venv; see https://docs.python.org/3/library/venv.html
-
-# Environnement virtuel
+# ===== ENVIRONNEMENT PYTHON =====
 venv/
-
-# Fichiers Python compilés
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
 
-# Variables d'environnement (contient les infos sensibles !)
+# ===== VARIABLES D'ENVIRONNEMENT =====
 .env
+.env.local
+.env.*.local
 
-# Base de données SQLite (si jamais utilisée)
+# ===== DJANGO =====
+media/
+staticfiles/
 *.sqlite3
 
-# Médias uploadées par les utilisateurs
-media/
+# ===== NODE / REACT =====
+node_modules/
+dist/
+build/
+*.local
 
-# Fichiers VS Code
+# ===== ÉDITEURS =====
 .vscode/
+.idea/
 
-# Fichiers système Windows
+# ===== SYSTÈME =====
 Thumbs.db
 desktop.ini
+.DS_Store
+
+# ===== LOGS =====
+*.log
+npm-debug.log*

@@ -1,20 +1,17 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import API_URL from '../../utils/api'
 import CarrouselEvenements from './carrouselEvenements'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-// import EmblaCarousel from './EmblaCarousel'
 import axios from 'axios'
 import map from '../../assets/icons/map-check.svg'
 import info from '../../assets/icons/info.svg'
 import calendar from '../../assets/icons/calendar-check.svg'
-import menu from "../../assets/icons/menu.svg";
 
 
 function ListeEvenements(){
     
-    // Menu ouvert ou pas pour la vue mobile
-    const [menuOuvert, setMenuOuvert] = useState(false)
     // UseState qui va se charger de la liste des evenements selon le type
     const [evenements, setEvenements] = useState([])
     // UseState qui va se charger du filtre des evenements selon le type
@@ -34,7 +31,7 @@ function ListeEvenements(){
     useEffect(() => {
         const chargerEvenements = async() => {
             try {
-                const reponse = await axios.get('http://localhost:8000/api/evenements/')
+                const reponse = await axios.get(`${API_URL}/api/evenements/`)
                 setEvenements(reponse.data)
             } catch (_err) {
                 console.error(_err)
@@ -48,7 +45,7 @@ function ListeEvenements(){
     : evenements.filter(e => e.typeEven === filtreActif)
 
     return(
-        <div id="liste-evenements" className='w-full h-full bg-[#EDEDF5] flex flex-col justify-center items-center pt-10 md:pt-15 gap-10'>
+        <div id="liste-evenements" className='w-full h-full flex flex-col justify-center items-center pt-10 md:pt-15 gap-10'>
             <div className='flex flex-col justify-center items-center font-bold text-[#C2611F] text-[12px] gap-1'>
                 <div className='flex justify-center items-center font-bold text-[#C2611F] bg-black/30 px-6 py-2 rounded-full'>
                     <h1>Événement à venir</h1>
@@ -59,7 +56,6 @@ function ListeEvenements(){
                 {filtres.map(filtre => (
                     <button
                         key={filtre}
-                        data-aos="fade-down"
                         onClick={() => setFiltreActif(filtre)}
                         className={filtreActif === filtre 
                         ? ' bg-[#C2611F] px-6 h-14 md:px-10 md:h-14 rounded-md font-bold md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:scale-105 hover:opacity-100'

@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams, useLocation } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
-// import "preline/preline";
-import 'preline/dist/preline.js';
+import API_URL from '../utils/api'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import background from '../assets/imgs/background.jpg'
@@ -18,7 +17,6 @@ import shield from '../assets/icons/shield-check.svg'
 export default function EvenementShow() {
 
     const { id } = useParams()
-    const location = useLocation();
     const [evenement, setEvenement] = useState(null)
     const [modalOuvert, setModalOuvert] = useState(false)
     const [messageConfirmation, setMessageConfirmation] = useState(false)
@@ -37,7 +35,7 @@ export default function EvenementShow() {
     const seConnecter = async() => {
         try {
             const token = localStorage.getItem('access')
-            const reponse = await axios.get('http://localhost:8000/api/utilisateurs/me/', {
+            const reponse = await axios.get(`${API_URL}/api/utilisateurs/me/`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             setUtilisateur(reponse.data)
@@ -72,7 +70,7 @@ export default function EvenementShow() {
         try {
             const token = localStorage.getItem('access')
             const reponse = await axios.post(
-                'http://localhost:8000/api/billet/',
+                `${API_URL}/api/billet/`,
                 { categorie: categorieChoisie.id, quantite: quantite },
                 { headers: { Authorization: `Bearer ${token}` } }
             )
@@ -109,7 +107,7 @@ export default function EvenementShow() {
         const chargerEvenement = async() => {
             setEnAttente(true)
             try {
-                const reponse = await axios.get(`http://localhost:8000/api/evenements/${id}/`)
+                const reponse = await axios.get(`${API_URL}/api/evenements/${id}/`)
                 setEvenement(reponse.data)
             } catch (_err) {
                 console.error(_err)

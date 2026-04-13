@@ -94,7 +94,6 @@ const handleSubmit = async (e) => {
         })
         localStorage.setItem('access', reponse.data.access)
         localStorage.setItem('refresh', reponse.data.refresh)
-        console.log(reponse.data)
         navigate('/')
     } catch (_err) {
         setErreur("Email ou mot de passe incorrect")
@@ -196,12 +195,9 @@ Les champs sont **contrôlés** par React — leur valeur est toujours synchroni
 try {
     const reponse = await axios.post(...)
 } catch (_err) { ... }
-console.log(reponse.data) // ReferenceError : reponse n'existe pas ici
 
-// ✅ Après — console.log déplacé dans le try
 try {
     const reponse = await axios.post(...)
-    console.log(reponse.data) // ← ici
     navigate('/')
 } catch (_err) { ... }
 ```

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import API_URL from '../utils/api'
 import logo from '../assets/logos/OtakuKamer_logo.png'
 import forcePassword, { getNiveauPassword } from '../utils/forcePassword'
 import goku_chargement_1 from '../assets/imgs/inscription_etat_1.png'
@@ -51,10 +52,7 @@ function Register() {
     // Verifier si le mot de passe entrer est le meme que le mot de passe de confirmation, si non afficher un message d'erreur et ne pas envoyer la requete
     try {
         // Envoyer une requête POST à l'API pour obtenir les tokens d'accès et de rafraîchissement en utilisant les informations d'identification de l'utilisateur
-        const reponse = await axios.post('http://localhost:8000/api/utilisateurs/', { first_name: nom, last_name: prenom, email: email, dateNaiss: dateNaissance, role: role, password: motDePasse, motDePasseConfirmation: motDePasseConfirmation })
-        // Afficher la réponse de l'API dans la console pour vérifier les tokens reçus
-        console.log(reponse.data)
-        console.log(nom, prenom, email, dateNaissance, motDePasse, motDePasseConfirmation)
+        const reponse = await axios.post(`${API_URL}/api/utilisateurs/`, { first_name: nom, last_name: prenom, email: email, dateNaiss: dateNaissance, role: role, password: motDePasse, motDePasseConfirmation: motDePasseConfirmation })
         // Rediriger l'utilisateur vers la page d'accueil après une inscription réussie
         navigate('/login')
 

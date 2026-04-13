@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import API_URL from '../../utils/api'
 import calendar from '../../assets/icons/calendar-check.svg'
 import edit from '../../assets/icons/edit.svg'
 import auteur from '../../assets/icons/user-pen.svg'
@@ -16,7 +17,7 @@ export function ListeNews(){
     useEffect(() => {
         const chargernews = async() => {
             try {
-                const reponse = await axios.get('http://localhost:8000/api/news/')
+                const reponse = await axios.get(`${API_URL}/api/news/`)
                 setnews(reponse.data)
             } catch (_err) {
                 console.error(_err)

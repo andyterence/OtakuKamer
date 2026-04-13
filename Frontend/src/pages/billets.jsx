@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import API_URL from '../utils/api'
 import Sidebar from "../components/shared/sidebar";
 import Footer from "../components/shared/Footer";
 import axios from 'axios'
@@ -56,7 +57,7 @@ export default function Billets() {
         try {
                 const token = localStorage.getItem('access')
                 const reponse = await axios.put(
-                        `http://localhost:8000/api/billet/${billetId}/`,
+                        `${API_URL}/api/billet/${billetId}/`,
                         { statut: 'annule' },
                         { headers: { Authorization: `Bearer ${token}` } }
                     )
@@ -80,7 +81,7 @@ export default function Billets() {
         try {
                 const token = localStorage.getItem('access')
                 const reponse = await axios.delete(
-                    `http://localhost:8000/api/billet/${billetId}/`,
+                    `${API_URL}/api/billet/${billetId}/`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 )
                 setBillets(billets.filter(b => b.id !== billetId))
@@ -101,7 +102,7 @@ export default function Billets() {
             setEnAttente(true)
             try {
                 const token = localStorage.getItem('access')
-                const reponse = await axios.get('http://localhost:8000/api/billet/', {
+                const reponse = await axios.get(`${API_URL}/api/billet/`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 setBillets(reponse.data)

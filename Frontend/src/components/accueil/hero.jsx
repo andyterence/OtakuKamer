@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import API_URL from '../../utils/api'
 import background from '../../assets/imgs/background.jpg'
 import localisation from '../../assets/icons/map.svg'
 import notif from '../../assets/icons/bell.svg'
 
 export default function Hero() {
 
-    // UseState qui va se charger de la liste des evenements selon le type
-    const [evenements, setEvenements] = useState([])
     // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
     const [enAttente, setEnAttente] = useState(false)
@@ -22,7 +21,7 @@ export default function Hero() {
         const chargerVedette = async() => {
             setEnAttente(true)
             try {
-                const reponse = await axios.get('http://localhost:8000/api/evenements/vedette/')
+                const reponse = await axios.get(`${API_URL}/api/evenements/vedette/`)
                 setEvenementsVedettes(reponse.data)
             } catch (_err) {
                 console.error(_err)

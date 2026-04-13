@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import API_URL from '../utils/api'
 import Sidebar from "../components/shared/sidebar";
 import Toast from '../components/shared/Toast';
 import menu from '../assets/icons/menu.svg'
@@ -34,7 +35,7 @@ export default function Setting() {
         const seConnecter = async() => {
             try {
                 const token = localStorage.getItem('access')
-                const reponse = await axios.get('http://localhost:8000/api/utilisateurs/me/', {
+                const reponse = await axios.get(`${API_URL}/api/utilisateurs/me/`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             setUtilisateur(reponse.data)
@@ -60,7 +61,7 @@ export default function Setting() {
         }
         try {
             await axios.post(
-                'http://localhost:8000/api/utilisateurs/changer-mot-de-passe/',
+                `${API_URL}/api/utilisateurs/changer-mot-de-passe/`,
                 {
                     ancien_mot_de_passe: ancienMotDePasse,
                     nouveau_mot_de_passe: nouveauMotDePasse,
@@ -88,7 +89,7 @@ export default function Setting() {
         
         try {
             const reponse = await axios.patch(
-                `http://localhost:8000/api/utilisateurs/${utilisateur.id}/`,
+                `${API_URL}/api/utilisateurs/${utilisateur.id}/`,
                 formData,
                 { headers: { 
                     Authorization: `Bearer ${token}`,
@@ -112,7 +113,7 @@ export default function Setting() {
         e.preventDefault()
         try {
             await axios.patch(
-                `http://localhost:8000/api/utilisateurs/${utilisateur.id}/`,
+                `${API_URL}/api/utilisateurs/${utilisateur.id}/`,
                 {
                     first_name: utilisateur.first_name,
                     email: utilisateur.email,
@@ -157,7 +158,7 @@ export default function Setting() {
         <main className={token ? 'md:w-6/7 w-full' : 'w-full'}>
         
             {/* SECTION PRINCIPALE */}
-            <section className="w-full h- bg-gray-200 flex flex-col justify-center items-center gap-10">
+            <section className="w-full flex flex-col justify-center items-center gap-10">
                 {/* TITRE ET SOUS TITRE */}
                 <div className='w-full flex flex-col justify-center items-start font-bold md:p-10 md:pb-0'>
                     <h1 className='text-4xl'>Paramètres</h1>

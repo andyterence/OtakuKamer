@@ -107,7 +107,6 @@ const handleSubmit = async (e) => {
             password: motDePasse,
             motDePasseConfirmation: motDePasseConfirmation
         })
-        console.log(reponse.data)
         navigate('/login')
     } catch (_err) {
         setErreur("Information incorrect")

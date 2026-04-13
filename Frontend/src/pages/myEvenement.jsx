@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import API_URL from '../utils/api'
+import formaterStatut from '../utils/formaterStatut'
 import Sidebar from "../components/shared/sidebar";
-import Toast from '../components/shared/Toast';
 import axios from 'axios'
-// import { QRCodeCanvas } from 'qrcode.react'
-import logo from '../assets/logos/OtakuKamer_logo.png'
 import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
 import ticket from '../assets/icons/ticket-check.svg'
 import gain from '../assets/icons/gain.svg'
@@ -13,11 +12,6 @@ import map from '../assets/icons/map-check.svg'
 import info from '../assets/icons/info.svg'
 import pen from '../assets/icons/pen.svg'
 import plus from '../assets/icons/badge-plus.svg'
-
-// import qrcode from '../assets/icons/scan-qr-code.svg'
-// import background from '../assets/imgs/background.jpg'
-// import notif from '../../assets/icons/bell.svg'
-// import download from '../assets/icons/download.svg'
 
 export default function MyEvenement() {
 
@@ -28,8 +22,6 @@ export default function MyEvenement() {
     const [evenementAnnuler, setEvenementAnnuler] = useState(null)
     // Nouveau state pour les stats de calcul
     const [stats, setStats] = useState({})
-    // UseState qui va se charger de la liste des billets selon le type
-    // const [billets, setbillets] = useState([])
     // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
 
@@ -40,7 +32,7 @@ export default function MyEvenement() {
             for (const evenement of evenements) {
                 try {
                     const reponse = await axios.get(
-                        `http://localhost:8000/api/evenements/${evenement.id}/stats/`,
+                        `${API_URL}/api/evenements/${evenement.id}/stats/`,
                         { headers: { Authorization: `Bearer ${token}` } }
                     )
                     // On ajoute les stats de cet événement dans le state
@@ -66,7 +58,7 @@ export default function MyEvenement() {
         try {
                 const token = localStorage.getItem('access')
                 const reponse = await axios.patch(
-                        `http://localhost:8000/api/evenements/${evenementId}/`,
+                        `${API_URL}/api/evenements/${evenementId}/`,
                         { statut: 'annule' },
                         { headers: { Authorization: `Bearer ${token}` } }
                     )
@@ -90,7 +82,7 @@ export default function MyEvenement() {
         try {
                 const token = localStorage.getItem('access')
                 const reponse = await axios.delete(
-                    `http://localhost:8000/api/evenements/${evenementsId}/`,
+                    `${API_URL}/api/evenements/${evenementsId}/`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 )
                 setEvenements(evenements.filter(e => e.id !== evenementsId))
@@ -111,7 +103,7 @@ export default function MyEvenement() {
             setEnAttente(true)
             try {
                 const token = localStorage.getItem('access')
-                const reponse = await axios.get('http://localhost:8000/api/evenements/mes-evenements/', {
+                const reponse = await axios.get(`${API_URL}/api/evenements/mes-evenements/`, {
                     headers: { Authorization: `Bearer ${token}` }
                 })
                 setEvenements(reponse.data)
@@ -134,7 +126,7 @@ export default function MyEvenement() {
             <aside className="w-1/7 sticky top-0 h-screen">
                 <Sidebar />
             </aside>
-            <section className="w-6/7 bg-gray-200">
+            <section className="w-6/7">
             {/* TITRE ET SOUS TITRE DE BIENVENUE */}
                 <div className='flex justify-between items-center'>
                     <div className='w-full flex flex-col justify-center items-start font-bold md:p-10'>
@@ -231,7 +223,7 @@ export default function MyEvenement() {
                                                 </div>
                                                 <div className='w-1/2 flex justify-start items-center gap-1'>
                                                     <img className='h-4 w-4' src={info} alt="Logo du calendrier" />
-                                                    <p>{evenement?.statut}</p>
+                                                    <p>{formaterStatut(evenement?.statut)}</p>
                                                 </div>
                                                 {/* <p>{evenement?.prix} FCFA</p> */}
                                             </div>
