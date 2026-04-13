@@ -174,7 +174,7 @@ export default function EvenementShow() {
                     {/* À propos de l'événement */}
                     <div data-aos="fade-up" className='w-[90%] h-110 bg-gray-100 p-4 flex flex-col justify-center items-start rounded-md gap-2'>
                         <h1>À propos de l'événement</h1>
-                        <p className='bg-[#C2611F]/20 h-full w-full rounded-md p-4'>
+                        <p className='bg-[#C2611F]/20 overflow-x-auto w-full rounded-md p-4'>
                             {evenement?.description}
                         </p>
                     </div>
