@@ -18,6 +18,7 @@ function Accueil() {
     const token = localStorage.getItem('access')
     // Menu ouvert ou pas
     const [menuOuvert, setMenuOuvert] = useState(false)
+    const [modalBienvenue, setModalBienvenue] = useState(true)
     
     return(
         <div className="flex flex-col">
@@ -51,16 +52,39 @@ function Accueil() {
                     {/* <ListeNews /> */}
                     <Footer  />
                 </main>
-                
-                {/* L'IMAGE QU'ON AFFICHE SI UNE REQUETTE EST EN COURS */}
-                {enAttente && (
-                    <div className="flex flex-col fixed inset-0 bg-[#0D0D0D] flex items-center justify-center z-50">
-                        <img className='w-80 h-auto anime-flotter' src={kurama_attend} />
-                            <p className="text-white text-lg">Chargement en cours...</p>
-                    </div>
-                )}
+                    {/* L'IMAGE QU'ON AFFICHE SI UNE REQUETTE EST EN COURS */}
+                    {enAttente && (
+                        <div className="flex flex-col fixed inset-0 bg-[#0D0D0D] flex items-center justify-center z-50">
+                            <img className='w-80 h-auto anime-flotter' src={kurama_attend} />
+                                <p className="text-white text-lg">Chargement en cours...</p>
+                        </div>
+                    )}
                 
             </div>
+            {/* MODAL DE BIENVENUE */}
+            {modalBienvenue && (
+                <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+                    <div className="bg-white flex flex-col justify-center items-center rounded-lg h-[30vh] w-90 text-center">
+                        <h2 className="text-xl font-bold mb-4">Bienvenue sur <span className="text-[#C2611F]">OtakuKamer</span> !</h2>
+                        <p className="text-gray-600">Voulez vous debuter le tutoriel ?</p>
+                        <div className="w-full flex justify-center items-center gap-10">
+                            <button 
+                                className="mt-4 border-1 border-[#C2611F] transition-all duration-300 cursor-pointer hover:translate-y-1 font-bold py-2 px-4 rounded"
+                                onClick={() => setModalBienvenue(false)}
+                            >
+                                Non
+                            </button>
+                            <button 
+                                className="mt-4 bg-[#C2611F] transition-all duration-300 cursor-pointer hover:translate-y-1 text-white font-bold py-3 px-5 rounded"
+                                onClick={() => setModalBienvenue(false)}
+                            >
+                                Oui
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
         )
     }

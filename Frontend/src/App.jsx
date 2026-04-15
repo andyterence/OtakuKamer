@@ -13,7 +13,8 @@ import About from './pages/about'
 import ModifierEvenement from './pages/modifierEvenement'
 import Setting from './pages/setting';
 import ConditionUser from './pages/conditionUser';
-import PrivatyPolicy from './pages/privatyPolicy';
+import PrivatyPolicy from './pages/privatyPolicy'
+import CursorTrail from "./components/shared/CursorTrail"
 
 function App() {
   const location = useLocation();
@@ -23,23 +24,25 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/accueil" />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/accueil" element={<Accueil />} />
-      <Route path="/billets" element={<PrivateRoute><Billets /></PrivateRoute>} />
-      <Route path="/evenement/:id" element={<EvenementShow />} />
-      <Route path="/createEven/" element={<PrivateRoute><CreateEven /></PrivateRoute>} />
-      <Route path="/modifierEvenement/:id" element={<PrivateRoute><ModifierEvenement /></PrivateRoute>} />
-      <Route path="/myEvenement/" element={<PrivateRoute><MyEvenement /></PrivateRoute>} />
-      <Route path="/calendrier/" element={<PrivateRoute><Calendrier /></PrivateRoute>} />
-      <Route path="/setting/" element={<PrivateRoute><Setting /></PrivateRoute>} />
-      <Route path="/about/" element={<About />} />
-      <Route path="/conditionUser/" element={<ConditionUser />} />
-      <Route path="/privatyPolicy/" element={<PrivatyPolicy />} />
-    </Routes>
+    <>
+      <CursorTrail />
+      <Routes>
+        <Route path="/" element={<Navigate to="/accueil" />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/accueil" element={<Accueil />} />
+        <Route path="/billets" element={<PrivateRoute><Billets /></PrivateRoute>} />
+        <Route path="/evenement/:id" element={<EvenementShow />} />
+        <Route path="/createEven/" element={<PrivateRoute><CreateEven /></PrivateRoute>} />
+        <Route path="/modifierEvenement/:id" element={<PrivateRoute><ModifierEvenement /></PrivateRoute>} />
+        <Route path="/myEvenement/" element={<PrivateRoute><MyEvenement /></PrivateRoute>} />
+        <Route path="/calendrier/" element={<PrivateRoute><Calendrier /></PrivateRoute>} />
+        <Route path="/setting/" element={<PrivateRoute><Setting /></PrivateRoute>} />
+        <Route path="/about/" element={<About />} />
+        <Route path="/conditionUser/" element={<ConditionUser />} />
+        <Route path="/privatyPolicy/" element={<PrivatyPolicy />} />
+      </Routes>
+    </>
   )
 }
-
 export default App

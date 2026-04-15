@@ -11,8 +11,6 @@ import users from '../assets/icons/users.svg'
 import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
 import map from '../assets/icons/map-check.svg'
 import shield from '../assets/icons/shield-check.svg'
-// import ticket from '../assets/icons/ticket-check.svg'
-// import notif from '../../assets/icons/bell.svg'
 
 export default function EvenementShow() {
 
@@ -30,6 +28,8 @@ export default function EvenementShow() {
     const navigate = useNavigate()
     // Etat pour refuser l'autorisation a un element aux personnes qui ne sont pas connecter
     const token = localStorage.getItem('access')
+    const [methode, setMethode] = useState("MTN")
+    const [numero, setNumero] = useState("")
 
     // Fonction pour vérifier si l'utilisateur est connecté en récupérant les données de l'utilisateur à partir de l'API. Si la requête échoue avec une erreur 401 (non autorisé), cela signifie que le token d'accès n'est plus valide, donc les tokens sont supprimés du localStorage et l'utilisateur est redirigé vers la page de connexion. Cette fonction est appelée à la fois lors du chargement initial du composant et chaque fois qu'un événement 'profilMisAJour' est déclenché, ce qui permet de maintenir les informations de l'utilisateur à jour dans la barre latérale.
     const seConnecter = async() => {
@@ -62,25 +62,68 @@ export default function EvenementShow() {
     }, [])
 
     // FONCTION POUR LA RESERVATION
-    const reserver = async () => {
-    if (!categorieChoisie) {
-        alert('Veuillez choisir une catégorie !')
-        return
+    // const reserver = async () => {
+    // if (!categorieChoisie) {
+    //     alert('Veuillez choisir une catégorie !')
+    //     return
+    //     }
+    //     try {
+    //         const token = localStorage.getItem('access')
+    //         const reponse = await axios.post(
+    //             `${API_URL}/api/billet/`,
+    //             { categorie: categorieChoisie.id, quantite: quantite },
+    //             { headers: { Authorization: `Bearer ${token}` } }
+    //         )
+    //         setMessageConfirmation(true)
+    //         setTimeout(() => {
+    //             setMessageConfirmation(false)
+    //             navigate('/billets')
+    //         }, 1000)
+    //     } catch (_err) {
+    //         console.error(_err)
+    //     }
+    // }
+    // FONCTION POUR LE PAIEMENT
+    const payer = async () => {
+        if (!categorieChoisie) {
+            alert('Veuillez choisir une catégorie !')
+            return
         }
+
         try {
             const token = localStorage.getItem('access')
-            const reponse = await axios.post(
-                `${API_URL}/api/billet/`,
-                { categorie: categorieChoisie.id, quantite: quantite },
-                { headers: { Authorization: `Bearer ${token}` } }
+
+            const res = await axios.post(
+                `${API_URL}/api/paiements/`,
+                {
+                    categorie_id: categorieChoisie.id,
+                    quantite: quantite,
+                    methode: "MTN", // temporaire
+                    numero: "677000000" // à remplacer par input utilisateur
+                },
+                {
+                    headers: { Authorization: `Bearer ${token}` }
+                }
             )
-            setMessageConfirmation(true)
-            setTimeout(() => {
-                setMessageConfirmation(false)
-                navigate('/billets')
-            }, 1000)
-        } catch (_err) {
-            console.error(_err)
+
+            console.log(res.data)
+
+            // Cas 1 : paiement avec redirection (campay)
+            if (res.data.payment_url) {
+                window.location.href = res.data.payment_url
+            }
+
+            // Cas 2 : simulation locale
+            else {
+                setMessageConfirmation(true)
+                setTimeout(() => {
+                    navigate('/billets')
+                }, 1500)
+            }
+
+        } catch (err) {
+            console.error(err)
+            alert("Erreur lors du paiement")
         }
     }
     const incrementer = () => {
@@ -356,6 +399,19 @@ export default function EvenementShow() {
                         <p className='text-2xl font-bold text-[#C2611F]'>
                             Total : {(quantite * categorieChoisie?.prix).toFixed(0)} FCFA
                         </p>
+                        {/* METHODE DE PAIEMENT */}
+                        <select onChange={(e) => setMethode(e.target.value)}>
+                            <option value="MTN">MTN Mobile Money</option>
+                            <option value="ORANGE">Orange Money</option>
+                        </select>
+
+                        <input
+                            type="text"
+                            placeholder="Numéro (ex: 677...)"
+                            value={utilisateur?.phone}
+                            onChange={(e) => setNumero(e.target.value)}
+                            className="border p-2 rounded"
+                        />
                         <div className='flex gap-4'>
                             <button 
                                 onClick={() => setModalOuvert(false)}
@@ -365,7 +421,7 @@ export default function EvenementShow() {
                             <button 
                                 onClick={async () => {
                                     setModalOuvert(false)
-                                    await reserver()
+                                    await payer()
                                 }}
                                 className='w-1/2 py-3 bg-[#C2611F] text-white rounded-xl'>
                                 Confirmer

@@ -181,7 +181,7 @@ export default function ModifierEvenement() {
         <main className={token ? 'md:w-6/7 w-full' : 'w-full'}>
         
             {/* SECTION PRINCIPALE */}
-            <section className="w-full h- bg-gray-200 flex flex-col justify-center items-center gap-10">
+            <section className="w-full flex flex-col justify-center items-center gap-10">
                 {/* TITRE ET SOUS TITRE */}
                 <div className='w-full flex flex-col justify-center items-start font-bold md:p-10 md:pb-0'>
                     <h1 className='text-4xl'>Modifier l'événement {modifierEven?.titre}</h1>
