@@ -123,16 +123,16 @@ export default function Hero() {
                     style={{ backgroundImage: `url(${evenementsVedettes?.image})` }}>
                     {/* Overlay sombre */}
                     <div className="absolute inset-0 bg-black/30"></div>
-                    <div className='absolute z-10 w-30 h-7 shadow-md shadow-black-500/50 flex justify-center items-center text-[#F1F1F1] font-bold bg-[#C2611F] text-[10px] rounded-full md:left-64 md:bottom-118'>
+                    <div className='absolute z-15 w-30 h-7 shadow-md shadow-black-500/50 flex justify-center items-center text-[#F1F1F1] font-bold bg-[#C2611F] text-[10px] rounded-full md:left-64 md:bottom-118'>
                         <p>En vedette</p>
                     </div>
-                    <div className='z-10 flex justify-start items-center gap-2 text-[14px] text-[#F1F1F1] w-full z-10'>
+                    <div className='z-10 flex justify-start items-center gap-2 text-[14px] w-full z-15'>
                         <img className='h-5 w-5' src={notif} alt="Icon de la notification" />
                         <p>{new Date(evenementsVedettes?.dateLancement).toLocaleDateString('fr-FR', {
                             day: 'numeric', month: 'long', year: 'numeric'
                         })}</p>
                     </div>
-                    <div className='flex justify-start items-center gap-2 text-[14px] w-full text-[#F1F1F1] z-10'>
+                    <div className='flex justify-start items-center gap-2 text-[14px] w-full z-15'>
                         <img className='h-5 w-5' src={localisation} alt="Icon de la localisation" />
                         <p>{evenementsVedettes?.lieu}</p>
                     </div>

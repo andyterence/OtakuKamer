@@ -17,7 +17,6 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
     const [utilisateur, setUtilisateur] = useState(null)
     const navigate = useNavigate()
     const location = useLocation()
-
     // Fonction pour vérifier si l'utilisateur est connecté en récupérant les données de l'utilisateur à partir de l'API. Si la requête échoue avec une erreur 401 (non autorisé), cela signifie que le token d'accès n'est plus valide, donc les tokens sont supprimés du localStorage et l'utilisateur est redirigé vers la page de connexion. Cette fonction est appelée à la fois lors du chargement initial du composant et chaque fois qu'un événement 'profilMisAJour' est déclenché, ce qui permet de maintenir les informations de l'utilisateur à jour dans la barre latérale.
     const seConnecter = async() => {
         try {
@@ -74,17 +73,6 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
                     <div>
                         <h1>KamerOtaku</h1>
                     </div>
-                </div>
-                {/* SECTION DE RECHERCHE */}
-                <div className="text-[12px] flex flex-col gap-1">
-                    <label className="font-bold text-[#C2611F]" htmlFor="search">Rechercher</label>
-                    <input
-                        type="search" 
-                        name="search" 
-                        id="search"
-                        placeholder="  Que recherchez vous ?"
-                        className="bg-gray-300 h-7 rounded-sm border-none"
-                    />
                 </div>
                 {/* SECTION PRINCIPALE */}
                 <div>

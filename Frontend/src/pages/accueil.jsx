@@ -1,24 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Hero from "../components/accueil/hero";
 import ListeEvenements from "../components/accueil/ListeEvenements";
 import ListeNews from "../components/accueil/ListeNews";
 import Sidebar from "../components/shared/sidebar";
 import Navbar from "../components/shared/Navbar";
 import Footer from "../components/shared/Footer";
-import kurama_attend from '../assets/imgs/goku_attend.png';
 import menu from '../assets/icons/menu.svg'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 function Accueil() {
 
-    // État pour indiquer si la connexion est en cours d'attente, utilisé pour afficher une image différente pendant le processus de connexion
-    const [enAttente, setEnAttente] = useState(false)
     // Etat pour refuser l'autorisation du sidebar aux personnes qui ne sont pas connecter
     const token = localStorage.getItem('access')
     // Menu ouvert ou pas
     const [menuOuvert, setMenuOuvert] = useState(false)
-    const [modalBienvenue, setModalBienvenue] = useState(true)
+    const [modalBienvenue, setModalBienvenue] = useState(false)
+    // Ferme le modal de bienvenue et enregistre dans le localStorage que l'utilisateur l'a déjà vu pour ne pas le réafficher à sa prochaine visite
+    const fermerModal = () => {
+        localStorage.setItem("dejaVuBienvenue", "true")
+        setModalBienvenue(false)
+    }
+
+    // useEffect pour bloquer le modal de bienvenue si l'utilisateur n'est pas a sa toute premiere visite
+    useEffect(() => {
+        const dejaVu = localStorage.getItem("dejaVuBienvenue")
+
+        if (!dejaVu) {
+            setModalBienvenue(true)
+        }
+    }, [])
     
     return(
         <div className="flex flex-col">
@@ -52,13 +63,6 @@ function Accueil() {
                     {/* <ListeNews /> */}
                     <Footer  />
                 </main>
-                    {/* L'IMAGE QU'ON AFFICHE SI UNE REQUETTE EST EN COURS */}
-                    {enAttente && (
-                        <div className="flex flex-col fixed inset-0 bg-[#0D0D0D] flex items-center justify-center z-50">
-                            <img className='w-80 h-auto anime-flotter' src={kurama_attend} />
-                                <p className="text-white text-lg">Chargement en cours...</p>
-                        </div>
-                    )}
                 
             </div>
             {/* MODAL DE BIENVENUE */}
@@ -70,13 +74,13 @@ function Accueil() {
                         <div className="w-full flex justify-center items-center gap-10">
                             <button 
                                 className="mt-4 border-1 border-[#C2611F] transition-all duration-300 cursor-pointer hover:translate-y-1 font-bold py-2 px-4 rounded"
-                                onClick={() => setModalBienvenue(false)}
+                                 onClick={fermerModal}
                             >
                                 Non
                             </button>
                             <button 
                                 className="mt-4 bg-[#C2611F] transition-all duration-300 cursor-pointer hover:translate-y-1 text-white font-bold py-3 px-5 rounded"
-                                onClick={() => setModalBienvenue(false)}
+                                onClick={fermerModal}
                             >
                                 Oui
                             </button>
@@ -84,7 +88,6 @@ function Accueil() {
                     </div>
                 </div>
             )}
-
         </div>
         )
     }
