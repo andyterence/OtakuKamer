@@ -15,6 +15,7 @@ import qrcode from '../assets/icons/scan-qr-code.svg'
 import map from '../assets/icons/locate.svg'
 import map_check from '../assets/icons/locate-fixed.svg'
 import bank from '../assets/icons/banknote.svg'
+import menu from '../assets/icons/menu.svg'
 
 // import notif from '../../assets/icons/bell.svg'
 
@@ -26,6 +27,9 @@ export default function Billets() {
     const [modalOuvert, setModalOuvert] = useState(false)
     const [messageConfirmation, setMessageConfirmation] = useState(false)
     const [billetAnnuler, setBilletAnnuler] = useState(null)
+    const [menuOuvert, setMenuOuvert] = useState(false)
+    // Etat pour refuser l'autorisation du sidebar aux personnes qui ne sont pas connecter
+    const token = localStorage.getItem('access')
     // UseState qui va se charger de la liste des billets selon le type
     // const [billets, setbillets] = useState([])
     // Pour pouvoir naviguer entre les pages
@@ -122,17 +126,31 @@ export default function Billets() {
 
     return (
         <div className='flex'>
-            <aside className="w-1/7 sticky top-0 h-screen">
-                <Sidebar />
+            {/* SIDEBAR */}
+            {menuOuvert && (
+                <div 
+                    className='md:hidden fixed inset-0 bg-black/50 z-30'
+                    onClick={() => setMenuOuvert(false)}
+                />
+            )}
+            <button 
+                className='md:hidden fixed top-4 left-4 z-50'
+                onClick={() => setMenuOuvert(!menuOuvert)}
+            >
+                <img className='h-5 w-5' src={menu} alt="Menu" />
+            </button>
+            <aside className="md:w-1/7 w-0 md:sticky md:top-0 md:h-screen">
+                <Sidebar menuOuvert={menuOuvert} setMenuOuvert={setMenuOuvert} />
             </aside>
-            <section className="w-6/7 bg-gray-200 flex flex-col">
+            {/* CONTENU PRINCIPAL */}
+            <section className="md:w-6/7 w-full flex flex-col">
             {/* TITRE ET SOUS TITRE DE BIENVENUE */}
-                <div className='flex flex-col justify-center items-start font-bold md:p-10'>
+                <div className='flex flex-col justify-center items-start font-bold md:p-10 mx-12 py-2'>
                     <h1 className='text-4xl'>Mes Billets</h1>
                     <p className='text-md text-[#C2611F]'>Gérez et téléchargez vos billets d'événements</p>
                 </div>
                 {/* CONTENEUR DE GESTION DES BILLETS */}
-                <div className='flex justify-evenly items-center font-bold'>
+                <div className='flex flex-col md:flex-row gap-4 md:gap-0 justify-evenly items-center font-bold'>
                     {/* Nombre Billets Achetés */}
                     <div className='flex flex-col justify-evenly items-start w-70 h-40 rounded-xl bg-[#C2611F]/30 py-4 px-8'>
                         <div><img className='h-7 w-7' src={ticket} alt="Logo du ticket" /></div>
@@ -162,7 +180,7 @@ export default function Billets() {
                 {/* PRESENTATION DES BILLETS */}
                 <div className='md:flex flex-col justify-center items-center gap-10 my-10 rounded-xl'>
                     {billets.length === 0 
-                        ? <p className=' font-bold'>Vous n'avez aucun billet</p>
+                        ? <p className=' font-bold text-center'>Vous n'avez aucun billet</p>
                         : billets.map(billet => (
                             <div 
                                 key={billet.id} 

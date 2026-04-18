@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import API_URL from '../utils/api'
+import formaterStatut from '../utils/formaterStatut'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import background from '../assets/imgs/background.jpg'
@@ -105,8 +106,6 @@ export default function EvenementShow() {
                     headers: { Authorization: `Bearer ${token}` }
                 }
             )
-
-            console.log(res.data)
 
             // Cas 1 : paiement avec redirection (campay)
             if (res.data.payment_url) {
@@ -333,7 +332,7 @@ export default function EvenementShow() {
                             <div>
                                 <div className='flex justify-start items-center gap-2'>
                                     <img className='h-5 w-5' src={calendrier} alt="Logo du lieu" />
-                                    <p className='text-[14px] font-bold'>{evenement?.statut}</p>
+                                    <p className='text-[14px] font-bold'>{formaterStatut(evenement?.statut)}</p>
                                 </div>
                             </div>
                         </div>

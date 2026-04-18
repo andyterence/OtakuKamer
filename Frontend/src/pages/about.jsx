@@ -46,7 +46,7 @@ function About() {
                     </aside>
                 </>
             )}
-            <main className={token ? 'md:w-6/7 w-full bg-gray-100 flex flex-col' : 'bg-gray-100 w-full flex flex-col'}>
+            <main className={token ? 'md:w-6/7 w-full flex flex-col' : 'w-full flex flex-col'}>
                 <Navbar />
                 {/* TITRE ET SOUS TITRE DE BIENVENUE */}
                 <div className='flex justify-between items-center md:mt-30'>

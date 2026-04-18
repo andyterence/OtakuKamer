@@ -300,7 +300,7 @@ function Register() {
         </section>
         {/* L'IMAGE QU'ON AFFICHE SI UNE REQUETTE EST EN COURS */}
         {enAttente && (
-            <div className="flex flex-col fixed inset-0 bg-[#C2611F] flex items-center justify-center z-50">
+            <div className="flex flex-col fixed inset-0 bg-black/80 flex items-center justify-center z-50">
                 <img className='w-80 h-auto anime-flotter' src={goku_attend} />
                 <p className="text-[#9CA3AF] text-lg">Chargement en cours...</p>
             </div>

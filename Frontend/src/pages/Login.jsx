@@ -121,8 +121,12 @@ function Login() {
                         required
                         />
                     </div>
-
-                    <div className='flex justify-between'>
+                    {/* LIEN POUR S'INSCRIRE */}
+                    <div className='text-center'>
+                        <p className='text-[#9CA3AF]'>Pas de compte ? <a href="/register" className="text-blue-500 hover:underline">S'inscrire</a></p>
+                    </div>
+                    {/* SE SOUVENIR DE MOI */}
+                    {/* <div className='flex justify-between'>
                         <div className='flex justify-start items-center gap-3'>
                             <label htmlFor="check" className="block text-sm text-[#0D0D0D] mb-1">
                                 Se souvenir de moi
@@ -137,7 +141,7 @@ function Login() {
                         <div>
                             <a href='#' className='text-[#0D0D0D] text-sm'>Mot de passe oublié ?</a>
                         </div>
-                    </div>
+                    </div> */}
                     <button
                         onClick={handleSubmit}
                         onMouseEnter={() => setEstSurvole(true)}

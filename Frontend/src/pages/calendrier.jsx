@@ -74,11 +74,14 @@ export default function Calendrier() {
                         </div>
                         {/* EVENEMENTS DU MOIS */}
                         {evenementsDuMois.map(evenement => (
-                            <div key={evenement.id} className='bg-[#C2611F]/20 flex justify-between items-center rounded-md p-4'>
+                            <button 
+                                key={evenement.id} 
+                                onClick={() => navigate(`/evenement/${evenement.id}`)}
+                                className='bg-[#C2611F]/20 flex justify-between items-center hover:bg-[#C2611F]/50 transition-all duration-200 rounded-md p-4'>
                                 <p className='h-12 w-16 rounded-md shadow-[#C2611F]/20 shadow-md flex justify-center items-center'>{new Date(evenement.dateLancement).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}</p>
                                 <h1 className='font-bold'>{evenement.titre}</h1>
                                 <p  className='h-8 w-40 rounded-md shadow-[#C2611F]/20 shadow-md flex justify-center items-center'>{formaterStatut(evenement?.statut)}</p>
-                            </div>
+                            </button>
                         ))}
                     </div>
                 ))}

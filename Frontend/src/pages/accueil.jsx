@@ -16,6 +16,7 @@ function Accueil() {
     // Menu ouvert ou pas
     const [menuOuvert, setMenuOuvert] = useState(false)
     const [modalBienvenue, setModalBienvenue] = useState(false)
+    const [dejaVu, setDejaVu] = useState(false)
     // Ferme le modal de bienvenue et enregistre dans le localStorage que l'utilisateur l'a déjà vu pour ne pas le réafficher à sa prochaine visite
     const fermerModal = () => {
         localStorage.setItem("dejaVuBienvenue", "true")
@@ -32,7 +33,7 @@ function Accueil() {
     }, [])
     
     return(
-        <div className="flex flex-col">
+        <div className="relative flex flex-col">
             <div className="flex items-start">
                 {menuOuvert && (
                     <div 
@@ -76,18 +77,25 @@ function Accueil() {
                                 className="mt-4 border-1 border-[#C2611F] transition-all duration-300 cursor-pointer hover:translate-y-1 font-bold py-2 px-4 rounded"
                                  onClick={fermerModal}
                             >
-                                Non
+                                Non, je maitrise.
                             </button>
                             <button 
                                 className="mt-4 bg-[#C2611F] transition-all duration-300 cursor-pointer hover:translate-y-1 text-white font-bold py-3 px-5 rounded"
                                 onClick={fermerModal}
                             >
-                                Oui
+                                Oui, c'est parti !
                             </button>
                         </div>
                     </div>
                 </div>
             )}
+            <button className="anime-flotter bg-[#C2611F]/50 fixed bottom-30 right-10 border-2 border-black h-10 w-10 rounded-full flex justify-center items-center z-50 cursor-pointer hover:bg-[#C2611F]/70 hover:scale-110 transition-transform duration-300">
+                <div className="anime-flotter absolute border-2 border-black h-7 w-7 rounded-full flex justify-center items-center">
+                    <div className="absolute border-2 border-black h-5 w-5 rounded-full flex justify-center items-center">
+                        <div className="absolute border-2 border-black h-3 w-3 rounded-full flex justify-center items-center"></div>
+                    </div>
+                </div>
+            </button>
         </div>
         )
     }

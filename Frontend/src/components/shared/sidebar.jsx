@@ -55,7 +55,7 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
 
     return(
         <div 
-            className={`border-r border-[#C2611F] flex flex-col justify-start 
+            className={`bg-white border-r border-[#C2611F] flex flex-col justify-start 
                         w-[70%] md:w-full h-screen p-4 text-[#1A1A2E] 
                         fixed md:relative z-40 transition-transform duration-300
                         ${menuOuvert ? 'translate-x-0' : '-translate-x-full'} 
