@@ -29,6 +29,7 @@ export default function EvenementShow() {
     const navigate = useNavigate()
     // Etat pour refuser l'autorisation a un element aux personnes qui ne sont pas connecter
     const token = localStorage.getItem('access')
+    const [drawerOuvert, setDrawerOuvert] = useState(false)
     const [methode, setMethode] = useState("MTN")
     const [numero, setNumero] = useState("")
 
@@ -210,9 +211,9 @@ export default function EvenementShow() {
                 </div>
             </section>
             {/* DEUXIEME SECTION INFORMATION SUR L'EVEN */}
-            <section className='flex justify-center w-full h-full bg-gray-200'>
+            <section className='flex flex-col md:flex-row justify-center w-full h-full bg-gray-200'>
                 {/* PREMIERE COLONE */}
-                <div className='w-3/5 h-full flex flex-col justify-center items-center gap-4 m-4'>
+                <div className='w-full md:w-3/5 h-full flex flex-col justify-center items-center gap-4 m-4'>
                     {/* À propos de l'événement */}
                     <div data-aos="fade-up" className='w-[90%] h-110 bg-gray-100 p-4 flex flex-col justify-center items-start rounded-md gap-2'>
                         <h1>À propos de l'événement</h1>
@@ -258,136 +259,155 @@ export default function EvenementShow() {
                     </div>
                 </div>
                 {/* DEUXIEME COLONE - INFO SUR L'ACHAT DE BILLET*/}
-                <div className='relative w-2/5 bg-gray-200 flex justify-center items-start py-4'>
-                    <div data-aos="fade-up" className='sticky top-0 bg-[#C2611F]/20 w-100 min-h-screen rounded-md font-bold'>
-                        {/* CHOISIR LE TYPE DE BILLET */}
-                        <div className='flex flex-col justify-center items-start gap-2 p-4'>
-                            <div className='text-sm'>
-                                <p>Type de billet</p>
-                            </div>
-                            <div className='text-sm w-full'>
-                                <select
-                                    name="billet" 
-                                    id="billet" 
-                                    className='w-full h-10 text-[12px] bg-[#C2611F]/10'
-                                    onChange={(e) => {
-                                        const categorie = evenement.categories.find(c => c.id === parseInt(e.target.value))
-                                        setCategorieChoisie(categorie)
-                                    }}
-                                    >
-                                    <option 
-                                    className='w-full bg-[#C2611F]/20' 
-                                    value=""> Choisir une catégorie </option>
-                                    {evenement?.categories?.map(categorie => (
-                                        <option className='w-full bg-[#C2611F]/20' key={categorie.id} value={categorie.id}>
-                                            {categorie.nom}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        {/* BARRE DE SEPARATION */}
-                        <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div>
-                        {/* INFORMATION SUR L'EVEN */}
-                        <div className='w-full p-4'>
-                            {/* INFORMATION SPECIFIQUE */}
-                            <div className='flex flex-col gap-4'>
-                                {/* INFORMATION SUR LA DATE & HEURE */}
-                                <div>
-                                    {/* Date et heure */}
-                                    <div className='flex flex-col justify-center items-start pt-4'>
-                                        <div className='flex justify-center items-start gap-2'>
-                                            <img className='h-5 w-5' src={calendrier} alt="Logo du calendrier" />
-                                            <p className='text-[14px] font-bold'>Date & Heure</p>
+                {/* DRAWER MOBILE */}
+                {drawerOuvert && (
+                    <div className='md:hidden fixed inset-0 z-50'>
+                        {/* Overlay sombre */}
+                        <div 
+                            className='absolute inset-0 bg-black/60'
+                            onClick={() => setDrawerOuvert(false)}
+                        />
+                        {/* Panneau qui remonte */}
+                        <div className='absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-6 flex flex-col gap-4'>
+                            {/* Barre de fermeture */}
+                            <div className='w-12 h-1 bg-gray-300 rounded-full mx-auto'></div>
+                            {/* Contenu du drawer (similaire à la section de droite du desktop) */}
+                            <div className='relative w-2/5 bg-gray-200 hidden md:flex justify-center items-start py-4'>
+                                <div data-aos="fade-up" className='sticky top-0 bg-[#C2611F]/20 w-100 min-h-screen rounded-md font-bold'>
+                                    {/* CHOISIR LE TYPE DE BILLET */}
+                                    <div className='flex flex-col justify-center items-start gap-2 p-4'>
+                                        <div className='text-sm'>
+                                            <p>Type de billet</p>
                                         </div>
-                                        {/* CASE DATE ET HEURE */}
-                                        <div className='flex flex-col justify-center items-start text-[12px] pl-6'>
-                                            {/* Date */}
-                                            <div className='flex justify-start items-center text-gray-600'>
-                                                <p>{new Date(evenement?.dateLancement).toLocaleDateString('fr-FR', {
-                                                    day: 'numeric', month: 'long', year: 'numeric'
-                                                    })}
-                                                </p>
-                                            </div>
-                                            {/* Heure */}
-                                            <div className='flex justify-start items-center gap-2'>
-                                                <p className='font-bold'>
-                                                    {new Date(evenement?.dateLancement).toLocaleTimeString('fr-FR', {
-                                                        hour: '2-digit', minute: '2-digit'
-                                                    })}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                {/* LIEU */}
-                                <div className='flex justify-start items-center gap-2'>
-                                        <img className='h-5 w-5' src={map} alt="Icon de la localisation" />
-                                        <p className='text-[14px] font-bold'>{evenement?.lieu}</p>
-                                    </div>
-                                {/* DISPONIBILITE */}
-                                <div></div>
-                            </div>
-                            {/* NOMBRE DE BILLETS */}
-                            <div>
-                                <div className='flex justify-start items-center gap-2'>
-                                    <img className='h-5 w-5' src={calendrier} alt="Logo du lieu" />
-                                    <p className='text-[14px] font-bold'>{formaterStatut(evenement?.statut)}</p>
-                                </div>
-                            </div>
-                        </div>
-                        {/* BARRE DE SEPARATION */}
-                        <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div>
-                        {/* RESERVATION */}
-                        <div className='font-[500] p-4'>
-                            {categorieChoisie && (
-                                // AFFICHE LE PRIX SELON LE BILLET ET LES PLACES RESTANTES
-                                <div className='flex flex-col gap-6'>
-                                    <div>
-                                        <p>Prix par personne</p>
-                                        <p className='text-4xl font-bold'>{categorieChoisie.prix} FCFA</p>
-                                    </div>
-                                    <div>
-                                        <p>Disponibilité</p>
-                                        <p className='text-4xl font-bold'>{categorieChoisie.nombreRestant} <span className='font-[100] text-xl'>places restantes</span></p>
-                                    </div>
-                                    <div className='flex flex-col gap-4'>
-                                        <p>Nombre de billets</p>
-                                        {/* PARTIE INCREMENTATION */}
-                                        <div className='w-full flex gap-4 h-12'>
-                                            {/* DECREMENTATION */}
-                                            <button 
-                                                onClick={decrementer}
-                                                className='w-1/4 bg-[#C2611F]/30 flex justify-center items-center rounded-xl cursor-pointer hover:px-6 hover:bg-[#C2611F]/50 transition-all'>-</button>
-                                            {/* COMPTEUR */}
-                                            <div className='w-2/4 bg-[#C2611F]/40 flex justify-center items-center rounded-xl'>{quantite}</div>
-                                            {/* INCREMENTATION */}
-                                            <button
-                                                onClick={incrementer}
-                                                className='w-1/4 bg-[#C2611F]/30 flex justify-center items-center rounded-xl cursor-pointer hover:px-6 hover:bg-[#C2611F]/50 transition-all'>+</button>
-                                        </div>
-                                        {/* BUTON DE RESERVATION */}
-                                        {token && (
-                                            <button
-                                                onClick={() => setModalOuvert(true)}
-                                                className='w-full h-12 bg-[#C2611F]/30 flex justify-center items-center rounded-xl cursor-pointer hover:px-6 hover:bg-[#C2611F]/50 transition-all'
+                                        <div className='text-sm w-full'>
+                                            <select
+                                                name="billet" 
+                                                id="billet" 
+                                                className='w-full h-10 text-[12px] bg-[#C2611F]/10'
+                                                onChange={(e) => {
+                                                    const categorie = evenement.categories.find(c => c.id === parseInt(e.target.value))
+                                                    setCategorieChoisie(categorie)
+                                                }}
                                                 >
-                                                    Reserver ma place
-                                            </button>
+                                                <option 
+                                                className='w-full bg-[#C2611F]/20' 
+                                                value=""> Choisir une catégorie </option>
+                                                {evenement?.categories?.map(categorie => (
+                                                    <option className='w-full bg-[#C2611F]/20' key={categorie.id} value={categorie.id}>
+                                                        {categorie.nom}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    {/* BARRE DE SEPARATION */}
+                                    <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div>
+                                    {/* INFORMATION SUR L'EVEN */}
+                                    <div className='w-full p-4'>
+                                        {/* INFORMATION SPECIFIQUE */}
+                                        <div className='flex flex-col gap-4'>
+                                            {/* INFORMATION SUR LA DATE & HEURE */}
+                                            <div>
+                                                {/* Date et heure */}
+                                                <div className='flex flex-col justify-center items-start pt-4'>
+                                                    <div className='flex justify-center items-start gap-2'>
+                                                        <img className='h-5 w-5' src={calendrier} alt="Logo du calendrier" />
+                                                        <p className='text-[14px] font-bold'>Date & Heure</p>
+                                                    </div>
+                                                    {/* CASE DATE ET HEURE */}
+                                                    <div className='flex flex-col justify-center items-start text-[12px] pl-6'>
+                                                        {/* Date */}
+                                                        <div className='flex justify-start items-center text-gray-600'>
+                                                            <p>{new Date(evenement?.dateLancement).toLocaleDateString('fr-FR', {
+                                                                day: 'numeric', month: 'long', year: 'numeric'
+                                                                })}
+                                                            </p>
+                                                        </div>
+                                                        {/* Heure */}
+                                                        <div className='flex justify-start items-center gap-2'>
+                                                            <p className='font-bold'>
+                                                                {new Date(evenement?.dateLancement).toLocaleTimeString('fr-FR', {
+                                                                    hour: '2-digit', minute: '2-digit'
+                                                                })}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {/* LIEU */}
+                                            <div className='flex justify-start items-center gap-2'>
+                                                    <img className='h-5 w-5' src={map} alt="Icon de la localisation" />
+                                                    <p className='text-[14px] font-bold'>{evenement?.lieu}</p>
+                                                </div>
+                                            {/* DISPONIBILITE */}
+                                            <div></div>
+                                        </div>
+                                        {/* NOMBRE DE BILLETS */}
+                                        <div>
+                                            <div className='flex justify-start items-center gap-2'>
+                                                <img className='h-5 w-5' src={calendrier} alt="Logo du lieu" />
+                                                <p className='text-[14px] font-bold'>{formaterStatut(evenement?.statut)}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* BARRE DE SEPARATION */}
+                                    <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div>
+                                    {/* RESERVATION */}
+                                    <div className='font-[500] p-4'>
+                                        {categorieChoisie && (
+                                            // AFFICHE LE PRIX SELON LE BILLET ET LES PLACES RESTANTES
+                                            <div className='flex flex-col gap-6'>
+                                                <div>
+                                                    <p>Prix par personne</p>
+                                                    <p className='text-4xl font-bold'>{categorieChoisie.prix} FCFA</p>
+                                                </div>
+                                                <div>
+                                                    <p>Disponibilité</p>
+                                                    <p className='text-4xl font-bold'>{categorieChoisie.nombreRestant} <span className='font-[100] text-xl'>places restantes</span></p>
+                                                </div>
+                                                <div className='flex flex-col gap-4'>
+                                                    <p>Nombre de billets</p>
+                                                    {/* PARTIE INCREMENTATION */}
+                                                    <div className='w-full flex gap-4 h-12'>
+                                                        {/* DECREMENTATION */}
+                                                        <button 
+                                                            onClick={decrementer}
+                                                            className='w-1/4 bg-[#C2611F]/30 flex justify-center items-center rounded-xl cursor-pointer hover:px-6 hover:bg-[#C2611F]/50 transition-all'>-</button>
+                                                        {/* COMPTEUR */}
+                                                        <div className='w-2/4 bg-[#C2611F]/40 flex justify-center items-center rounded-xl'>{quantite}</div>
+                                                        {/* INCREMENTATION */}
+                                                        <button
+                                                            onClick={incrementer}
+                                                            className='w-1/4 bg-[#C2611F]/30 flex justify-center items-center rounded-xl cursor-pointer hover:px-6 hover:bg-[#C2611F]/50 transition-all'>+</button>
+                                                    </div>
+                                                    {/* BUTON DE RESERVATION */}
+                                                    {/* BOUTON FIXE MOBILE */}
+                                                    {token && categorieChoisie && (
+                                                        <div className='md:hidden fixed bottom-0 left-0 right-0 z-40 p-4 bg-white border-t border-gray-200'>
+                                                            <button
+                                                                onClick={() => setDrawerOuvert(true)}
+                                                                className='w-full h-14 bg-[#C2611F] text-white font-bold rounded-xl'
+                                                            >
+                                                                Réserver — {(quantite * (categorieChoisie?.prix || 0)).toFixed(0)} FCFA
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
                                         )}
                                     </div>
+                                    {/* BARRE DE SEPARATION */}
+                                    <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div>
+                                    {/* MOT DE FIN */}
+                                    <div className='text-[14px] flex justify-center items-center gap-2 p-4'>
+                                        <img className='h-7 w-7' src={shield} alt="Logo de mes evenements" />
+                                        <p>Paiement 100% sécurisé</p>
+                                    </div>
                                 </div>
-                            )}
-                        </div>
-                        {/* BARRE DE SEPARATION */}
-                        <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div>
-                        {/* MOT DE FIN */}
-                        <div className='text-[14px] flex justify-center items-center gap-2 p-4'>
-                            <img className='h-7 w-7' src={shield} alt="Logo de mes evenements" />
-                            <p>Paiement 100% sécurisé</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
             </section>
             {/* MODAL DE CONFIRMATION */}
             {modalOuvert && (

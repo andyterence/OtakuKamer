@@ -15,6 +15,7 @@ import Setting from './pages/setting';
 import ConditionUser from './pages/conditionUser';
 import PrivatyPolicy from './pages/privatyPolicy'
 import CursorTrail from "./components/shared/CursorTrail"
+import Scanner from './pages/scanner';
 
 function App() {
   const location = useLocation();
@@ -41,6 +42,7 @@ function App() {
         <Route path="/about/" element={<About />} />
         <Route path="/conditionUser/" element={<ConditionUser />} />
         <Route path="/privatyPolicy/" element={<PrivatyPolicy />} />
+        <Route path="/scanner" element={<PrivateRoute><Scanner /></PrivateRoute>} />
       </Routes>
     </>
   )

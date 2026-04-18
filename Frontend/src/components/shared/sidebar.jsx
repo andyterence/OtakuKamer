@@ -9,6 +9,7 @@ import align_text from "../../assets/icons/align-text-left-svgrepo-com.svg";
 import create_even from "../../assets/icons/plus-circle-add-new-create-cross-svgrepo-com.svg";
 import calendrier from "../../assets/icons/calendar-days-svgrepo-com.svg";
 import setting from "../../assets/icons/setting-svgrepo-com.svg";
+import qrcode from '../../assets/icons/qr-code.svg'
 import exit from "../../assets/icons/exit.svg";
 
 
@@ -158,6 +159,19 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
                                 onClick={() => navigate(`/calendrier`)}
                             >
                                 Calendrier
+                            </button>
+                        </div>
+                        {/* Scanner */}
+                        <div className={location.pathname === '/scanner' 
+                            ? 'active border-l-4 border-[#C2611F] bg-[#C2611F]/70 rounded-md text-[12px] flex justify-start items-center gap-2 py-2 px-4 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                            : 'border-l-4 border-[#C2611F] bg-[#C2611F]/10 rounded-md text-[12px] flex justify-start items-center gap-2 p-2 cursor-pointer transition-all duration-300 hover:shadow-sm shadow-[#C2611F]/50 hover:px-4 hover:bg-[#C2611F]/80'
+                        }>
+                            <img className='h-5 w-5' src={qrcode} alt="Logo d'accueil" />
+                            <button 
+                                className="cursor-pointer"
+                                onClick={() => navigate(`/scanner`)}
+                            >
+                                Scanner un billet
                             </button>
                         </div>
                         {/* Paramètres */}

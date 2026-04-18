@@ -19,6 +19,7 @@
     "dropzone": "^6.0.0-beta.2",
     "embla-carousel-react": "^8.6.0",
     "jquery": "^4.0.0",
+    "jsqr": "^1.4.0",
     "lodash": "^4.17.23",
     "nouislider": "^15.8.1",
     "preline": "^4.1.3",

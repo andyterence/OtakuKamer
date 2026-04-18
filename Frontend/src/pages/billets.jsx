@@ -45,7 +45,6 @@ export default function Billets() {
             alert('Veuillez d\'abord afficher le QR code !')
             return
         }
-        
         // 3. On convertit le canvas en image
         const url = canvas.toDataURL('image/png')
         
@@ -249,7 +248,13 @@ export default function Billets() {
                                         <div className='w-full h-full flex justify-center items-center top-10'>
                                             {qrOuvert === billet?.id && (
                                                 <QRCodeCanvas 
-                                                    value={billet?.qrcode}
+                                                    value={JSON.stringify({
+                                                        uuid: billet?.qrcode,
+                                                        evenement: billet?.categorie?.evenement?.titre,
+                                                        categorie: billet?.categorie?.nom,
+                                                        prix: billet?.prix,
+                                                        acheteur: billet?.categorie?.evenement?.organisateur?.first_name
+                                                    })}
                                                     size={120}
                                                     id={`qr-${billet?.id}`}
                                                     // niveau de correction d'erreur. Plus il est élevé, plus le QR code reste lisible même abîmé 
