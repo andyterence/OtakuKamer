@@ -21,7 +21,6 @@ export default function Setting() {
     // const [enAttente, setEnAttente] = useState(false)
     // Etat pour refuser l'autorisation du sidebar aux personnes qui ne sont pas connecter
     const token = localStorage.getItem('access')
-    // Menu ouvert ou pas
     const [menuOuvert, setMenuOuvert] = useState(false)
     const [ancienMotDePasse, setAncienMotDePasse] = useState('')
     const [nouveauMotDePasse, setNouveauMotDePasse] = useState('')

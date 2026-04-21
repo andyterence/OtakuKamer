@@ -72,7 +72,7 @@ function Sidebar({ menuOuvert, setMenuOuvert }) {
                     </div>
                     {/* Conteneur du titre */}
                     <div>
-                        <h1>KamerOtaku</h1>
+                        <h1>OtakuKamer</h1>
                     </div>
                 </div>
                 {/* SECTION PRINCIPALE */}

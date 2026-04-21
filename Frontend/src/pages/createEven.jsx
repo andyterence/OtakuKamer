@@ -13,6 +13,7 @@ import tag from '../assets/icons/tag.svg'
 import clock from '../assets/icons/clock.svg'
 import x from '../assets/icons/x.svg'
 import categorie from '../assets/icons/chart-column-stacked.svg'
+import menu from '../assets/icons/menu.svg'
 
 export default function CreateEven() {
 
@@ -33,6 +34,7 @@ export default function CreateEven() {
     // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
     const [modalOuvert, setModalOuvert] = useState(false)
+    const [menuOuvert, setMenuOuvert] = useState(false)
     // Pour afficher les messages de succes ou d'erreur après la création de l'événement avec la fonction Toast.jsx dans le dossier shared
     const [toastMessage, setToastMessage] = useState('')
     const [toastType, setToastType] = useState('succes')
@@ -83,7 +85,7 @@ export default function CreateEven() {
                 if (isNaN(dateObj.getTime())) {
                     setToastMessage("Le format de la date ou de l'heure est incorrect.");
                     setToastType('erreur');
-                    return; 
+                    return;
                 }
 
                 // 4. Ajout au FormData au format ISO
@@ -149,18 +151,32 @@ export default function CreateEven() {
     return (
         <div className='flex'>
             {/* SIDEBAR */}
-            <aside className="w-1/7 sticky top-0 h-screen">
-                <Sidebar />
-            </aside>
+                {menuOuvert && (
+                    <div 
+                        className='md:hidden fixed inset-0 bg-black/50 z-50'
+                        onClick={() => setMenuOuvert(false)}
+                    />
+                )}
+                <button 
+                    className='md:hidden fixed top-4 left-4 z-50'
+                    onClick={() => setMenuOuvert(!menuOuvert)}
+                >
+                    <div className='flex justify-center items-center h-9 w-9 bg-black/70 rounded-md z-50'>
+                        <img className='h-6 w-6' src={menu} alt="Menu" />
+                    </div>
+                </button>
+                <aside className="md:w-1/7 w-0 md:sticky md:top-0 md:h-screen z-50">
+                    <Sidebar menuOuvert={menuOuvert} setMenuOuvert={setMenuOuvert} />
+                </aside>
             {/* SECTION PRINCIPALE */}
-            <section className="w-6/7 flex flex-col justify-center items-center gap-10">
+            <section className="md:w-6/7 w-full flex flex-col justify-center items-center gap-10">
                 {/* TITRE ET SOUS TITRE */}
-                <div className='w-full flex flex-col justify-center items-start font-bold md:p-10 md:pb-0'>
-                    <h1 className='text-4xl'>Créer un Événement</h1>
-                    <p className='text-md text-[#C2611F]'>Remplissez les informations pour créer votre événement</p>
+                <div className='md:w-full flex flex-col justify-center items-start font-bold pt-10 md:p-10 pr-0'>
+                    <h1 className='text-2xl md:text-4xl'>Créer un Événement</h1>
+                    <p className='w-[80%] md:w-full text-sm md:text-md text-[#C2611F]'>Remplissez les informations pour créer votre événement</p>
                 </div>
                 {/* INFROMATION A REMPLIRE POUR LA CREATION DE L'EVNEMENT */}
-                <div className='w-[80%]'>
+                <div className='w-[80%] flex flex-col justify-center items-cente'>
                     {/* FORMULAIRE DE REMPLISSAGE */}
                     <form 
                         onSubmit={handleSubmit}
@@ -274,8 +290,8 @@ export default function CreateEven() {
                             {/* CONTENEUR DES INFORMATIONS */}
                             <div className='w-full flex flex-col gap-8'>
                                 {/* Type d'événement & Prix (FCFA) */}
-                                <div className='w-full flex gap-4'>
-                                    <div className='w-full flex flex-col px-4'>
+                                <div className='flex flex-col text-sm md:text-md'>
+                                    <div className='w-full flex flex-col px-4 '>
                                         <div className='w-full flex gap-2'>
                                             <img className='h-5 w-5' src={tag} alt="Icone des informations" />
                                             <label htmlFor="typeEven">Type d'événement</label>
@@ -285,7 +301,7 @@ export default function CreateEven() {
                                             id='typeEven'
                                             onChange={(e) => setTypeEven(e.target.value)}
                                             placeholder='     Ex:OtakuFest 2026'
-                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md'
+                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4'
                                         >
                                             <option value="Tous">Mixte</option>
                                             <option value="Anime">Anime</option>
@@ -295,10 +311,10 @@ export default function CreateEven() {
                                     </div>
                                 </div>
                                 {/* Date de l'événement & Heure de début */}
-                                <div className='w-full flex gap-4'>
-                                    <div className='w-full flex flex-col px-4'>
-                                        <div className='w-full flex gap-2'>
-                                            <img className='h-5 w-5' src={calendrier} alt="Icone des informations" />
+                                <div className='w-full flex md:justify-center items-center md:gap-4'>
+                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-4'>
+                                        <div className='w-full flex sm:justify-center md:justify-start items-center gap-1 md:gap-2 text-[12px] md:text-md'>
+                                            <img className='h-4 w-4 md:h-5 md:w-5' src={calendrier} alt="Icone des informations" />
                                             <label htmlFor="date">Date de l'événement</label>
                                         </div>
                                         <input
@@ -306,13 +322,13 @@ export default function CreateEven() {
                                             id='date'
                                             onChange={(e) => setDate(e.target.value)}
                                             placeholder='     Ex:OtakuFest 2026'
-                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4'
+                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md text-sm md:text-md px-2'
                                         >
                                         </input>
                                     </div>
-                                    <div className='w-full flex flex-col px-4'>
-                                        <div className='w-full flex gap-2'>
-                                            <img className='h-5 w-5' src={clock} alt="Icone des informations" />
+                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-4'>
+                                        <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
+                                            <img className='h-4 w-4 md:h-5 md:w-5' src={clock} alt="Icone des informations" />
                                             <label htmlFor="time">Heure de début</label>
                                         </div>
                                         <input
@@ -326,10 +342,10 @@ export default function CreateEven() {
                                     </div>
                                 </div>
                                 {/* Ville & Lieu précis */}
-                                <div className='w-full flex gap-4'>
-                                    <div className='w-full flex flex-col px-4'>
-                                        <div className='w-full flex gap-2'>
-                                            <img className='h-5 w-5' src={map} alt="Icone des informations" />
+                                <div className='w-full flex justify-center items-center md:gap-4'>
+                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-2'>
+                                        <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
+                                            <img className='h-4 w-4 md:h-5 md:w-5' src={map} alt="Icone des informations" />
                                             <label htmlFor="name">Ville</label>
                                         </div>
                                         <input
@@ -337,13 +353,13 @@ export default function CreateEven() {
                                             id='name'
                                             onChange={(e) => setVille(e.target.value)}
                                             placeholder='     Ex:OtakuFest 2026'
-                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md'
+                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md text-sm md:text-md'
                                         >
                                         </input>
                                     </div>
-                                    <div className='w-full flex flex-col px-4'>
-                                        <div className='w-full flex gap-2'>
-                                            <img className='h-5 w-5' src={map} alt="Icone des informations" />    
+                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-4'>
+                                        <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
+                                            <img className='h-4 w-4 md:h-5 md:w-5' src={map} alt="Icone des informations" />    
                                             <label htmlFor="name">Lieu précis</label>
                                         </div>
                                         <input
@@ -351,13 +367,13 @@ export default function CreateEven() {
                                             id='name'
                                             onChange={(e) => setLieu(e.target.value)}
                                             placeholder='     Ex:OtakuFest 2026'
-                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md'
+                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md text-sm md:text-md'
                                         >
                                         </input>
                                     </div>
                                 </div>
                                 {/* Statut de l'événement */}
-                                <div className='flex flex-col px-4'>
+                                <div className='flex flex-col md:px-4 text-sm md:text-md'>
                                     <div className='w-full'>
                                         <h1 htmlFor="description_long">Statut de l'événement</h1>
                                     </div>
@@ -369,7 +385,7 @@ export default function CreateEven() {
                                                     id='name'
                                                     onChange={(e) => setStatut(e.target.value)}
                                                     placeholder='     Ex:OtakuFest 2026'
-                                                    className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md'
+                                                    className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4'
                                                 >
                                                     <option value="en_preparation">En préparation</option>
                                                     <option value="annule">Annulé</option>
@@ -385,15 +401,15 @@ export default function CreateEven() {
                         {/* CATEGORIES DE BILLETS */}
                         <div className='w-full flex flex-col justify-center items-center gap-4 bg-[#C2611F]/10 rounded-xl px-6 py-6'>
                             {/* TITRE */}
-                            <div className='w-full flex justify-between items-center font-[500]'>
+                            <div className='w-full flex justify-between items-center text-sm md:text-md font-[500]'>
                                 <div className='flex items-center gap-2'>
-                                    <img className='h-6 w-6' src={categorie} alt="Icone des catégories" />
+                                    <img className='h-5 w-5 md:h-6 md:w-6' src={categorie} alt="Icone des catégories" />
                                     <h1>Catégories de billets</h1>
                                 </div>
                                 <button
                                     type="button"
                                     onClick={ajouterCategorie}
-                                    className='bg-[#C2611F] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#a14f19] transition-all'
+                                    className='bg-[#C2611F] text-white py-1 md:px-4 md:py-2 rounded-lg text-[13px] md:text-sm font-bold hover:bg-[#a14f19] transition-all cursor-pointer'
                                 >
                                     + Ajouter une catégorie
                                 </button>
@@ -402,7 +418,7 @@ export default function CreateEven() {
                             {/* LISTE DES CATEGORIES */}
                             <div className='w-full flex flex-col gap-4'>
                                 {categories.map((categorie, index) => (
-                                    <div key={index} className='w-full flex gap-4 items-end bg-[#C2611F]/10 rounded-xl p-4'>
+                                    <div key={index} className='w-full flex flex-col md:flex-row gap-4 md:items-end bg-[#C2611F]/10 rounded-xl p-4'>
                                                 
                                         {/* Nom de la catégorie */}
                                         <div className='flex-1 flex flex-col'>
@@ -464,7 +480,7 @@ export default function CreateEven() {
                             <button 
                                 type="submit" 
                                 disabled={enAttente}
-                                className='text-black bg-[#C2611F] px-4 h-6 w-2/3 md:h-10 rounded-sm font-bold md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/80'
+                                className='w-1/2 md:w-2/3 text-black bg-[#C2611F] px-4 h-10 md:h-6  md:h-10 rounded-sm font-bold text-[14px] md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/80'
                             >
                                 {enAttente ? 'Création en cours...' : 'Publier l\'événement'}
                             </button>
@@ -474,7 +490,7 @@ export default function CreateEven() {
                                 onClick={() => {
                                     setModalOuvert(true)
                                 }}
-                                className='text-black border-1 border-[#C2611F] px-4 h-6 w-1/3 md:h-10 rounded-sm font-bold md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/90 hover:text-white'
+                                className='w-1/2 md:w-1/3 text-black border-1 border-[#C2611F] md:px-4 h-10 md:h-6 md:h-10 rounded-sm font-bold text-[14px] md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/90 hover:text-white'
                             >
                                 {enAttente ? 'Création en cours...' : 'Enregistrer comme brouillon'}
                             </button>
