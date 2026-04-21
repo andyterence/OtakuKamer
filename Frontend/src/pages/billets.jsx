@@ -248,8 +248,8 @@ export default function Billets() {
                                         <div className='w-full h-full flex justify-center items-center top-10'>
                                             {qrOuvert === billet?.id && (
                                                 <QRCodeCanvas 
-                                                    value={JSON.stringify({
-                                                        uuid: billet?.qrcode,
+                                                    value={JSON.stringify({ // stringify pour convertir l'objet en string en vue de l'inclure dans le QR code
+                                                        uuid: billet?.qrcode, // uuid du billet pour l'identifier de manière unique lors de la validation
                                                         evenement: billet?.categorie?.evenement?.titre,
                                                         categorie: billet?.categorie?.nom,
                                                         prix: billet?.prix,

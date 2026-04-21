@@ -12,9 +12,9 @@ import users from '../assets/icons/users.svg'
 import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
 import map from '../assets/icons/map-check.svg'
 import shield from '../assets/icons/shield-check.svg'
-
+ 
 export default function EvenementShow() {
-
+ 
     const { id } = useParams()
     const [evenement, setEvenement] = useState(null)
     const [modalOuvert, setModalOuvert] = useState(false)
@@ -23,18 +23,24 @@ export default function EvenementShow() {
     const [utilisateur, setUtilisateur] = useState(null)
     // DECREMENTATION ET INCREMENTATION POUR L'ACHAT DES BILLETS
     const [quantite, setQuantite] = useState(1)
-    // UseState qui va se charger de la liste des evenements selon le type
+    // UseState qui va se charger de la catégorie choisie par l'utilisateur
     const [categorieChoisie, setCategorieChoisie] = useState(null)
+    // Etat pour ouvrir/fermer le drawer de réservation sur mobile
+    const [drawerOuvert, setDrawerOuvert] = useState(false)
     // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
     // Etat pour refuser l'autorisation a un element aux personnes qui ne sont pas connecter
     const token = localStorage.getItem('access')
-    const [drawerOuvert, setDrawerOuvert] = useState(false)
     const [methode, setMethode] = useState("MTN")
     const [numero, setNumero] = useState("")
-
-    // Fonction pour vérifier si l'utilisateur est connecté en récupérant les données de l'utilisateur à partir de l'API. Si la requête échoue avec une erreur 401 (non autorisé), cela signifie que le token d'accès n'est plus valide, donc les tokens sont supprimés du localStorage et l'utilisateur est redirigé vers la page de connexion. Cette fonction est appelée à la fois lors du chargement initial du composant et chaque fois qu'un événement 'profilMisAJour' est déclenché, ce qui permet de maintenir les informations de l'utilisateur à jour dans la barre latérale.
-    const seConnecter = async() => {
+    const [voirPlus, setVoirPlus] = useState(false)
+ 
+    // ─── FONCTIONS ────────────────────────────────────────────────────────────
+ 
+    // Vérifie si l'utilisateur est connecté et récupère ses données depuis l'API.
+    // Si le token est invalide (401), on le supprime et on redirige vers /login.
+    // Appelée au chargement et à chaque événement 'profilMisAJour'.
+    const seConnecter = async () => {
         try {
             const token = localStorage.getItem('access')
             const reponse = await axios.get(`${API_URL}/api/utilisateurs/me/`, {
@@ -50,104 +56,69 @@ export default function EvenementShow() {
             console.error(_err)
         }
     }
-
-    // Premier useEffect — chargement initial
-    useEffect(() => {
-        // Appel de la fonction seConnecter pour vérifier si l'utilisateur est connecté et récupérer ses données lors du chargement initial du composant
-        seConnecter()
-    }, [])
-
-    // UseEffect pour écouter les événements de mise à jour du profil et recharger les données de l'utilisateur en conséquence. Cela permet de s'assurer que les informations affichées dans la barre latérale sont toujours à jour, même après une modification du profil (comme le changement de photo). Lorsqu'un événement 'profilMisAJour' est déclenché, la fonction seConnecter est appelée pour récupérer les dernières données de l'utilisateur et mettre à jour le state utilisateur avec ces nouvelles informations.
-    useEffect(() => {
-        window.addEventListener('profilMisAJour', seConnecter)
-        return () => window.removeEventListener('profilMisAJour', seConnecter)
-    }, [])
-
-    // FONCTION POUR LA RESERVATION
-    // const reserver = async () => {
-    // if (!categorieChoisie) {
-    //     alert('Veuillez choisir une catégorie !')
-    //     return
-    //     }
-    //     try {
-    //         const token = localStorage.getItem('access')
-    //         const reponse = await axios.post(
-    //             `${API_URL}/api/billet/`,
-    //             { categorie: categorieChoisie.id, quantite: quantite },
-    //             { headers: { Authorization: `Bearer ${token}` } }
-    //         )
-    //         setMessageConfirmation(true)
-    //         setTimeout(() => {
-    //             setMessageConfirmation(false)
-    //             navigate('/billets')
-    //         }, 1000)
-    //     } catch (_err) {
-    //         console.error(_err)
-    //     }
-    // }
-    // FONCTION POUR LE PAIEMENT
-    const payer = async () => {
+ 
+    // Envoie la réservation à l'API et redirige vers /billets si succès.
+    const reserver = async () => {
         if (!categorieChoisie) {
             alert('Veuillez choisir une catégorie !')
             return
         }
-
         try {
             const token = localStorage.getItem('access')
-
-            const res = await axios.post(
-                `${API_URL}/api/paiements/`,
-                {
-                    categorie_id: categorieChoisie.id,
-                    quantite: quantite,
-                    methode: "MTN", // temporaire
-                    numero: "677000000" // à remplacer par input utilisateur
-                },
-                {
-                    headers: { Authorization: `Bearer ${token}` }
-                }
+            await axios.post(
+                `${API_URL}/api/billet/`,
+                { categorie: categorieChoisie.id, quantite: quantite },
+                { headers: { Authorization: `Bearer ${token}` } }
             )
-
-            // Cas 1 : paiement avec redirection (campay)
-            if (res.data.payment_url) {
-                window.location.href = res.data.payment_url
-            }
-
-            // Cas 2 : simulation locale
-            else {
-                setMessageConfirmation(true)
-                setTimeout(() => {
-                    navigate('/billets')
-                }, 1500)
-            }
-
-        } catch (err) {
-            console.error(err)
-            alert("Erreur lors du paiement")
+            setMessageConfirmation(true)
+            setTimeout(() => {
+                setMessageConfirmation(false)
+                navigate('/billets')
+            }, 1000)
+        } catch (_err) {
+            console.error(_err)
         }
     }
+ 
+    // Incrémente la quantité sans dépasser le nombre de places restantes
     const incrementer = () => {
         if (quantite < categorieChoisie?.nombreRestant) {
             setQuantite(quantite + 1)
         }
     }
+ 
+    // Décrémente la quantité sans descendre en dessous de 1
     const decrementer = () => {
         if (quantite > 1) {
             setQuantite(quantite - 1)
         }
     }
-
-    // Initialiser AOS pour les animations au scroll
+ 
+    // ─── EFFETS ───────────────────────────────────────────────────────────────
+ 
+    // Chargement initial — récupère les données de l'utilisateur connecté
+    useEffect(() => {
+        seConnecter()
+    }, [])
+ 
+    // Écoute les mises à jour de profil (ex : changement de photo depuis Setting)
+    // pour maintenir les données utilisateur à jour dans le composant
+    useEffect(() => {
+        window.addEventListener('profilMisAJour', seConnecter)
+        return () => window.removeEventListener('profilMisAJour', seConnecter)
+    }, [])
+ 
+    // Initialise les animations AOS au scroll
     useEffect(() => {
         AOS.init({
-            duration: 1000, // Durée de l'animation
-            once: false,    // l'animation se répète au scroll
-        });
-        }, []);
-
-    // Charger les détails de l'événement à partir de l'API en utilisant l'ID de l'événement extrait des paramètres de l'URL
+            duration: 1000, // Durée de l'animation en ms
+            once: false,    // L'animation se répète à chaque scroll
+        })
+    }, [])
+ 
+    // Charge les détails de l'événement depuis l'API via l'ID dans l'URL
     useEffect(() => {
-        const chargerEvenement = async() => {
+        const chargerEvenement = async () => {
             setEnAttente(true)
             try {
                 const reponse = await axios.get(`${API_URL}/api/evenements/${id}/`)
@@ -160,300 +131,387 @@ export default function EvenementShow() {
         }
         chargerEvenement()
     }, [id])
-
-
+ 
+    // ─── CONTENU ACHAT (partagé entre desktop et drawer mobile) ──────────────
+    // Ce bloc JSX est utilisé deux fois : dans la colonne droite desktop
+    // et dans le drawer mobile. On le définit ici pour éviter la duplication.
+    const contenuAchat = (
+        <div className='bg-[#C2611F]/20 w-full rounded-md font-bold'>
+            {/* CHOISIR LE TYPE DE BILLET */}
+            <div className='flex flex-col justify-center items-start gap-2 p-4'>
+                <p className='text-sm'>Type de billet</p>
+                <div className='text-sm w-full'>
+                    <select
+                        name="billet"
+                        id="billet"
+                        className='w-full h-10 text-[12px] bg-[#C2611F]/10 rounded-md px-2'
+                        onChange={(e) => {
+                            const categorie = evenement.categories.find(c => c.id === parseInt(e.target.value))
+                            setCategorieChoisie(categorie)
+                            // Remet la quantité à 1 quand on change de catégorie
+                            setQuantite(1)
+                        }}
+                    >
+                        <option className='w-full bg-[#C2611F]/20' value="">Choisir une catégorie</option>
+                        {evenement?.categories?.map(categorie => (
+                            <option className='w-full bg-[#C2611F]/20' key={categorie.id} value={categorie.id}>
+                                {categorie.nom}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+ 
+            {/* BARRE DE SEPARATION */}
+            <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div>
+ 
+            {/* INFORMATIONS SUR L'EVENEMENT */}
+            <div className='w-full p-4 flex flex-col gap-4'>
+                {/* DATE ET HEURE */}
+                <div className='flex flex-col justify-center items-start pt-2'>
+                    <div className='flex justify-center items-start gap-2'>
+                        <img className='h-5 w-5' src={calendrier} alt="Logo du calendrier" />
+                        <p className='text-[14px] font-bold'>Date & Heure</p>
+                    </div>
+                    <div className='flex flex-col justify-center items-start text-[12px] pl-6'>
+                        {/* Date lisible en français */}
+                        <p className='text-gray-600'>
+                            {new Date(evenement?.dateLancement).toLocaleDateString('fr-FR', {
+                                day: 'numeric', month: 'long', year: 'numeric'
+                            })}
+                        </p>
+                        {/* Heure */}
+                        <p className='font-bold'>
+                            {new Date(evenement?.dateLancement).toLocaleTimeString('fr-FR', {
+                                hour: '2-digit', minute: '2-digit'
+                            })}
+                        </p>
+                    </div>
+                </div>
+ 
+                {/* LIEU */}
+                <div className='flex justify-start items-center gap-2'>
+                    <img className='h-5 w-5' src={map} alt="Icon de la localisation" />
+                    <p className='text-[14px] font-bold'>{evenement?.lieu}</p>
+                </div>
+ 
+                {/* STATUT — formaterStatut convertit 'en_preparation' en 'En préparation' */}
+                <div className='flex justify-start items-center gap-2'>
+                    <img className='h-5 w-5' src={calendrier} alt="Logo du statut" />
+                    <p className='text-[14px] font-bold'>{formaterStatut(evenement?.statut)}</p>
+                </div>
+            </div>
+ 
+            {/* BARRE DE SEPARATION */}
+            <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div>
+ 
+            {/* SECTION RESERVATION — visible seulement si une catégorie est choisie */}
+            <div className='font-[500] p-4'>
+                {categorieChoisie ? (
+                    <div className='flex flex-col gap-6'>
+                        {/* Prix unitaire */}
+                        <div>
+                            <p>Prix par personne</p>
+                            <p className='text-4xl font-bold'>{categorieChoisie.prix} FCFA</p>
+                        </div>
+                        {/* Places restantes */}
+                        <div>
+                            <p>Disponibilité</p>
+                            <p className='text-4xl font-bold'>
+                                {categorieChoisie.nombreRestant}
+                                <span className='font-[100] text-xl'> places restantes</span>
+                            </p>
+                        </div>
+                        {/* SELECTEUR DE QUANTITE */}
+                        <div className='flex flex-col gap-4'>
+                            <p>Nombre de billets</p>
+                            <div className='w-full flex gap-4 h-12'>
+                                {/* Bouton moins */}
+                                <button
+                                    onClick={decrementer}
+                                    className='w-1/4 bg-[#C2611F]/30 flex justify-center items-center rounded-xl cursor-pointer hover:bg-[#C2611F]/50 transition-all'
+                                >-</button>
+                                {/* Compteur */}
+                                <div className='w-2/4 bg-[#C2611F]/40 flex justify-center items-center rounded-xl'>{quantite}</div>
+                                {/* Bouton plus */}
+                                <button
+                                    onClick={incrementer}
+                                    className='w-1/4 bg-[#C2611F]/30 flex justify-center items-center rounded-xl cursor-pointer hover:bg-[#C2611F]/50 transition-all'
+                                >+</button>
+                            </div>
+                            {/* BOUTON RESERVER — visible seulement si connecté */}
+                            {token && (
+                                <button
+                                    onClick={() => setModalOuvert(true)}
+                                    className='w-full h-12 bg-[#C2611F] text-white flex justify-center items-center rounded-xl cursor-pointer hover:bg-[#a14f19] transition-all'
+                                >
+                                    Réserver ma place
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                ) : (
+                    // Message par défaut si aucune catégorie n'est sélectionnée
+                    <p className='text-gray-500 text-sm text-center py-4'>
+                        Sélectionnez une catégorie pour voir les prix et réserver
+                    </p>
+                )}
+            </div>
+ 
+            {/* BARRE DE SEPARATION */}
+            <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div>
+ 
+            {/* MOT DE FIN */}
+            <div className='text-[14px] flex justify-center items-center gap-2 p-4'>
+                <img className='h-7 w-7' src={shield} alt="Logo de sécurité" />
+                <p>Paiement 100% sécurisé</p>
+            </div>
+        </div>
+    )
+ 
+    // ─── RENDU ────────────────────────────────────────────────────────────────
     return (
         <div>
-            {/* PREMIERE SECTION HERO - L'IMAGE DE L'EVENEMENT */}
-            <section className="relative text-[#F1F1F1] font-bold h-[70vh] w-full flex md:flex-row bg-cover-center md:p-4"
-                style={{ backgroundImage: `url(${evenement?.image || background})` }}>
-                {/* Overlay sombre */}
+            {/* ── SECTION 1 : HERO ──────────────────────────────────────────────── */}
+            <section
+                className="relative text-[#F1F1F1] font-bold h-[70vh] w-full flex md:flex-row bg-cover bg-center p-4"
+                style={{ backgroundImage: `url(${evenement?.image || background})` }}
+            >
+                {/* Overlay sombre pour lisibilité du texte */}
                 <div className="absolute inset-0 bg-black/70"></div>
-                <div className='z-10 flex flex-col justify-between items-start'>
-                    {/* Bouton retour */}
-                    <div>
-                        <button 
-                            onClick={() => navigate(-1)}
-                            className='bg-[#C2611F]/30 flex justify-center items-center gap-2 text-[12px] text-[#F1F1F1] px-4 py-3 rounded-xl font-bold cursor-pointer hover:px-6 hover:bg-[#C2611F]/50 transition-all'>
-                            <img className='h-5 w-5' src={move_left} alt="Logo de mes evenements" />
-                            <p>Retour</p>
-                        </button>
-                    </div>
-                    {/* Section - TYPE + TITRE + AVIS + PARTICIPANTS */}
-                    <div className='flex jusfity-evenly items-center animate__animated animate__zoomInLeft'>
-                        <div className='flex flex-col items-center justify-center gap-4'>
-                            {/* Titre */}
-                            <div>
-                                <h1 className='text-5xl font-bold text-[#F1F1F1]'>
-                                    {evenement?.titre}
-                                </h1>
-                            </div>
-                            {/* Type */}
-                            <div className='w-40 h-10 bg-[#C2611F] text-white text-[12px] flex justify-center items-center px-4 py-1 rounded-full'>
+ 
+                <div className='z-10 flex flex-col justify-between items-start w-full'>
+                    {/* BOUTON RETOUR */}
+                    <button
+                        onClick={() => navigate(-1)}
+                        className='bg-[#C2611F]/30 flex justify-center items-center gap-2 text-[12px] text-[#F1F1F1] px-4 py-3 rounded-xl font-bold cursor-pointer hover:px-6 hover:bg-[#C2611F]/50 transition-all'
+                    >
+                        <img className='h-5 w-5' src={move_left} alt="Retour" />
+                        <p>Retour</p>
+                    </button>
+ 
+                    {/* TITRE + TYPE + AVIS + PARTICIPANTS */}
+                    <div className='flex items-center animate__animated animate__zoomInLeft'>
+                        <div className='flex flex-col items-start justify-center gap-4'>
+                            {/* Titre de l'événement */}
+                            <h1 className='text-3xl md:text-5xl font-bold text-[#F1F1F1]'>
+                                {evenement?.titre}
+                            </h1>
+                            {/* Badge type d'événement */}
+                            <div className='w-40 h-10 border-1 border-[#C2611F] text-white text-[12px] flex justify-center items-center px-4 py-1 rounded-xl'>
                                 <p>{evenement?.typeEven}</p>
                             </div>
-                            <div className='flex justify-center items-center gap-4'>
-                                {/* Participants + Avis */}
-                                <div className='flex items-center justify-center gap-6'>
-                                    <div className='flex justify-center items-center'>
-                                        <img className='h-5 w-5' src={star} alt="Logo de mes evenements" />
-                                        <p> 4.5 / 5 (156 avis)</p>
-                                    </div>
-                                    <div className='flex justify-center items-center text-[20px]'>.</div>
-                                    <div className='flex justify-center items-center'>
-                                        <img className='h-5 w-5' src={users} alt="Logo de mes evenements" />
-                                        <p> 120 participants</p>
-                                    </div>
+                            {/* Avis et participants — données statiques pour l'instant */}
+                            <div className='flex items-center justify-center gap-4 flex-wrap'>
+                                <div className='flex justify-center items-center'>
+                                    <img className='h-5 w-5' src={star} alt="Étoile" />
+                                    <p className='text-sm'> 4.5 / 5 (156 avis)</p>
+                                </div>
+                                <span className='text-[20px]'>·</span>
+                                <div className='flex justify-center items-center'>
+                                    <img className='h-5 w-5' src={users} alt="Participants" />
+                                    <p className='text-sm'> 120 participants</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-            {/* DEUXIEME SECTION INFORMATION SUR L'EVEN */}
-            <section className='flex flex-col md:flex-row justify-center w-full h-full bg-gray-200'>
-                {/* PREMIERE COLONE */}
+ 
+            {/* ── SECTION 2 : INFOS + ACHAT ─────────────────────────────────────── */}
+            {/* Sur mobile : colonne unique (flex-col)
+                Sur desktop : deux colonnes côte à côte (md:flex-row) */}
+            <section className='flex flex-col md:flex-row justify-center items-center md:items-start w-full bg-gray-200'>
+                {/* ── COLONNE GAUCHE : INFORMATIONS ─────────────────────────────── */}
+                {/* Prend toute la largeur sur mobile, 3/5 sur desktop */}
                 <div className='w-full md:w-3/5 h-full flex flex-col justify-center items-center gap-4 m-4'>
-                    {/* À propos de l'événement */}
-                    <div data-aos="fade-up" className='w-[90%] h-110 bg-gray-100 p-4 flex flex-col justify-center items-start rounded-md gap-2'>
-                        <h1>À propos de l'événement</h1>
-                        <p className='bg-[#C2611F]/20 overflow-x-auto w-full rounded-md p-4'>
-                            {evenement?.description}
+ 
+                    {/* À PROPOS */}
+                    <div data-aos="fade-up" className='w-[90%] min-h-40 bg-gray-100 p-4 flex flex-col justify-center items-start rounded-md gap-2'>
+                        <h1 className='font-bold text-lg'>À propos de l'événement</h1>
+                        <p className='bg-[#C2611F]/20 overflow-auto w-full rounded-md p-4 text-sm leading-relaxed'>
+                            {/* Si voirPlus est false — affiche seulement 200 caractères
+                                Si voirPlus est true — affiche tout le texte */}
+                            {voirPlus 
+                                ? evenement?.description
+                                : evenement?.description?.slice(0, 200)
+                            }
+                            {/* Affiche "..." et le bouton seulement si la description dépasse 200 caractères */}
+                            {evenement?.description?.length > 200 && (
+                                <>
+                                    {!voirPlus && '...'}
+                                    <button
+                                        onClick={() => setVoirPlus(!voirPlus)}
+                                        className='block text-[#C2611F] font-bold mt-2 hover:underline cursor-pointer'
+                                    >
+                                        {voirPlus ? 'Voir moins ↑' : 'Voir plus ↓'}
+                                    </button>
+                                </>
+                            )}
                         </p>
                     </div>
-                    {/* Galerie */}
-                    <div data-aos="fade-up" className='w-[90%] h-90 bg-gray-100 p-4 font-bold flex flex-col rounded-md gap-2'>
+                    
+                    {/* GALERIE PHOTOS */}
+                    <div data-aos="fade-up" className='w-[90%] h-60 md:h-90 bg-gray-100 p-4 font-bold flex flex-col rounded-md gap-2'>
                         <h1>Galerie</h1>
-                        <div className='h-full w-full flex justify-center items-center gap-2'>
-                            {evenement?.photos?.map(photo => (
-                                <div 
-                                    key={photo.id}
-                                    className='bg-cover bg-center h-full w-full rounded-xl cursor-pointer'
-                                    style={{ backgroundImage: `url(${photo.image})` }}>
-                                </div>
-                            ))}
+                        <div className='h-full w-full flex justify-center items-center gap-2 overflow-x-auto'>
+                            {evenement?.photos?.length > 0
+                                ? evenement.photos.map(photo => (
+                                    <div
+                                        key={photo.id}
+                                        className='bg-cover bg-center h-full min-w-[140px] w-full rounded-xl cursor-pointer flex-shrink-0'
+                                        style={{ backgroundImage: `url(${photo.image})` }}
+                                    />
+                                ))
+                                : <p className='text-gray-400 text-sm font-normal'>Aucune photo disponible</p>
+                            }
                         </div>
                     </div>
-                    {/* Organisé par */}
-                    <div data-aos="fade-up" className='w-[90%] h-full bg-gray-100 p-4 font-bold flex flex-col rounded-xl gap-2'>
+ 
+                    {/* ORGANISATEUR */}
+                    <div data-aos="fade-up" className='w-[90%] h-full bg-gray-100 p-4 font-bold flex flex-col rounded-xl gap-2 mb-24 md:mb-4'>
                         <h1>Organisé par</h1>
-                        <div className="w-full h-35 flex items-center justify-start gap-2 bg-[#C2611F]/20 rounded-md p-10">
-                            {/* Icon de l'organisateur */}
-                            <div className="bg-[#C2611F] w-25 h-25 rounded-full flex justify-center items-center">
+                        <div className="w-full flex items-center justify-start gap-4 bg-[#C2611F]/20 rounded-md p-6">
+                            {/* Photo de profil de l'organisateur */}
+                            <div className="bg-[#C2611F] w-16 h-16 md:w-20 md:h-20 rounded-full flex justify-center items-center overflow-hidden flex-shrink-0">
                                 {evenement?.organisateur?.photoProfil ? (
-                                    <img 
-                                        src={evenement?.organisateur?.photoProfil} 
+                                    <img
+                                        src={evenement.organisateur.photoProfil}
                                         className='h-full w-full object-cover rounded-full'
-                                        alt="Photo de profil"
+                                        alt="Photo de l'organisateur"
                                     />
                                 ) : (
-                                    <img className='h-10 h-10' src={users} alt="Logo d'utilisateur" />
+                                    <img className='h-8 w-8' src={users} alt="Utilisateur" />
                                 )}
                             </div>
-                            {/* Nom de l'organisation */}
+                            {/* Nom de l'organisateur */}
                             <div className="flex flex-col">
-                                <h1 className="font-bold text-2xl">{evenement?.organisateur?.first_name} {evenement?.organisateur?.last_name}</h1>
-                                <p className="text-gray-500 text-md">Organisateur verifier</p>
+                                <h1 className="font-bold text-lg md:text-2xl">
+                                    {evenement?.organisateur?.first_name} {evenement?.organisateur?.last_name}
+                                </h1>
+                                <p className="text-gray-500 text-sm">Organisateur vérifié</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                {/* DEUXIEME COLONE - INFO SUR L'ACHAT DE BILLET*/}
-                {/* DRAWER MOBILE */}
-                {drawerOuvert && (
-                    <div className='md:hidden fixed inset-0 z-50'>
-                        {/* Overlay sombre */}
-                        <div 
-                            className='absolute inset-0 bg-black/60'
-                            onClick={() => setDrawerOuvert(false)}
-                        />
-                        {/* Panneau qui remonte */}
-                        <div className='absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl p-6 flex flex-col gap-4'>
-                            {/* Barre de fermeture */}
-                            <div className='w-12 h-1 bg-gray-300 rounded-full mx-auto'></div>
-                            {/* Contenu du drawer (similaire à la section de droite du desktop) */}
-                            <div className='relative w-2/5 bg-gray-200 hidden md:flex justify-center items-start py-4'>
-                                <div data-aos="fade-up" className='sticky top-0 bg-[#C2611F]/20 w-100 min-h-screen rounded-md font-bold'>
-                                    {/* CHOISIR LE TYPE DE BILLET */}
-                                    <div className='flex flex-col justify-center items-start gap-2 p-4'>
-                                        <div className='text-sm'>
-                                            <p>Type de billet</p>
-                                        </div>
-                                        <div className='text-sm w-full'>
-                                            <select
-                                                name="billet" 
-                                                id="billet" 
-                                                className='w-full h-10 text-[12px] bg-[#C2611F]/10'
-                                                onChange={(e) => {
-                                                    const categorie = evenement.categories.find(c => c.id === parseInt(e.target.value))
-                                                    setCategorieChoisie(categorie)
-                                                }}
-                                                >
-                                                <option 
-                                                className='w-full bg-[#C2611F]/20' 
-                                                value=""> Choisir une catégorie </option>
-                                                {evenement?.categories?.map(categorie => (
-                                                    <option className='w-full bg-[#C2611F]/20' key={categorie.id} value={categorie.id}>
-                                                        {categorie.nom}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-                                    {/* BARRE DE SEPARATION */}
-                                    <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div>
-                                    {/* INFORMATION SUR L'EVEN */}
-                                    <div className='w-full p-4'>
-                                        {/* INFORMATION SPECIFIQUE */}
-                                        <div className='flex flex-col gap-4'>
-                                            {/* INFORMATION SUR LA DATE & HEURE */}
-                                            <div>
-                                                {/* Date et heure */}
-                                                <div className='flex flex-col justify-center items-start pt-4'>
-                                                    <div className='flex justify-center items-start gap-2'>
-                                                        <img className='h-5 w-5' src={calendrier} alt="Logo du calendrier" />
-                                                        <p className='text-[14px] font-bold'>Date & Heure</p>
-                                                    </div>
-                                                    {/* CASE DATE ET HEURE */}
-                                                    <div className='flex flex-col justify-center items-start text-[12px] pl-6'>
-                                                        {/* Date */}
-                                                        <div className='flex justify-start items-center text-gray-600'>
-                                                            <p>{new Date(evenement?.dateLancement).toLocaleDateString('fr-FR', {
-                                                                day: 'numeric', month: 'long', year: 'numeric'
-                                                                })}
-                                                            </p>
-                                                        </div>
-                                                        {/* Heure */}
-                                                        <div className='flex justify-start items-center gap-2'>
-                                                            <p className='font-bold'>
-                                                                {new Date(evenement?.dateLancement).toLocaleTimeString('fr-FR', {
-                                                                    hour: '2-digit', minute: '2-digit'
-                                                                })}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {/* LIEU */}
-                                            <div className='flex justify-start items-center gap-2'>
-                                                    <img className='h-5 w-5' src={map} alt="Icon de la localisation" />
-                                                    <p className='text-[14px] font-bold'>{evenement?.lieu}</p>
-                                                </div>
-                                            {/* DISPONIBILITE */}
-                                            <div></div>
-                                        </div>
-                                        {/* NOMBRE DE BILLETS */}
-                                        <div>
-                                            <div className='flex justify-start items-center gap-2'>
-                                                <img className='h-5 w-5' src={calendrier} alt="Logo du lieu" />
-                                                <p className='text-[14px] font-bold'>{formaterStatut(evenement?.statut)}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* BARRE DE SEPARATION */}
-                                    <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div>
-                                    {/* RESERVATION */}
-                                    <div className='font-[500] p-4'>
-                                        {categorieChoisie && (
-                                            // AFFICHE LE PRIX SELON LE BILLET ET LES PLACES RESTANTES
-                                            <div className='flex flex-col gap-6'>
-                                                <div>
-                                                    <p>Prix par personne</p>
-                                                    <p className='text-4xl font-bold'>{categorieChoisie.prix} FCFA</p>
-                                                </div>
-                                                <div>
-                                                    <p>Disponibilité</p>
-                                                    <p className='text-4xl font-bold'>{categorieChoisie.nombreRestant} <span className='font-[100] text-xl'>places restantes</span></p>
-                                                </div>
-                                                <div className='flex flex-col gap-4'>
-                                                    <p>Nombre de billets</p>
-                                                    {/* PARTIE INCREMENTATION */}
-                                                    <div className='w-full flex gap-4 h-12'>
-                                                        {/* DECREMENTATION */}
-                                                        <button 
-                                                            onClick={decrementer}
-                                                            className='w-1/4 bg-[#C2611F]/30 flex justify-center items-center rounded-xl cursor-pointer hover:px-6 hover:bg-[#C2611F]/50 transition-all'>-</button>
-                                                        {/* COMPTEUR */}
-                                                        <div className='w-2/4 bg-[#C2611F]/40 flex justify-center items-center rounded-xl'>{quantite}</div>
-                                                        {/* INCREMENTATION */}
-                                                        <button
-                                                            onClick={incrementer}
-                                                            className='w-1/4 bg-[#C2611F]/30 flex justify-center items-center rounded-xl cursor-pointer hover:px-6 hover:bg-[#C2611F]/50 transition-all'>+</button>
-                                                    </div>
-                                                    {/* BUTON DE RESERVATION */}
-                                                    {/* BOUTON FIXE MOBILE */}
-                                                    {token && categorieChoisie && (
-                                                        <div className='md:hidden fixed bottom-0 left-0 right-0 z-40 p-4 bg-white border-t border-gray-200'>
-                                                            <button
-                                                                onClick={() => setDrawerOuvert(true)}
-                                                                className='w-full h-14 bg-[#C2611F] text-white font-bold rounded-xl'
-                                                            >
-                                                                Réserver — {(quantite * (categorieChoisie?.prix || 0)).toFixed(0)} FCFA
-                                                            </button>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                    {/* BARRE DE SEPARATION */}
-                                    <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div>
-                                    {/* MOT DE FIN */}
-                                    <div className='text-[14px] flex justify-center items-center gap-2 p-4'>
-                                        <img className='h-7 w-7' src={shield} alt="Logo de mes evenements" />
-                                        <p>Paiement 100% sécurisé</p>
-                                    </div>
-                                </div>
-                            </div>
+ 
+                {/* ── COLONNE DROITE : ACHAT DE BILLET (DESKTOP UNIQUEMENT) ─────── */}
+                {/* hidden sur mobile — le drawer prend le relais sur mobile */}
+                {/* visible (flex) à partir de md */}
+                <div className='hidden md:flex relative w-2/5 justify-center items-start py-4 px-2'>
+                    <div className='sticky top-4 w-full max-w-sm'>
+                        {contenuAchat}
+                    </div>
+                </div>
+            </section>
+
+            {/* BOUTON FIXE MOBILE — visible dès que l'événement est chargé */}
+            {token && evenement && (
+                <div className='md:hidden fixed bottom-0 left-0 right-0 z-40 p-4 bg-white border-t border-gray-200 shadow-lg'>
+                    <button
+                        onClick={() => setDrawerOuvert(true)}
+                        className='w-full h-14 bg-[#C2611F] text-white font-bold rounded-xl text-lg'
+                    >
+                        {categorieChoisie 
+                            ? `Réserver — ${(quantite * (categorieChoisie?.prix || 0)).toFixed(0)} FCFA`
+                            : 'Choisir mes billets'
+                        }
+                    </button>
+                </div>
+            )}
+            {/* ── DRAWER MOBILE ──────────────────────────────────────────────────── */}
+            {/* Visible uniquement sur mobile (md:hidden)
+                S'ouvre depuis le bas quand drawerOuvert === true
+                Contient le même contenu que la colonne droite desktop */}
+            {drawerOuvert && (
+                <div className='md:hidden fixed inset-0 z-50'>
+                    {/* Overlay sombre — clic pour fermer le drawer */}
+                    <div
+                        className='absolute inset-0 bg-black/60'
+                        onClick={() => setDrawerOuvert(false)}
+                    />
+                    {/* Panneau blanc qui remonte depuis le bas */}
+                    <div className='absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl flex flex-col max-h-[85vh]'>
+                        {/* Barre grise de fermeture en haut du drawer */}
+                        <div className='flex justify-center pt-3 pb-2'>
+                            <div className='w-12 h-1 bg-gray-300 rounded-full'></div>
+                        </div>
+                        {/* Contenu scrollable du drawer */}
+                        <div className='overflow-y-auto px-4 pb-6'>
+                            {/* contenuAchat contient : sélect catégorie, infos date/lieu/statut,
+                                sélecteur quantité, bouton réserver, mention paiement sécurisé */}
+                            {contenuAchat}
                         </div>
                     </div>
-                )}
-            </section>
-            {/* MODAL DE CONFIRMATION */}
+                </div>
+            )}
+ 
+            {/* ── MODAL DE CONFIRMATION ──────────────────────────────────────────── */}
+            {/* S'ouvre quand l'utilisateur clique sur "Réserver ma place"
+                Affiche le récap de la commande avant confirmation finale */}
             {modalOuvert && (
-                <div className='fixed inset-0 bg-black/60 z-50 flex justify-center items-center'>
-                    <div className='bg-white rounded-xl p-8 w-96 flex flex-col gap-6'>
+                <div className='fixed inset-0 bg-black/60 z-50 flex justify-center items-center px-4'>
+                    <div className='bg-white rounded-xl p-6 md:p-8 w-full max-w-md flex flex-col gap-4'>
                         <h2 className='text-xl font-bold'>Confirmer la réservation</h2>
-                        <p>{quantite} billet(s) — {categorieChoisie?.nom}</p>
+                        {/* Récapitulatif */}
+                        <p className='text-gray-600'>{quantite} billet(s) — {categorieChoisie?.nom}</p>
                         <p className='text-2xl font-bold text-[#C2611F]'>
-                            Total : {(quantite * categorieChoisie?.prix).toFixed(0)} FCFA
+                            Total : {(quantite * (categorieChoisie?.prix || 0)).toFixed(0)} FCFA
                         </p>
-                        {/* METHODE DE PAIEMENT */}
-                        <select onChange={(e) => setMethode(e.target.value)}>
+                        {/* Sélecteur méthode de paiement */}
+                        <select
+                            onChange={(e) => {
+                                if (!evenement?.categories) return  // ← protection si l'event n'est pas chargé
+                                const categorie = evenement.categories.find(c => c.id === parseInt(e.target.value))
+                                setCategorieChoisie(categorie)
+                                setQuantite(1)
+                            }}
+                            className='border border-gray-300 rounded-lg p-2'
+                        >
                             <option value="MTN">MTN Mobile Money</option>
                             <option value="ORANGE">Orange Money</option>
                         </select>
-
+                        {/* Champ numéro — pré-rempli avec le téléphone du profil */}
                         <input
                             type="text"
                             placeholder="Numéro (ex: 677...)"
-                            value={utilisateur?.phone}
+                            value={numero || utilisateur?.phone || ''}
                             onChange={(e) => setNumero(e.target.value)}
-                            className="border p-2 rounded"
+                            className="border border-gray-300 p-2 rounded-lg"
                         />
+                        {/* Boutons d'action */}
                         <div className='flex gap-4'>
-                            <button 
+                            <button
                                 onClick={() => setModalOuvert(false)}
-                                className='w-1/2 py-3 border border-gray-300 rounded-xl'>
+                                className='w-1/2 py-3 border border-gray-300 rounded-xl hover:bg-gray-50 transition-all'
+                            >
                                 Annuler
                             </button>
-                            <button 
+                            <button
                                 onClick={async () => {
                                     setModalOuvert(false)
-                                    await payer()
+                                    setDrawerOuvert(false) // Ferme aussi le drawer si ouvert sur mobile
+                                    await reserver()
                                 }}
-                                className='w-1/2 py-3 bg-[#C2611F] text-white rounded-xl'>
+                                className='w-1/2 py-3 bg-[#C2611F] text-white rounded-xl hover:bg-[#a14f19] transition-all'
+                            >
                                 Confirmer
                             </button>
                         </div>
                     </div>
                 </div>
             )}
-            {/* MESSAGE DE CONFIRMATION */}
+ 
+            {/* ── MESSAGE DE CONFIRMATION ────────────────────────────────────────── */}
+            {/* Affiché brièvement après une réservation réussie
+                Disparaît automatiquement après 1 seconde puis redirige vers /billets */}
             {messageConfirmation && (
-                <div className='fixed inset-0 bg-black/60 z-50 flex justify-center items-start md:pt-10'>
-                    <div className='bg-white/40 rounded-xl p-8 w-96 flex flex-col justify-center items-center gap-6'>
-                        <h2 className='text-xl font-bold text-green-800'>Votre billet a bien ete réserver</h2>
+                <div className='fixed inset-0 bg-black/60 z-50 flex justify-center items-start pt-10 px-4'>
+                    <div className='bg-white/90 rounded-xl p-8 w-full max-w-sm flex flex-col justify-center items-center gap-4'>
+                        <h2 className='text-xl font-bold text-green-800 text-center'>
+                            Votre billet a bien été réservé !
+                        </h2>
+                        <p className='text-gray-500 text-sm'>Redirection vers vos billets...</p>
                     </div>
                 </div>
             )}

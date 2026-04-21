@@ -13,7 +13,7 @@ function Footer() {
     return(
         <div className="w-full flex flex-col justify-center items-center gap-10 md:pt-10 my-10">
             {/* PREMIERE LIGNE */}
-            <div className="w-full flex justify-evenly items-center">
+            <div className="w-full flex flex-col md:flex-row justify-evenly items-center">
                 {/* Presentation */}
                 <div className="flex flex-col gap-4">
                     {/* titre */}

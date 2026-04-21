@@ -24,7 +24,9 @@ export default function Hero() {
                 const reponse = await axios.get(`${API_URL}/api/evenements/vedette/`)
                 setEvenementsVedettes(reponse.data)
             } catch (_err) {
-                console.error(_err)
+                if (_err.response?.status !== 404) {
+                    console.error(_err)
+                }
             } finally {
                 setEnAttente(false)
             }
@@ -64,80 +66,104 @@ export default function Hero() {
             {/* Overlay sombre */}
             <div className="absolute inset-0 bg-black/70"></div>
             {/* SECTION DE GAUCHE - INFORMATION SUR L'EVENEMENT MAJEUR */}
-            <section className='animate__animated animate__fadeInDown animate__slow w-full md:w-1/2 flex flex-col justify-center gap-12 md:gap-10 p-2 z-10'>
-                <div className='w-50 md:h-7 flex justify-center items-center font-bold text-[#C2611F] text-[12px] border border-orange-500 bg-black/30 px-6 py-2 rounded-full'>
-                    <p>Événement à venir</p>
-                </div>
-                <div>
-                    <div className='font-bold'>
-                        <h1 className='w-[50%] text-4xl md:text-6xl font-bold text-[#F1F1F1]'>{evenementsVedettes?.titre}</h1>
-                    </div>
-                    <div className='font-bold md:text-[#F1F1F1] text-[#C2611F]'>
-                        {evenementsVedettes?.description?.slice(0, 100)}
-                        {evenementsVedettes?.description?.length > 100 ? '...' : ''}
-                    </div>
-                </div>
-                <div className='w-full font-bold flex md:justify-start items-center gap-3'>
-                    <a
-                        onClick={() => navigate(`/evenement/${evenementsVedettes.id}`)}
-                        className='bg-[#C2611F] text-[10px] md:text-[12px] text-[#F1F1F1] px-4 md:px-4 py-4 md:py-3 rounded-xl font-bold cursor-pointer hover:shadow-sm shadow-black-500/50 hover:opacity-95 transition'>
-                        RÉSERVER MA PLACE
-                    </a>
-                    <a
-                        href='#'
-                        onClick={() => navigate(`/about`)}
-                        className='border-1 border-[#C2611F] text-[12px] text-[#C2611F] px-12 py-3 rounded-xl font-bold cursor-pointer hover:shadow-sm hover:bg-[#F1F1F1] shadow-black-500/50 hover:opacity-70 transition'>
-                        À propos
-                    </a>
-                </div>
-                <div className='w-full flex justify-center md:justify-start items-center md:gap-6'>
-                    {evenementTermine ? (
-                        <div className='text-center text-[#0D0D0D]'>
-                            <p className='tet-gray-300'>Le prochain événement vedette sera annoncé bientôt.</p>
+            {evenementsVedettes ? (
+                <>
+                    {/* titre, description, boutons, compte à rebours */}   
+                    <section className='animate__animated animate__fadeInDown animate__slow w-full md:w-1/2 flex flex-col justify-center gap-12 md:gap-10 p-2 z-10'>
+                        <div className='w-50 md:h-7 flex justify-center items-center font-bold text-[#C2611F] text-[12px] border border-orange-500 bg-black/30 px-6 py-2 rounded-full'>
+                            <p>Événement à venir</p>
                         </div>
-                    ) : (
-                        <div className='flex flex-col justify-center gap-3'>
-                            <p className='text-[10px] md:text-[#0D0D0D] text-[#C2611F] font-bold tracking-wide'>COMPTE À REBOURS</p>
-                            <div className='w-full flex justify-center items-center gap-3 md:gap-6'>
-                                    {[
-                                    { valeur: compteRebours.jours, label: 'JOURS' },
-                                    { valeur: compteRebours.heures, label: 'HEURES' },
-                                    { valeur: compteRebours.minutes, label: 'MIN' },
-                                    { valeur: compteRebours.secondes, label: 'SEC' },
-                                ].map((item) => (
-                                    <div key={item.label} className='flex items-center'>
-                                        <div className='flex flex-col justify-center items-center rounded-xl bg-gray-100 shadow-md shadow-orange-500/50 h-20 w-20'>
-                                            <span className='text-sm md:text-xl text-[12px] font-bold text-[#C2611F]'>{String(item.valeur).padStart(2, '0')}</span>
-                                            <span className='text-sm md:text-[10px] tracking-widest mt-1'>{item.label}</span>
-                                        </div>
-                                    </div>
-                                ))}
+                        <div>
+                            <div className='font-bold'>
+                                <h1 className='w-[50%] text-4xl md:text-6xl font-bold text-[#F1F1F1]'>{evenementsVedettes?.titre}</h1>
+                            </div>
+                            <div className='font-bold md:text-[#F1F1F1] text-[#C2611F]'>
+                                {evenementsVedettes?.description?.slice(0, 100)}
+                                {evenementsVedettes?.description?.length > 100 ? '...' : ''}
                             </div>
                         </div>
-                    )}
+                        <div className='w-full font-bold flex md:justify-start items-center gap-3'>
+                            <a
+                                onClick={() => evenementsVedettes && navigate(`/evenement/${evenementsVedettes.id}`)}
+                                className='bg-[#C2611F] text-[10px] md:text-[12px] text-[#F1F1F1] px-4 md:px-4 py-4 md:py-3 rounded-xl font-bold cursor-pointer hover:shadow-sm shadow-black-500/50 hover:opacity-95 transition'>
+                                RÉSERVER MA PLACE
+                            </a>
+                            <a
+                                href='#'
+                                onClick={() => navigate(`/about`)}
+                                className='border-1 border-[#C2611F] text-[12px] text-[#C2611F] px-12 py-3 rounded-xl font-bold cursor-pointer hover:shadow-sm hover:bg-[#F1F1F1] shadow-black-500/50 hover:opacity-70 transition'>
+                                À propos
+                            </a>
+                        </div>
+                        <div className='w-full flex justify-center md:justify-start items-center md:gap-6'>
+                            {evenementTermine ? (
+                                <div className='text-center text-[#0D0D0D]'>
+                                    <p className='tet-gray-300'>Le prochain événement vedette sera annoncé bientôt.</p>
+                                </div>
+                            ) : (
+                                <div className='flex flex-col justify-center gap-3'>
+                                    <p className='text-[10px] md:text-[#0D0D0D] text-[#C2611F] font-bold tracking-wide'>COMPTE À REBOURS</p>
+                                    <div className='w-full flex justify-center items-center gap-3 md:gap-6'>
+                                            {[
+                                            { valeur: compteRebours.jours, label: 'JOURS' },
+                                            { valeur: compteRebours.heures, label: 'HEURES' },
+                                            { valeur: compteRebours.minutes, label: 'MIN' },
+                                            { valeur: compteRebours.secondes, label: 'SEC' },
+                                        ].map((item) => (
+                                            <div key={item.label} className='flex items-center'>
+                                                <div className='flex flex-col justify-center items-center rounded-xl bg-gray-100 shadow-md shadow-orange-500/50 h-20 w-20'>
+                                                    <span className='text-sm md:text-xl text-[12px] font-bold text-[#C2611F]'>{String(item.valeur).padStart(2, '0')}</span>
+                                                    <span className='text-sm md:text-[10px] tracking-widest mt-1'>{item.label}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </section>
+                </>
+            ) : (
+                <div className='flex flex-col gap-4 z-50'>
+                    <h1 className='text-4xl font-bold text-[#F1F1F1]'>Bienvenue sur OtakuKamer</h1>
+                    <p className='text-[#C2611F]'>Découvrez les prochains événements Otaku au Cameroun</p>
+                    <a 
+                        className='bg-[#C2611F] text-white px-6 py-3 rounded-xl cursor-pointer'
+                        onClick={() => {
+                            navigate('/accueil')
+                            // Petit délai pour laisser la page charger avant de scroller
+                            setTimeout(() => {
+                                document.getElementById('liste-evenements')?.scrollIntoView({ behavior: 'smooth' })
+                            }, 100)
+                        }}
+                    >
+                        Événements
+                    </a>
                 </div>
-            </section>
+            )}
             {/* SECTION DE DROITE - IMAGE DE L'EVENEMENT MAJEUR */}
-            <section className='animate__animated animate__fadeInDown animate__slow w-1/2 flex justify-center items-center font-bold'>
-                <div className="relative h-130 w-100 flex flex-col justify-end gap-2 p-5 bg-cover bg-center hidden md:block rounded-xl"
-                    style={{ backgroundImage: `url(${evenementsVedettes?.image})` }}>
-                    {/* Overlay sombre */}
-                    <div className="absolute inset-0 bg-black/30"></div>
-                    <div className='absolute z-15 w-30 h-7 shadow-md shadow-black-500/50 flex justify-center items-center text-[#F1F1F1] font-bold bg-[#C2611F] text-[10px] rounded-full md:left-64 md:bottom-118'>
-                        <p>En vedette</p>
+            {evenementsVedettes && (
+                <section className='animate__animated animate__fadeInDown animate__slow w-1/2 flex justify-center items-center font-bold'>
+                    <div className="relative h-130 w-100 flex flex-col justify-end gap-2 p-5 bg-cover bg-center hidden md:block rounded-xl"
+                        style={{ backgroundImage: `url(${evenementsVedettes.image})` }}>
+                        {/* Overlay sombre */}
+                        <div className="absolute inset-0 bg-black/30"></div>
+                        <div className='absolute z-15 w-30 h-7 shadow-md shadow-black-500/50 flex justify-center items-center text-[#F1F1F1] font-bold bg-[#C2611F] text-[10px] rounded-full md:left-64 md:bottom-118'>
+                            <p>En vedette</p>
+                        </div>
+                        <div className='z-10 flex justify-start items-center gap-2 text-[14px] w-full z-15'>
+                            <img className='h-5 w-5' src={notif} alt="Icon de la notification" />
+                            <p>{new Date(evenementsVedettes?.dateLancement).toLocaleDateString('fr-FR', {
+                                day: 'numeric', month: 'long', year: 'numeric'
+                            })}</p>
+                        </div>
+                        <div className='flex justify-start items-center gap-2 text-[14px] w-full z-15'>
+                            <img className='h-5 w-5' src={localisation} alt="Icon de la localisation" />
+                            <p>{evenementsVedettes?.lieu}</p>
+                        </div>
                     </div>
-                    <div className='z-10 flex justify-start items-center gap-2 text-[14px] w-full z-15'>
-                        <img className='h-5 w-5' src={notif} alt="Icon de la notification" />
-                        <p>{new Date(evenementsVedettes?.dateLancement).toLocaleDateString('fr-FR', {
-                            day: 'numeric', month: 'long', year: 'numeric'
-                        })}</p>
-                    </div>
-                    <div className='flex justify-start items-center gap-2 text-[14px] w-full z-15'>
-                        <img className='h-5 w-5' src={localisation} alt="Icon de la localisation" />
-                        <p>{evenementsVedettes?.lieu}</p>
-                    </div>
-                </div>  
-            </section>
+                </section>
+            )}
         </div>
     )
 }

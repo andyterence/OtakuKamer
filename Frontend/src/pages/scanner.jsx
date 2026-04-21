@@ -4,6 +4,7 @@ import jsQR from 'jsqr'
 import axios from 'axios'
 import API_URL from '../utils/api'
 import Sidebar from '../components/shared/sidebar'
+import menu from '../assets/icons/menu.svg'
 
 
 export default function Scanner() {
@@ -14,6 +15,7 @@ export default function Scanner() {
     const [resultat, setResultat] = useState(null)
     const [scanning, setScanning] = useState(true)
     const [menuOuvert, setMenuOuvert] = useState(false)
+    const intervalRef = useRef(null)
 
     useEffect(() => {
         // Démarre la caméra
@@ -21,12 +23,12 @@ export default function Scanner() {
             .then(stream => {
                 videoRef.current.srcObject = stream
                 videoRef.current.play()
-                requestAnimationFrame(scanner)
+                intervalRef.current = setInterval(scanner, 300)
             })
             .catch(err => console.error('Caméra inaccessible', err))
 
         return () => {
-            // Arrête la caméra au démontage
+            clearInterval(intervalRef.current)
             if (videoRef.current?.srcObject) {
                 videoRef.current.srcObject.getTracks().forEach(t => t.stop())
             }
@@ -34,27 +36,22 @@ export default function Scanner() {
     }, [])
 
     const scanner = () => {
-        if (!scanning) return
         const video = videoRef.current
         const canvas = canvasRef.current
-        if (!video || !canvas || video.readyState !== video.HAVE_ENOUGH_DATA) {
-            requestAnimationFrame(scanner)
-            return
-        }
+        if (!video || !canvas || video.readyState !== video.HAVE_ENOUGH_DATA) return
 
         const ctx = canvas.getContext('2d')
-        canvas.width = video.videoWidth
-        canvas.height = video.videoHeight
-        ctx.drawImage(video, 0, 0)
+        
+        canvas.width = video.videoWidth / 2
+        canvas.height = video.videoHeight / 2
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
 
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
         const code = jsQR(imageData.data, imageData.width, imageData.height)
 
         if (code) {
-            setScanning(false)
+            clearInterval(intervalRef.current)  // ← arrête le scan
             validerBillet(code.data)
-        } else {
-            requestAnimationFrame(scanner)
         }
     }
 
@@ -85,18 +82,31 @@ export default function Scanner() {
     }
 
     return (
+
         <div className='flex'>
+            {/* SIDEBAR */}
             {menuOuvert && (
-                <div className='md:hidden fixed inset-0 bg-black/50 z-30' onClick={() => setMenuOuvert(false)} />
+                <div 
+                    className='md:hidden fixed inset-0 bg-black/50 z-30'
+                    onClick={() => setMenuOuvert(false)}
+                />
             )}
+            <button 
+                className='md:hidden fixed top-4 left-4 z-50'
+                onClick={() => setMenuOuvert(!menuOuvert)}
+            >
+                <div className='flex justify-center items-center h-9 w-9 bg-black/70 rounded-md'>
+                    <img className='h-6 w-6' src={menu} alt="Menu" />
+                </div>
+            </button>
             <aside className="md:w-1/7 w-0 md:sticky md:top-0 md:h-screen">
                 <Sidebar menuOuvert={menuOuvert} setMenuOuvert={setMenuOuvert} />
             </aside>
 
             <section className="md:w-6/7 w-full flex flex-col items-center gap-8 p-10">
-                <div className='w-full font-bold'>
-                    <h1 className='text-4xl'>Scanner un billet</h1>
-                    <p className='text-[#C2611F]'>Pointez la caméra vers le QR code du billet</p>
+                <div className='md:w-full flex flex-col justify-center items-start font-bold md:p-10 pr-0'>
+                    <h1 className='text-2xl md:text-4xl'>Scanner un billet</h1>
+                    <p className='text-sm md:text-md text-[#C2611F]'>Pointez la caméra vers le QR code du billet</p>
                 </div>
 
                 {/* CAMERA */}

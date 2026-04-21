@@ -12,6 +12,7 @@ import map from '../assets/icons/map-check.svg'
 import info from '../assets/icons/info.svg'
 import pen from '../assets/icons/pen.svg'
 import plus from '../assets/icons/badge-plus.svg'
+import menu from '../assets/icons/menu.svg'
 
 export default function MyEvenement() {
 
@@ -20,6 +21,7 @@ export default function MyEvenement() {
     const [modalOuvert, setModalOuvert] = useState(false)
     const [messageConfirmation, setMessageConfirmation] = useState(false)
     const [evenementAnnuler, setEvenementAnnuler] = useState(null)
+    const [menuOuvert, setMenuOuvert] = useState(false)
     // Nouveau state pour les stats de calcul
     const [stats, setStats] = useState({})
     // Pour pouvoir naviguer entre les pages
@@ -123,17 +125,32 @@ export default function MyEvenement() {
 
     return (
         <div className='flex'>
-            <aside className="w-1/7 sticky top-0 h-screen">
-                <Sidebar />
+            {/* SIDEBAR */}
+            {menuOuvert && (
+                <div 
+                    className='md:hidden fixed inset-0 bg-black/50 z-30'
+                    onClick={() => setMenuOuvert(false)}
+                />
+            )}
+            <button 
+                className='md:hidden fixed top-4 left-4 z-50'
+                onClick={() => setMenuOuvert(!menuOuvert)}
+            >
+                <div className='flex justify-center items-center h-9 w-9 bg-black/70 rounded-md'>
+                    <img className='h-6 w-6' src={menu} alt="Menu" />
+                </div>
+            </button>
+            <aside className="md:w-1/7 w-0 md:sticky md:top-0 md:h-screen">
+                <Sidebar menuOuvert={menuOuvert} setMenuOuvert={setMenuOuvert} />
             </aside>
-            <section className="w-6/7">
+            <section className="md:w-6/7 w-full">
             {/* TITRE ET SOUS TITRE DE BIENVENUE */}
-                <div className='flex justify-between items-center'>
-                    <div className='w-full flex flex-col justify-center items-start font-bold md:p-10'>
-                        <h1 className='text-4xl'>Mes Événements</h1>
-                        <p className='text-md text-[#C2611F]'>Gérez et suivez vos événements</p>
+                <div className='flex justify-center md:justify-between items-center gap-2'>
+                    <div className='md:w-full flex flex-col justify-center items-start font-bold py-8 md:p-10 pr-0'>
+                        <h1 className='text-2xl md:text-4xl'>Mes Événements</h1>
+                        <p className='text-sm md:text-md text-[#C2611F]'>Gérez et suivez vos événements</p>
                     </div>
-                    <div className='pr-10 flex justify-center items-center'>
+                    <div className=' flex justify-center items-center'>
                         <button onClick={() => navigate('/createEven')} className='flex justify-center items-center text-md bg-[#C2611F]/80 w-45 h-10 rounded-md hover:bg-[#C2611F] cursor-pointer transition-all duration-300'>
                             <img className='h-6 w-6' src={plus} alt="Logo du calendrier" />
                             <p className='text-white text-[14px] px-1'>Creer un événement</p>
@@ -141,7 +158,7 @@ export default function MyEvenement() {
                     </div>
                 </div>
                 {/* CONTENEUR DE GESTION DES EVENEMENTS */}
-                <div className='flex justify-evenly items-center font-bold'>
+                <div className='flex flex-col md:flex-row justify-evenly items-center gap-5 md:gap-0 font-bold'>
                     {/*Total Événements */}
                     <div className='flex flex-col justify-evenly items-start w-70 h-40 rounded-xl border-1 border-[#C2611F] py-4 px-8'>
                         <div><img className='h-7 w-7' src={calendrier} alt="Logo du calendrier" /></div>
@@ -174,7 +191,7 @@ export default function MyEvenement() {
                         : evenements.map(evenement => (
                             <div 
                                 key={evenement.id}
-                                className='animate__animated animate__zoomInDown relative card h-90 md:h-75 md:w-[95%] flex flex-col md:flex-row justify-start items-center gap-4 border-1 border-[#C2611F] rounded-xl border-2 border-[#C2611F] font-bold bg-cover bg-center transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/10 p-4'>
+                                className='animate__animated animate__zoomInDown relative card h-full md:h-75 md:w-[95%] flex flex-col md:flex-row justify-start items-center gap-4 rounded-xl border-2 border-[#C2611F] font-bold bg-cover bg-center transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/10 p-4 mx-10 md:mx-0 m-5 md:m-0'>
                                 {/* BACKGROUND DE L'EVENEMENT */}
                                 <div className='relative w-1/3 h-full rounded-xl bg-cover bg-center'
                                     style={{ backgroundImage: `url(${evenement?.image})` }}>
@@ -193,7 +210,7 @@ export default function MyEvenement() {
                                 )}
                                 </div>
                                 {/* Detail de l'evenement */}
-                                <div className='w-2/3 h-full flex flex-col justify-evenly items-start gap-4'>
+                                <div className='w-full md:w-2/3 h-full flex flex-col justify-evenly items-start gap-4'>
                                     <div className='w-full h-full justify-evenly flex items-start gap-2'>
                                         <div className='w-full h-full text-[12px] justify-evenly flex flex-col items-start gap-2'>
                                             <p className='text-2xl'>{evenement?.titre}</p>
@@ -201,7 +218,7 @@ export default function MyEvenement() {
                                                 {evenement?.description?.slice(0, 100)}
                                                 {evenement?.description?.length > 100 ? '...' : ''}
                                             </p>
-                                            <p>{evenement?.organisateur?.first_name} {evenement?.organisateur?.last_name}</p>
+                                            {/* <p>{evenement?.organisateur?.first_name} {evenement?.organisateur?.last_name}</p> */}
                                             <div className='w-full flex justify-start items-center gap-1'>
                                                 <div className='w-1/2 flex justify-start items-center gap-1'>
                                                     <img className='h-4 w-4' src={calendrier} alt="Logo du calendrier" />

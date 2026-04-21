@@ -35,23 +35,23 @@ function Accueil() {
     return(
         <div className="relative flex flex-col">
             <div className="flex items-start">
-                {menuOuvert && (
-                    <div 
-                        className='md:hidden fixed inset-0 bg-black/50 z-30'
-                        onClick={() => setMenuOuvert(false)}
-                        />
-                    )}
                 {token && (
                     <>
-                        {/* BOUTON HAMBURGER */}
+                        {/* SIDEBAR */}
+                        {menuOuvert && (
+                            <div 
+                                className='md:hidden fixed inset-0 bg-black/50 z-50'
+                                onClick={() => setMenuOuvert(false)}
+                            />
+                        )}
                         <button 
                             className='md:hidden fixed top-4 left-4 z-50'
                             onClick={() => setMenuOuvert(!menuOuvert)}
                         >
-                            <img className='h-5 w-5' src={menu} alt="Menu" />
+                            <div className='flex justify-center items-center h-9 w-9 bg-black/70 rounded-md z-50'>
+                                <img className='h-6 w-6' src={menu} alt="Menu" />
+                            </div>
                         </button>
-                        
-                        {/* SIDEBAR */}
                         <aside className="md:w-1/7 w-0 md:sticky md:top-0 md:h-screen z-50">
                             <Sidebar menuOuvert={menuOuvert} setMenuOuvert={setMenuOuvert} />
                         </aside>
