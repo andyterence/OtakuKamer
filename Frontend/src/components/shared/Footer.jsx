@@ -11,9 +11,9 @@ function Footer() {
     const navigate = useNavigate()
 
     return(
-        <div className="w-full flex flex-col justify-center items-center gap-10 md:pt-10 my-10">
+        <div className="w-full border-t border-[#C2611F] flex flex-col justify-center items-center gap-10 md:pt-10 my-10">
             {/* PREMIERE LIGNE */}
-            <div className="w-full flex flex-col md:flex-row justify-evenly items-center">
+            <div className="w-full flex flex-col md:flex-row gap-5 md:gap-0 justify-evenly items-center">
                 {/* Presentation */}
                 <div className="flex flex-col gap-4">
                     {/* titre */}
@@ -45,7 +45,7 @@ function Footer() {
                     </div>
                 </div>
                 {/* Navigation */}
-                <div className="flex flex-col gap-4">
+                <div className="w-full md:w-[10%] flex flex-col gap-4 px-12 md:px-0">
                     {/* titre */}
                     <div className="text-xl font-bold">
                         <h1>Navigation</h1>
@@ -59,7 +59,7 @@ function Footer() {
                     </div>
                 </div>
                 {/* Support */}
-                <div className="flex flex-col gap-4">
+                <div className="w-full md:w-[10%] flex flex-col gap-4 px-12 md:px-0">
                     {/* titre */}
                     <div className="text-xl font-bold">
                         <h1>Support</h1>
@@ -97,8 +97,6 @@ function Footer() {
                     </div>
                 </div>
             </div>
-            {/* TRAIT DE SEPARATION */}
-            <div className="w-full h-[0.2px] bg-[#C2611F]"></div>
             {/* DEUXIEME LIGNE */}
             <div className="w-full flex justify-between items-center px-8">
                 <div>

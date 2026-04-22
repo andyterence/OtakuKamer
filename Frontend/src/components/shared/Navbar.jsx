@@ -108,13 +108,16 @@ function Navbar() {
                 </ul>
 
                 {/* HAMBURGER — visible sur mobile */}
-                <button className="md:hidden text-white text-2xl" onClick={() => setMenuMobileOuvert(!menuMobileOuvert)}>
-                    {menuMobileOuvert ? '✕' : '☰'}
-                </button>
+                {!token && (
+                    <button className="md:hidden text-white text-2xl ml-auto" onClick={() => setMenuMobileOuvert(!menuMobileOuvert)}>
+                        {menuMobileOuvert ? '✕' : '☰'}
+                    </button>
+                )}
             </div>
 
             {/* MENU MOBILE DÉROULANT */}
-            {menuMobileOuvert && (
+            {/* MENU MOBILE — visible seulement si non connecté */}
+            {!token && menuMobileOuvert && (
                 <div className="md:hidden bg-black/90 flex flex-col gap-4 px-6 py-4 text-[14px] font-bold">
                     {/* Recherche mobile */}
                     <input
