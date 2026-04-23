@@ -40,7 +40,7 @@ function CarrouselEvenements({ image, photos = [] }){
                             className='cursor-pointer border-1 border-black rounded-md h-7 w-7 shadow shadow-black-500/40 flex justify-center items-center'><img className='h-5 w-5' src={chevron_gauche} alt="Icon de la localisation" /></button>
                     </div>
                 </div>
-                <div className='relative h-90 w-full rounded-xl bg-cover bg-center bg-gray-200'
+                <div className='relative h-40 md:h-90 w-full rounded-xl bg-cover bg-center bg-gray-200'
                     style={{ backgroundImage: `url(${photos.length > 0 ? photos[indexActuel]?.image : image})` }}>
                     <div className='w-full flex justify-end p-2'>
                         <div className='absolute h-8 w-8 bg-white/70 rounded-full flex justify-center items-center'>

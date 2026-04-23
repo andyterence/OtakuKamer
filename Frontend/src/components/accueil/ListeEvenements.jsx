@@ -77,20 +77,20 @@ function ListeEvenements(){
                                                     'border-purple-500'
                         }`}>
                             {/* SECTION INFORMATION A GAUCHE */}
-                            <article className='h-full md:w-110 flex flex-col justify-start items-start gap-8 md:px-10'>
+                            <article className='h-full md:w-110 flex flex-col justify-start items-start gap-1 md:gap-8 md:px-10'>
                                 {/* BADGE */}
-                                <div className='w-full flex justify-center md:justify-start items-center font-bold pt-5 md:pt-5'>
+                                <div className='w-full flex md:justify-center md:justify-start items-center font-bold pt-5 md:pt-5'>
                                     <h1 className='text-[#C2611F] text-[12px] bg-black/20 px-4 py-1 rounded-full'>{evenement?.typeEven}</h1>
                                 </div>
                                 {/* NOM DE L'EVEN ET DESCRIPTION*/}
-                                <div className='w-full flex flex-col justify-center md:justify-start items-center md:items-start gap-2'>
+                                <div className='w-full flex flex-col md:justify-start items-start gap-2 px-4 mb-2 md:mb-0'>
                                     <h1 className='text-4xl text- md:text-start font-bold'>{evenement?.titre}</h1>
-                                    <p className='text-[#C2611F]'>{evenement?.description?.slice(0, 100)}
+                                    <p className='text-[#C2611F] w-[80%] md:w-full'>{evenement?.description?.slice(0, 100)}
                                         {evenement?.description?.length > 100 ? '...' : ''}
                                     </p>
                                 </div>
                                 {/* INFORMATION SUR LA DATE, LIEU, STATUTS ET BUTTONS DE PARTICIPATION */}
-                                <div className='w-full h-full flex flex-col justify-start items-center gap-2 px-8 md:px-0'>
+                                <div className='w-full h-full flex flex-col justify-start items-center gap-2 px-4 md:px-0'>
                                     <div className='w-full flex justify-start items-center gap-2 text-[14px]'>
                                         <div className='flex justify-center items-center h-8 w-8 bg-[#C2611F] rounded-md'>
                                             <img className='h-5 w-5' src={calendar} alt="Icon de la date de lancement" />
@@ -112,7 +112,7 @@ function ListeEvenements(){
                                         </div>
                                         <p>{evenement?.statut}</p>
                                     </div>
-                                    <div className='w-full flex justify-center md:justify-start text-[12px] w-full py-6'>
+                                    <div className='w-full flex justify-start text-[12px] w-full py-2 md:py-6'>
                                         <button 
                                             onClick={() => navigate(`/evenement/${evenement.id}`)}
                                             className='bg-[#C2611F] text-[12px] text-[#F1F1F1] px-4 py-3 rounded-xl font-bold cursor-pointer hover:opacity-95 transition'>
@@ -122,7 +122,7 @@ function ListeEvenements(){
                                 </div>
                             </article>
                             {/* SECTION PHOTOS A DROITE */}
-                            <div className='w-[80%] md:full pb-10 md:pb-0'>
+                            <div className='w-[90%] pb-10 md:pb-0'>
                                 <CarrouselEvenements image={evenement?.image} photos={evenement?.photos} />
                                 {/* <EmblaCarousel image={evenement?.image} /> */}
                             </div>

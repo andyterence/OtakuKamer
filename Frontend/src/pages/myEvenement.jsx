@@ -145,15 +145,15 @@ export default function MyEvenement() {
             </aside>
             <section className="md:w-6/7 w-full">
             {/* TITRE ET SOUS TITRE DE BIENVENUE */}
-                <div className='flex justify-center md:justify-between items-center gap-2'>
+                <div className='flex justify-center md:justify-between items-center gap-2 px-4 md:px-0'>
                     <div className='md:w-full flex flex-col justify-center items-start font-bold py-8 md:p-10 pr-0'>
                         <h1 className='text-2xl md:text-4xl'>Mes Événements</h1>
                         <p className='text-sm md:text-md text-[#C2611F]'>Gérez et suivez vos événements</p>
                     </div>
-                    <div className=' flex justify-center items-center'>
+                    <div className=' flex justify-center items-center md:px-8'>
                         <button onClick={() => navigate('/createEven')} className='flex justify-center items-center text-md bg-[#C2611F]/80 w-45 h-10 rounded-md hover:bg-[#C2611F] cursor-pointer transition-all duration-300'>
                             <img className='h-6 w-6' src={plus} alt="Logo du calendrier" />
-                            <p className='text-white text-[14px] px-1'>Creer un événement</p>
+                            <p className='text-white text-[14px] px-2'>Creer un événement</p>
                         </button>
                     </div>
                 </div>
@@ -185,13 +185,13 @@ export default function MyEvenement() {
                     </div>
                 </div>
                 {/* PRESENTATION DES CARTES EVENEMENTS */}
-                <div className='md:flex flex-col justify-center items-center gap-10 my-10 rounded-xl'>
+                <div className='md:flex flex-col justify-center items-center gap-10 md:my-10 p-5 rounded-xl'>
                     {evenements.length === 0 
                         ? <p className=' font-bold'>Vous n'avez aucun événement enregistrer</p>
                         : evenements.map(evenement => (
                             <div 
                                 key={evenement.id}
-                                className='animate__animated animate__zoomInDown relative card h-full md:h-75 md:w-[95%] flex flex-col md:flex-row justify-start items-center gap-4 rounded-xl border-2 border-[#C2611F] font-bold bg-cover bg-center transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/10 p-4 mx-10 md:mx-0 m-5 md:m-0'>
+                                className='animate__animated animate__zoomInDown relative card h-full md:h-75 w-full md:w-[95%] flex flex-col md:flex-row justify-center md:justify-start items-center gap-4 rounded-xl border-2 border-[#C2611F] font-bold bg-cover bg-center transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/10 p-4 my-4'>
                                 {/* BACKGROUND DE L'EVENEMENT */}
                                 <div className='relative w-1/3 h-full rounded-xl bg-cover bg-center'
                                     style={{ backgroundImage: `url(${evenement?.image})` }}>
