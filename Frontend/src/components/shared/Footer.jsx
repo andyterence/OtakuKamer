@@ -11,7 +11,7 @@ function Footer() {
     const navigate = useNavigate()
 
     return(
-        <div className="w-full border-t border-[#C2611F] flex flex-col justify-center items-center gap-10 md:pt-10 my-10">
+        <div className="w-full border-t border-[#C2611F] flex flex-col justify-center items-center gap-10 pt-10 my-10">
             {/* PREMIERE LIGNE */}
             <div className="w-full flex flex-col md:flex-row gap-5 md:gap-0 justify-evenly items-center">
                 {/* Presentation */}
@@ -21,7 +21,7 @@ function Footer() {
                         <h1>OtakuKamer</h1>
                     </div>
                     {/* phrase courte */}
-                    <div className="text-[12px] w-70 text-justify">
+                    <div className="text-[12px] w-85 text-justify">
                         <p>La plateforme de référence pour tous les événements Otaku au Cameroun. Manga, Anime, Gaming.</p>
                     </div>
                     {/* Reseaux sociaux */}
@@ -79,7 +79,7 @@ function Footer() {
                         <h1>Newsletter</h1>
                     </div>
                     {/* phrase courte */}
-                    <div className="text-[12px] w-70 text-justify">
+                    <div className="text-[12px] w-85 text-justify">
                         <p>Recevez les dernières nouvelles et événements.</p>
                     </div>
                     {/* Lien */}
@@ -98,7 +98,7 @@ function Footer() {
                 </div>
             </div>
             {/* DEUXIEME LIGNE */}
-            <div className="w-full flex justify-between items-center px-8">
+            <div className="w-full flex justify-between items-center gap-5 md:gap-0 px-8">
                 <div>
                     <p className="text-[10px]">© 2026 OtakuKamer. Tous droits réservés.</p>
                 </div>

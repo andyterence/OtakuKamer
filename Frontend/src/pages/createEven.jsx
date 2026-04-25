@@ -38,6 +38,8 @@ export default function CreateEven() {
     // Pour afficher les messages de succes ou d'erreur après la création de l'événement avec la fonction Toast.jsx dans le dossier shared
     const [toastMessage, setToastMessage] = useState('')
     const [toastType, setToastType] = useState('succes')
+    const [photos, setPhotos] = useState([])
+    
     // Fonctions pour gérer les catégories
     const ajouterCategorie = () => {
         setCategories([...categories, { nom: '', prix: '', nombreteTotale: '' }])
@@ -97,28 +99,44 @@ export default function CreateEven() {
                 setToastType('erreur');
                 return;
             }
-        } else {
-            setToastMessage("Veuillez remplir la date et l'heure.");
-            setToastType('erreur');
-            return;
-        }
+            } else {
+                setToastMessage("Veuillez remplir la date et l'heure.");
+                setToastType('erreur');
+                return;
+            }
 
-        if (image) {
-            formData.append('image', image);
-        }
+            if (image) {
+                formData.append('image', image);
+            }
 
-        try {
-            setEnAttente(true);
-            const token = localStorage.getItem('access')
-            // ETAPE 1 — Créer l'événement
-            const response = await axios.post(`${API_URL}/api/evenements/`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+            try {
+                setEnAttente(true);
+                const token = localStorage.getItem('access')
+                // ETAPE 1 — Créer l'événement
+                const response = await axios.post(`${API_URL}/api/evenements/`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
             
             const evenementId = response.data.id  // ← récupère l'ID du nouvel événement
+            // Envoyer les photos si présentes
+            if (photos.length > 0) {
+                const photosFormData = new FormData()
+                photos.forEach(photo => {
+                    photosFormData.append('photos', photo)  // ← même clé pour toutes
+                })
+                await axios.post(
+                    `${API_URL}/api/evenements/${evenementId}/ajouter-photos/`,
+                    photosFormData,
+                    { headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'multipart/form-data'
+                    }}
+                )
+            }
+
 
             // ETAPE 2 — Créer chaque catégorie liée à cet événement
             for (const categorie of categories) {
@@ -151,32 +169,32 @@ export default function CreateEven() {
     return (
         <div className='flex'>
             {/* SIDEBAR */}
-                {menuOuvert && (
-                    <div 
-                        className='md:hidden fixed inset-0 bg-black/50 z-50'
-                        onClick={() => setMenuOuvert(false)}
-                    />
-                )}
-                <button 
-                    className='md:hidden fixed top-4 left-4 z-50'
-                    onClick={() => setMenuOuvert(!menuOuvert)}
-                >
-                    <div className='flex justify-center items-center h-9 w-9 bg-black/70 rounded-md z-50'>
-                        <img className='h-6 w-6' src={menu} alt="Menu" />
-                    </div>
-                </button>
-                <aside className="md:w-1/7 w-0 md:sticky md:top-0 md:h-screen z-50">
-                    <Sidebar menuOuvert={menuOuvert} setMenuOuvert={setMenuOuvert} />
-                </aside>
+            {menuOuvert && (
+                <div 
+                    className='md:hidden fixed inset-0 bg-black/50 z-50'
+                    onClick={() => setMenuOuvert(false)}
+                />
+            )}
+            <button 
+                className='md:hidden fixed top-4 left-4 z-50'
+                onClick={() => setMenuOuvert(!menuOuvert)}
+            >
+                <div className='flex justify-center items-center h-9 w-9 bg-black/70 rounded-md z-50'>
+                    <img className='h-6 w-6' src={menu} alt="Menu" />
+                </div>
+            </button>
+            <aside className="md:w-1/7 w-0 md:sticky md:top-0 md:h-screen z-50">
+                <Sidebar menuOuvert={menuOuvert} setMenuOuvert={setMenuOuvert} />
+            </aside>
             {/* SECTION PRINCIPALE */}
             <section className="md:w-6/7 w-full flex flex-col justify-center items-center gap-10">
                 {/* TITRE ET SOUS TITRE */}
-                <div className='md:w-full flex flex-col justify-center items-start font-bold pt-10 md:p-10 pr-0'>
+                <div className='md:w-full flex flex-col justify-center items-start font-bold py-8 md:p-10 pr-0'>
                     <h1 className='text-2xl md:text-4xl'>Créer un Événement</h1>
                     <p className='w-[80%] md:w-full text-sm md:text-md text-[#C2611F]'>Remplissez les informations pour créer votre événement</p>
                 </div>
                 {/* INFROMATION A REMPLIRE POUR LA CREATION DE L'EVNEMENT */}
-                <div className='w-[80%] flex flex-col justify-center items-cente'>
+                <div className='w-[90%] flex flex-col justify-center items-cente'>
                     {/* FORMULAIRE DE REMPLISSAGE */}
                     <form 
                         onSubmit={handleSubmit}
@@ -256,7 +274,7 @@ export default function CreateEven() {
                             {/* CONTENEUR DES INFORMATIONS */}
                             <div className='w-full flex flex-col gap-4'>
                                 {/* Nom de l'evenement */}
-                                <div className='flex flex-col px-4'>
+                                <div className='flex flex-col'>
                                     <label htmlFor="name">Nom de l'événement</label>
                                     <input
                                         type='text'
@@ -268,7 +286,7 @@ export default function CreateEven() {
                                     </input>
                                 </div>
                                 {/* Description complète */}
-                                <div className='flex flex-col px-4'>
+                                <div className='flex flex-col'>
                                     <label htmlFor="description_long">Description complète</label>
                                     <textarea
                                         id='description_long'
@@ -291,7 +309,7 @@ export default function CreateEven() {
                             <div className='w-full flex flex-col gap-8'>
                                 {/* Type d'événement & Prix (FCFA) */}
                                 <div className='flex flex-col text-sm md:text-md'>
-                                    <div className='w-full flex flex-col px-4 '>
+                                    <div className='w-full flex flex-col md:px-3'>
                                         <div className='w-full flex gap-2'>
                                             <img className='h-5 w-5' src={tag} alt="Icone des informations" />
                                             <label htmlFor="typeEven">Type d'événement</label>
@@ -409,7 +427,7 @@ export default function CreateEven() {
                                 <button
                                     type="button"
                                     onClick={ajouterCategorie}
-                                    className='bg-[#C2611F] text-white py-1 md:px-4 md:py-2 rounded-lg text-[13px] md:text-sm font-bold hover:bg-[#a14f19] transition-all cursor-pointer'
+                                    className='bg-[#C2611F] text-white py-2 px-2 md:px-4 rounded-lg text-[13px] md:text-sm font-bold hover:bg-[#a14f19] transition-all cursor-pointer'
                                 >
                                     + Ajouter une catégorie
                                 </button>
@@ -475,8 +493,44 @@ export default function CreateEven() {
                                 ))}
                             </div>
                         </div>
+                        
+                        {/* GALERIE PHOTOS */}
+                        <div className='w-full flex flex-col gap-4 bg-[#C2611F]/10 rounded-xl p-6'>
+                            <div className='w-full flex justify-start items-center gap-2 font-[500]'>
+                                <img className='h-6 w-6' src={imageIcon} alt="Icone photo" />
+                                <h1>Photos de galerie</h1>
+                            </div>
+                            <label
+                                htmlFor="photos-galerie"
+                                className='w-full h-24 flex flex-col justify-center items-center gap-2 bg-[#C2611F]/10 border-2 border-dashed border-[#C2611F]/40 rounded-xl cursor-pointer hover:bg-[#C2611F]/20 transition-all'
+                            >
+                                <p className='font-bold text-[#C2611F] text-sm'>Ajouter des photos à la galerie</p>
+                                <p className='text-xs text-gray-500'>{photos.length} photo(s) sélectionnée(s)</p>
+                            </label>
+                            <input
+                                type='file'
+                                id='photos-galerie'
+                                accept='image/*'
+                                multiple
+                                onChange={(e) => setPhotos(Array.from(e.target.files))}
+                                className='hidden'
+                            />
+                            {/* Aperçu des photos sélectionnées */}
+                            {photos.length > 0 && (
+                                <div className='flex gap-2 flex-wrap'>
+                                    {photos.map((photo, i) => (
+                                        <img
+                                            key={i}
+                                            src={URL.createObjectURL(photo)}
+                                            className='h-20 w-20 object-cover rounded-lg'
+                                            alt={`Photo ${i + 1}`}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                         {/* BUTTON DE PUBLICATION */}
-                        <div className='w-full flex justify-center items-center gap-4 md:pb-8'>
+                        <div className='w-full flex justify-center items-center gap-4 pb-8'>
                             <button 
                                 type="submit" 
                                 disabled={enAttente}

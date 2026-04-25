@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import API_URL from '../../utils/api'
 import chevron_droite from '../../assets/icons/droit.svg'
 import chevron_gauche from '../../assets/icons/gauche.svg'
 
@@ -6,6 +7,8 @@ function CarrouselEvenements({ image, photos = [] }){
 
     // UseState qui va se charger de parcourir le carousel
     const [indexActuel, setIndexActuel] = useState(0)
+    // Nombre total à afficher — au moins 1 (l'image principale)
+    const total = photos.length > 0 ? photos.length : 1
 
     const allerGauche = () => {
         if (indexActuel === 0) {
@@ -41,10 +44,13 @@ function CarrouselEvenements({ image, photos = [] }){
                     </div>
                 </div>
                 <div className='relative h-40 md:h-90 w-full rounded-xl bg-cover bg-center bg-gray-200'
-                    style={{ backgroundImage: `url(${photos.length > 0 ? photos[indexActuel]?.image : image})` }}>
+                    style={{ backgroundImage: `url(${photos.length > 0 
+                        ? `${API_URL}${photos[indexActuel]?.image}` 
+                        : image})` 
+                    }}>
                     <div className='w-full flex justify-end p-2'>
                         <div className='absolute h-8 w-8 bg-white/70 rounded-full flex justify-center items-center'>
-                            <span>{indexActuel + 1}/{photos.length}</span>
+                            <span>{indexActuel + 1}/{total}</span>
                         </div>
                     </div>
                 </div>

@@ -16,6 +16,7 @@ import ConditionUser from './pages/conditionUser';
 import PrivatyPolicy from './pages/privatyPolicy'
 import CursorTrail from "./components/shared/CursorTrail"
 import Scanner from './pages/scanner';
+import NotFound from './pages/NotFound'
 
 function App() {
   const location = useLocation();
@@ -43,6 +44,7 @@ function App() {
         <Route path="/conditionUser/" element={<ConditionUser />} />
         <Route path="/privatyPolicy/" element={<PrivatyPolicy />} />
         <Route path="/scanner" element={<PrivateRoute><Scanner /></PrivateRoute>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   )

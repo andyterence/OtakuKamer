@@ -156,39 +156,34 @@ export default function ModifierEvenement() {
 
     return (
         <div className='flex'>
+        {/* SIDEBAR */}
         {menuOuvert && (
             <div 
-                className='md:hidden fixed inset-0 bg-black/50 z-30'
+                className='md:hidden fixed inset-0 bg-black/50 z-50'
                 onClick={() => setMenuOuvert(false)}
-                />
-            )}
-        {token && (
-            <>
-                {/* BOUTON HAMBURGER */}
-                <button 
-                    className='md:hidden fixed top-4 left-4 z-50'
-                    onClick={() => setMenuOuvert(!menuOuvert)}
-                >
-                    <img className='h-5 w-5' src={menu} alt="Menu" />
-                </button>
-                        
-                {/* SIDEBAR */}
-                <aside className="md:w-1/7 w-0 md:sticky md:top-0 md:h-screen z-50">
-                    <Sidebar menuOuvert={menuOuvert} setMenuOuvert={setMenuOuvert} />
-                </aside>
-            </>
+            />
         )}
+        <button 
+            className='md:hidden fixed top-4 left-4 z-50'
+            onClick={() => setMenuOuvert(!menuOuvert)}
+        >
+            <div className='flex justify-center items-center h-9 w-9 bg-black/70 rounded-md z-50'>
+                <img className='h-6 w-6' src={menu} alt="Menu" />
+            </div>
+        </button>
+        <aside className="md:w-1/7 w-0 md:sticky md:top-0 md:h-screen z-50">
+            <Sidebar menuOuvert={menuOuvert} setMenuOuvert={setMenuOuvert} />
+        </aside>
         <main className={token ? 'md:w-6/7 w-full' : 'w-full'}>
-        
             {/* SECTION PRINCIPALE */}
-            <section className="w-full flex flex-col justify-center items-center gap-10">
+            <section className="md:w-6/7 w-full flex flex-col justify-center items-center gap-10">
                 {/* TITRE ET SOUS TITRE */}
-                <div className='w-full flex flex-col justify-center items-start font-bold md:p-10 md:pb-0'>
-                    <h1 className='text-4xl'>Modifier l'événement {modifierEven?.titre}</h1>
-                    <p className='text-md text-[#C2611F]'>Remplissez les informations pour modifié votre événement</p>
+                <div className='md:w-full flex flex-col justify-center items-start font-bold pt-10 md:p-10 pr-0'>
+                    <h1 className='text-2xl md:text-4xl'>Modifier l'événement {modifierEven?.titre}</h1>
+                    <p className='w-[80%] md:w-full text-sm md:text-md text-[#C2611F]'>Remplissez les informations pour modifié votre événement</p>
                 </div>
                 {/* INFROMATION A REMPLIRE POUR LA CREATION DE L'EVNEMENT */}
-                <div className='w-[80%] px-10'>
+                <div className='w-[90%]'>
                     {/* FORMULAIRE DE REMPLISSAGE */}
                     <form 
                         onSubmit={handleSubmit}
@@ -304,8 +299,8 @@ export default function ModifierEvenement() {
                             {/* CONTENEUR DES INFORMATIONS */}
                             <div className='w-full flex flex-col gap-8'>
                                 {/* Type d'événement & Prix (FCFA) */}
-                                <div className='w-full flex gap-4'>
-                                    <div className='w-full flex flex-col px-4'>
+                                <div className='flex flex-col text-sm md:text-md'>
+                                    <div className='w-full flex flex-col md:px-3'>
                                         <div className='w-full flex gap-2'>
                                             <img className='h-5 w-5' src={tag} alt="Icone des informations" />
                                             <label htmlFor="typeEven">Type d'événement</label>
@@ -316,7 +311,7 @@ export default function ModifierEvenement() {
                                             value={typeEven}
                                             onChange={(e) => setTypeEven(e.target.value)}
                                             placeholder='     Ex:OtakuFest 2026'
-                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md'
+                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4 text-sm md:text-md'
                                         >
                                             <option value="Tous">Mixte</option>
                                             <option value="Anime">Anime</option>
@@ -326,10 +321,10 @@ export default function ModifierEvenement() {
                                     </div>
                                 </div>
                                 {/* Date de l'événement & Heure de début */}
-                                <div className='w-full flex gap-4'>
-                                    <div className='w-full flex flex-col px-4'>
-                                        <div className='w-full flex gap-2'>
-                                            <img className='h-5 w-5' src={calendrier} alt="Icone des informations" />
+                                <div className='w-full flex md:justify-center items-center md:gap-4'>
+                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-4'>
+                                        <div className='w-full flex sm:justify-center md:justify-start items-center gap-1 md:gap-2 text-[12px] md:text-md'>
+                                            <img className='h-4 w-4 md:h-5 md:w-5' src={calendrier} alt="Icone des informations" />
                                             <label htmlFor="date">Date de l'événement</label>
                                         </div>
                                         <input
@@ -338,13 +333,13 @@ export default function ModifierEvenement() {
                                             value={date}
                                             onChange={(e) => setDate(e.target.value)}
                                             placeholder='     Ex:OtakuFest 2026'
-                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4'
+                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4 text-sm md:text-md'
                                         >
                                         </input>
                                     </div>
-                                    <div className='w-full flex flex-col px-4'>
-                                        <div className='w-full flex gap-2'>
-                                            <img className='h-5 w-5' src={clock} alt="Icone des informations" />
+                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-4'>
+                                        <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
+                                            <img className='h-4 w-4 md:h-5 md:w-5' src={clock} alt="Icone des informations" />
                                             <label htmlFor="time">Heure de début</label>
                                         </div>
                                         <input
@@ -353,16 +348,16 @@ export default function ModifierEvenement() {
                                             value={heure}
                                             onChange={(e) => setHeure(e.target.value)}
                                             placeholder='     Ex:OtakuFest 2026'
-                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4'
+                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4 text-sm md:text-md'
                                         >
                                         </input>
                                     </div>
                                 </div>
                                 {/* Ville & Lieu précis */}
-                                <div className='w-full flex gap-4'>
-                                    <div className='w-full flex flex-col px-4'>
-                                        <div className='w-full flex gap-2'>
-                                            <img className='h-5 w-5' src={map} alt="Icone des informations" />
+                                <div className='w-full flex justify-center items-center md:gap-4'>
+                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-2'>
+                                        <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
+                                            <img className='h-4 w-4 md:h-5 md:w-5' src={map} alt="Icone des informations" />
                                             <label htmlFor="name">Ville</label>
                                         </div>
                                         <input
@@ -371,13 +366,13 @@ export default function ModifierEvenement() {
                                             value={ville}
                                             onChange={(e) => setVille(e.target.value)}
                                             placeholder='     Ex:OtakuFest 2026'
-                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md'
+                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4 text-sm md:text-md'
                                         >
                                         </input>
                                     </div>
-                                    <div className='w-full flex flex-col px-4'>
-                                        <div className='w-full flex gap-2'>
-                                            <img className='h-5 w-5' src={map} alt="Icone des informations" />    
+                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-4'>
+                                        <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
+                                            <img className='h-4 w-4 md:h-5 md:w-5' src={map} alt="Icone des informations" />    
                                             <label htmlFor="name">Lieu précis</label>
                                         </div>
                                         <input
@@ -386,7 +381,7 @@ export default function ModifierEvenement() {
                                             value={lieu}
                                             onChange={(e) => setLieu(e.target.value)}
                                             placeholder='     Ex:OtakuFest 2026'
-                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md'
+                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4 text-sm md:text-md'
                                         >
                                         </input>
                                     </div>
@@ -405,7 +400,7 @@ export default function ModifierEvenement() {
                                                     value={statut}
                                                     onChange={(e) => setStatut(e.target.value)}
                                                     placeholder='     Ex:OtakuFest 2026'
-                                                    className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md'
+                                                    className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4 text-sm md:text-md'
                                                 >
                                                     <option value="en_preparation">En préparation</option>
                                                     <option value="annule">Annulé</option>
@@ -419,17 +414,17 @@ export default function ModifierEvenement() {
                             </div>
                         </div>
                         {/* CATEGORIES DE BILLETS */}
-                        <div className='w-full flex flex-col justify-center items-center gap-4 bg-[#C2611F]/10 rounded-xl px-10 py-6'>
+                        <div className='w-full flex flex-col justify-center items-center gap-4 bg-[#C2611F]/10 rounded-xl px-6 py-6'>
                             {/* TITRE */}
-                            <div className='w-full flex justify-between items-center font-[500]'>
+                            <div className='w-full flex justify-between items-center text-sm md:text-md font-[500]'>
                                 <div className='flex items-center gap-2'>
-                                    <img className='h-6 w-6' src={categorie} alt="Icone des catégories" />
+                                    <img className='h-5 w-5 md:h-6 md:w-6' src={categorie} alt="Icone des catégories" />
                                     <h1>Catégories de billets</h1>
                                 </div>
                                 <button
                                     type="button"
                                     onClick={ajouterCategorie}
-                                    className='bg-[#C2611F] text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-[#a14f19] transition-all'
+                                    className='bg-[#C2611F] text-white py-1 md:px-4 md:py-2 rounded-lg text-[13px] md:text-sm font-bold hover:bg-[#a14f19] transition-all cursor-pointer'
                                 >
                                     + Ajouter une catégorie
                                 </button>
@@ -438,7 +433,7 @@ export default function ModifierEvenement() {
                             {/* LISTE DES CATEGORIES */}
                             <div className='w-full flex flex-col gap-4'>
                                 {categories.map((categorie, index) => (
-                                    <div key={index} className='w-full flex gap-4 items-end bg-[#C2611F]/10 rounded-xl p-4'>
+                                    <div key={index} className='w-full flex flex-col md:flex-row gap-4 md:items-end bg-[#C2611F]/10 rounded-xl p-4'>
                                                         
                                         {/* Nom de la catégorie */}
                                         <div className='flex-1 flex flex-col'>
@@ -496,18 +491,18 @@ export default function ModifierEvenement() {
                             </div>
                         </div>
                         {/* BUTTON DE PUBLICATION */}
-                        <div className='w-full flex justify-center items-center gap-4 md:pb-8'>
+                        <div className='w-full flex justify-center items-center gap-4 pb-8'>
                             <button
                                 type="submit"
                                 disabled={enAttente}
-                                className='text-white bg-[#C2611F] px-4 w-2/3 md:h-10 rounded-sm font-bold md:text-lg cursor-pointer hover:bg-[#a14f19] transition-all'
+                                className='w-1/2 md:w-2/3 text-black bg-[#C2611F] px-4 h-10 md:h-6  md:h-10 rounded-sm font-bold text-[14px] md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/80'
                             >
                                 {enAttente ? 'Enregistrement...' : 'Enregistrer les modifications'}
                             </button>
                             <button
                                 type="button"
                                 onClick={() => navigate('/myEvenement')}
-                                className='text-[#C2611F] border border-[#C2611F] px-4 w-1/3 md:h-10 rounded-sm font-bold md:text-lg cursor-pointer hover:bg-[#C2611F] hover:text-white transition-all'
+                                className='w-1/2 md:w-1/3 text-black border-1 border-[#C2611F] md:px-4 h-10 md:h-6 md:h-10 rounded-sm font-bold text-[14px] md:text-lg cursor-pointer transition-all duration-300 hover:shadow-sm shadow-indigo-500/50 hover:bg-[#C2611F]/90 hover:text-white'
                             >
                                 Annuler
                             </button>

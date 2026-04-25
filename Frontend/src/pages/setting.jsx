@@ -157,14 +157,14 @@ export default function Setting() {
         <main className={token ? 'md:w-6/7 w-full' : 'w-full'}>
         
             {/* SECTION PRINCIPALE */}
-            <section className="w-full flex flex-col justify-center items-center gap-10">
+            <section className="md:w-6/7 w-full flex flex-col justify-center items-center gap-10">
                 {/* TITRE ET SOUS TITRE */}
-                <div className='w-full flex flex-col justify-center items-start font-bold md:p-10 md:pb-0'>
-                    <h1 className='text-4xl'>Paramètres</h1>
-                    <p className='text-md text-[#C2611F]'>Gérez vos informations personnelles et préférences</p>
+                <div className='md:w-full flex flex-col justify-center items-start font-bold pt-10 md:p-10 pr-0'>
+                    <h1 className='text-2xl md:text-4xl'>Paramètres</h1>
+                    <p className='w-[80%] md:w-full text-sm md:text-md text-[#C2611F]'>Gérez vos informations personnelles et préférences</p>
                 </div>
                 {/* INFROMATION A REMPLIRE POUR LA CREATION DE L'EVNEMENT */}
-                <div className='w-[80%] px-10'>
+                <div className='w-[90%] md:w-[80%] md:px-10'>
                     {/* FORMULAIRE DE REMPLISSAGE */}
                     <div  className='flex flex-col gap-8'>
                         {/* INFORMATION SUR LA PERSONNE */}
@@ -439,26 +439,28 @@ export default function Setting() {
                         {/* MOYEN DE PAIEMENT */}
                         <div className='w-full flex flex-col justify-center items-center gap-4 bg-[#C2611F]/10 rounded-xl px-10 py-6'>
                             {/* MOT DE PAIEMENT */}
-                            <div className='w-full flex justify-start items-center gap-2'>
-                                <img className='h-6 w-6' src={landmark} alt="Logo de Notifications" />
-                                <h2 className='font-bold text-xl'>Option de paiement</h2>
-                                <span className='text-[10px] bg-[#C2611F]/20 text-[#C2611F] px-2 py-1 rounded-full font-bold'>
+                            <div className='w-full flex justify-start items-center gap-4'>
+                                <div className='flex justify-center items-center'>
+                                    <img className='h-6 w-6' src={landmark} alt="Logo de Notifications" />
+                                    <h2 className='font-bold text-lg md:text-xl'>Option de paiement</h2>
+                                </div>
+                                <span className='text-[10px] bg-[#C2611F]/20 text-[#C2611F] px-1 md:px-2 py-2 rounded-full font-bold'>
                                     Bientôt disponible
                                 </span>
                             </div>
                             {/* OPTIONS DE PAIEMENT */}
                             <div className='w-full h-full flex flex-col gap-5 justify-center items-start'>
-                                <div className='w-full h-15 flex justify-between items-center bg-[#C2611F]/10 rounded-xl px-10'>
+                                <div className='w-full h-20 md:h-15 flex justify-between items-center bg-[#C2611F]/10 rounded-xl md:px-10 px-2'>
                                     <div className='flex justify-center items-center gap-2'>
                                         <div className='w-15 h-10 bg-[#C2611F]/60 flex justify-center items-center rounded-md'>
                                             <img className='h-7 w-7' src={money} alt="Logo de Notifications" />
                                         </div>
                                         <div className='flex flex-col justify-center items-start'>
-                                            <p className='font-bold'>+237 {utilisateur?.phone}</p>
-                                            <p className='text-[12px] text-red-900'>Numero de paiement</p>
+                                            <p className='font-bold text-[14px] md:text-md'>+237 {utilisateur?.phone}</p>
+                                            <p className='text-[12px] md:text-[12px] text-red-900'>Numero de paiement</p>
                                         </div>
                                     </div>
-                                    <div className='h-[50%] w-30 bg-[#C2611F]/20 flex justify-center items-center rounded-full sha'>
+                                    <div className='h-[50%] w-20 md:w-30 bg-[#C2611F]/20 flex justify-center items-center rounded-full shadow-sm'>
                                         <p className='text-[12px] text-green-900 font-[700]'>Defaut</p>
                                     </div>
                                 </div>

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import axios from 'axios'
 import API_URL from '../utils/api'
 import formaterStatut from '../utils/formaterStatut'
+import CarrouselEvenements from '../components/accueil/carrouselEvenements'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import background from '../assets/imgs/background.jpg'
@@ -352,20 +353,11 @@ export default function EvenementShow() {
                     </div>
                     
                     {/* GALERIE PHOTOS */}
-                    <div data-aos="fade-up" className='w-[90%] h-60 md:h-90 bg-gray-100 p-4 font-bold flex flex-col rounded-md gap-2'>
-                        <h1>Galerie</h1>
-                        <div className='h-full w-full flex justify-center items-center gap-2 overflow-x-auto'>
-                            {evenement?.photos?.length > 0
-                                ? evenement.photos.map(photo => (
-                                    <div
-                                        key={photo.id}
-                                        className='bg-cover bg-center h-full min-w-[140px] w-full rounded-xl cursor-pointer flex-shrink-0'
-                                        style={{ backgroundImage: `url(${photo.image})` }}
-                                    />
-                                ))
-                                : <p className='text-gray-400 text-sm font-normal'>Aucune photo disponible</p>
-                            }
-                        </div>
+                    <div data-aos="fade-up" className='w-[90%] bg-gray-100 p-4 font-bold flex flex-col rounded-md gap-2'>
+                        <CarrouselEvenements 
+                            image={evenement?.image}
+                            photos={evenement?.photos || []}
+                        />
                     </div>
  
                     {/* ORGANISATEUR */}
