@@ -10,9 +10,12 @@ import background from '../assets/imgs/background.jpg'
 import move_left from '../assets/icons/left.svg'
 import star from '../assets/icons/star.svg'
 import users from '../assets/icons/users.svg'
+import link from '../assets/icons/link.svg'
+import send from '../assets/icons/send2.svg'
 import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
 import map from '../assets/icons/map-check.svg'
 import shield from '../assets/icons/shield-check.svg'
+import whatsapp from '../assets/logos/whatsapp.svg'
  
 export default function EvenementShow() {
  
@@ -24,6 +27,7 @@ export default function EvenementShow() {
     const [utilisateur, setUtilisateur] = useState(null)
     // DECREMENTATION ET INCREMENTATION POUR L'ACHAT DES BILLETS
     const [quantite, setQuantite] = useState(1)
+    const evenementAchetable = ['en_cours', 'en_preparation'].includes(evenement?.statut)
     // UseState qui va se charger de la catégorie choisie par l'utilisateur
     const [categorieChoisie, setCategorieChoisie] = useState(null)
     // Etat pour ouvrir/fermer le drawer de réservation sur mobile
@@ -35,6 +39,8 @@ export default function EvenementShow() {
     const [methode, setMethode] = useState("MTN")
     const [numero, setNumero] = useState("")
     const [voirPlus, setVoirPlus] = useState(false)
+    const [lienCopie, setLienCopie] = useState(false)
+    
  
     // ─── FONCTIONS ────────────────────────────────────────────────────────────
  
@@ -59,25 +65,53 @@ export default function EvenementShow() {
     }
  
     // Envoie la réservation à l'API et redirige vers /billets si succès.
-    const reserver = async () => {
+    // const reserver = async () => {
+    //     if (!categorieChoisie) {
+    //         alert('Veuillez choisir une catégorie !')
+    //         return
+    //     }
+    //     try {
+    //         const token = localStorage.getItem('access')
+    //         await axios.post(
+    //             `${API_URL}/api/billet/`,
+    //             { categorie: categorieChoisie.id, quantite: quantite },
+    //             { headers: { Authorization: `Bearer ${token}` } }
+    //         )
+    //         setMessageConfirmation(true)
+    //         setTimeout(() => {
+    //             setMessageConfirmation(false)
+    //             navigate('/billets')
+    //         }, 1000)
+    //     } catch (_err) {
+    //         console.error(_err)
+    //     }
+    // }
+
+    const payer = async () => {
         if (!categorieChoisie) {
             alert('Veuillez choisir une catégorie !')
             return
         }
         try {
             const token = localStorage.getItem('access')
-            await axios.post(
-                `${API_URL}/api/billet/`,
-                { categorie: categorieChoisie.id, quantite: quantite },
-                { headers: { Authorization: `Bearer ${token}` } }
-            )
-            setMessageConfirmation(true)
-            setTimeout(() => {
-                setMessageConfirmation(false)
-                navigate('/billets')
-            }, 1000)
-        } catch (_err) {
-            console.error(_err)
+            const res = await axios.post(`${API_URL}/api/payments/init/`, {
+                amount: quantite * categorieChoisie.prix,
+                categorie_id: categorieChoisie.id,
+                quantite: quantite,
+                methode: methode,
+                numero: numero 
+            }, { headers: { Authorization: `Bearer ${token}` } })
+
+            // GeniusPay retourne une URL de paiement
+            if (res.data?.data?.checkout_url) {
+                window.location.href = res.data.data.checkout_url
+            } else {
+                console.error('Pas de payment_url dans la réponse', res.data)
+                alert('Erreur lors de l\'initialisation du paiement')
+            }
+        } catch (err) {
+            console.error(err)
+            alert('Erreur lors du paiement')
         }
     }
  
@@ -94,6 +128,46 @@ export default function EvenementShow() {
             setQuantite(quantite - 1)
         }
     }
+
+    // Copier le lien dans le presse-papier
+    const copierLien = () => {
+        navigator.clipboard.writeText(window.location.href)
+        setLienCopie(true)
+        setTimeout(() => setLienCopie(false), 2000)  // remet à false après 2s
+    }
+
+    // Partager sur WhatsApp
+    const partagerWhatsApp = () => {
+        const texte = `Découvre cet événement : ${evenement?.titre} — ${window.location.href}`
+        // wa.me est l'URL officielle WhatsApp pour partager un message
+        window.open(`https://wa.me/?text=${encodeURIComponent(texte)}`)
+    }
+
+    // Partage natif du téléphone (API Web Share)
+    // navigator.share est disponible sur mobile uniquement
+    const partagerNatif = async () => {
+        if (navigator.share) {
+            await navigator.share({
+                title: evenement?.titre,
+                text: `Découvre cet événement sur OtakuKamer !`,
+                url: window.location.href,
+            })
+        }
+    }
+
+    // Pourcentage de places RESTANTES
+    const pourcentageRestant = categorieChoisie
+        ? (categorieChoisie.nombreRestant / categorieChoisie.nombreteTotale) * 100
+        : 0
+
+    // Couleur selon disponibilité
+    // > 50% → vert (beaucoup de places)
+    // 20-50% → orange (places limitées)
+    // < 20% → rouge (presque complet)
+    const couleurBarre = 
+        pourcentageRestant > 50 ? 'bg-green-500' :
+        pourcentageRestant > 20 ? 'bg-orange-400' :
+        'bg-red-500'
  
     // ─── EFFETS ───────────────────────────────────────────────────────────────
  
@@ -141,26 +215,30 @@ export default function EvenementShow() {
             {/* CHOISIR LE TYPE DE BILLET */}
             <div className='flex flex-col justify-center items-start gap-2 p-4'>
                 <p className='text-sm'>Type de billet</p>
-                <div className='text-sm w-full'>
-                    <select
-                        name="billet"
-                        id="billet"
-                        className='w-full h-10 text-[12px] bg-[#C2611F]/10 rounded-md px-2'
-                        onChange={(e) => {
-                            const categorie = evenement.categories.find(c => c.id === parseInt(e.target.value))
-                            setCategorieChoisie(categorie)
-                            // Remet la quantité à 1 quand on change de catégorie
-                            setQuantite(1)
-                        }}
-                    >
-                        <option className='w-full bg-[#C2611F]/20' value="">Choisir une catégorie</option>
-                        {evenement?.categories?.map(categorie => (
-                            <option className='w-full bg-[#C2611F]/20' key={categorie.id} value={categorie.id}>
-                                {categorie.nom}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                {evenementAchetable ? (
+                    <div className='text-sm w-full'>
+                        <select
+                            name="billet"
+                            id="billet"
+                            className='w-full h-10 text-[12px] bg-[#C2611F]/10 rounded-md px-2'
+                            onChange={(e) => {
+                                const categorie = evenement.categories.find(c => c.id === parseInt(e.target.value))
+                                setCategorieChoisie(categorie)
+                                // Remet la quantité à 1 quand on change de catégorie
+                                setQuantite(1)
+                            }}
+                        >
+                            <option className='w-full bg-[#C2611F]/20' value="">Choisir une catégorie</option>
+                            {evenement?.categories?.map(categorie => (
+                                <option className='w-full bg-[#C2611F]/20' key={categorie.id} value={categorie.id}>
+                                    {categorie.nom}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                 ) : (
+                    <p className='text-red-400 text-sm'>Billets indisponibles</p>
+                )}
             </div>
  
             {/* BARRE DE SEPARATION */}
@@ -193,7 +271,31 @@ export default function EvenementShow() {
                 {/* LIEU */}
                 <div className='flex justify-start items-center gap-2'>
                     <img className='h-5 w-5' src={map} alt="Icon de la localisation" />
-                    <p className='text-[14px] font-bold'>{evenement?.lieu}</p>
+                    {evenement?.estVirtuel ? (
+                    <div className='flex flex-col gap-1'>
+                        <div className='flex items-center gap-2'>
+                            <span>🌐</span>
+                            <p className='text-[14px] font-bold'>Événement en ligne</p>
+                        </div>
+                        {evenement?.lienVirtuel && (
+                            <a 
+                                href={evenement.lienVirtuel}
+                                target='_blank'
+                                rel='noreferrer'
+                                className='text-blue-500 text-sm underline pl-6 hover:text-blue-700'
+                            >
+                                Rejoindre la réunion →
+                            </a>
+                        )}
+                    </div>
+                ) : (
+                    <div className='flex justify-start items-center gap-2'>
+                        <p className='text-[14px] font-bold'>
+                            <p className='text-[14px] font-bold'>{evenement?.ville}</p>
+                            <p className='text-[14px] font-bold'>({evenement?.lieu})</p>
+                        </p>
+                    </div>
+                )}
                 </div>
  
                 {/* STATUT — formaterStatut convertit 'en_preparation' en 'En préparation' */}
@@ -202,14 +304,41 @@ export default function EvenementShow() {
                     <p className='text-[14px] font-bold'>{formaterStatut(evenement?.statut)}</p>
                 </div>
             </div>
+            
+            {/* BARRE DE PROGRESSION */}
+            <div className='flex flex-col gap-1 mx-4'>
+                <div className='w-full h-3 bg-[#C2611F]/30 rounded-full overflow-hidden'>
+                    <div 
+                        className={`h-full rounded-full transition-all duration-500 ${couleurBarre}`}
+                        style={{ width: `${pourcentageRestant}%` }}
+                    />
+                </div>
+                {/* Message selon disponibilité — sans chiffres */}
+                <p className='text-xs text-gray-500'>
+                    {pourcentageRestant < 20 ? 'Fait vite, reserve ton billet !' :
+                    pourcentageRestant < 50 ? 'Places limitées' :
+                    'Places disponibles'}
+                </p>
+            </div>
  
             {/* BARRE DE SEPARATION */}
-            <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div>
+            {/* <div className='h-1 w-[90%] bg-[#C2611F]/40 mx-auto'></div> */}
  
             {/* SECTION RESERVATION — visible seulement si une catégorie est choisie */}
             <div className='font-[500] p-4'>
-                {categorieChoisie ? (
-                    <div className='flex flex-col gap-6'>
+            {!evenementAchetable ? (
+                // Événement terminé ou annulé
+                <div className='text-center py-4'>
+                    <p className='text-red-500 font-bold text-lg'>
+                        {evenement?.statut === 'annule' ? 'Événement annulé' : 'Événement terminé'}
+                    </p>
+                    <p className='text-gray-500 text-sm mt-2'>
+                        Les billets ne sont plus disponibles pour cet événement.
+                    </p>
+                </div>
+            ) : categorieChoisie ? (
+                // Catégorie choisie — affiche prix + quantité + bouton
+                <div className='flex flex-col gap-6'>
                         {/* Prix unitaire */}
                         <div>
                             <p>Prix par personne</p>
@@ -290,7 +419,6 @@ export default function EvenementShow() {
                         <img className='h-5 w-5' src={move_left} alt="Retour" />
                         <p>Retour</p>
                     </button>
- 
                     {/* TITRE + TYPE + AVIS + PARTICIPANTS */}
                     <div className='flex items-center animate__animated animate__zoomInLeft'>
                         <div className='flex flex-col items-start justify-center gap-4'>
@@ -302,16 +430,21 @@ export default function EvenementShow() {
                             <div className='w-40 h-10 border-1 border-[#C2611F] text-white text-[12px] flex justify-center items-center px-4 py-1 rounded-xl'>
                                 <p>{evenement?.typeEven}</p>
                             </div>
+                            {evenement?.estVirtuel && (
+                                <div className='w-32 h-10 border border-blue-400 text-blue-300 text-[12px] flex justify-center items-center rounded-xl'>
+                                    Virtuel
+                                </div>
+                            )}
                             {/* Avis et participants — données statiques pour l'instant */}
                             <div className='flex items-center justify-center gap-4 flex-wrap'>
                                 <div className='flex justify-center items-center'>
                                     <img className='h-5 w-5' src={star} alt="Étoile" />
-                                    <p className='text-sm'> 4.5 / 5 (156 avis)</p>
+                                    <p className='text-sm'>  /  ( avis)</p>
                                 </div>
                                 <span className='text-[20px]'>·</span>
                                 <div className='flex justify-center items-center'>
                                     <img className='h-5 w-5' src={users} alt="Participants" />
-                                    <p className='text-sm'> 120 participants</p>
+                                    <p className='text-sm'>  Vues</p>
                                 </div>
                             </div>
                         </div>
@@ -385,9 +518,27 @@ export default function EvenementShow() {
                             </div>
                         </div>
                     </div>
+                    {/* BOUTON PARTAGER — dans le Hero, en haut à droite */}
+                    <div className='flex flex-col md:flex-row justify-center items-center gap-2 cursor-pointer absolute top-4 right-4 z-50 text-white'>
+                        <button className='flex justify-center items-center gap-2 bg-white/20 w-full px-4 py-2 rounded-xl cursor-pointer hover:text-[#C2611F] transition-all' onClick={copierLien}>
+                            <img className='h-5 w-5' src={link} alt="Logo de l'information" />
+                            <p>{lienCopie ? 'Lien copié !' : 'Copier'}</p>
+                        </button>
+                        <button className='flex justify-center items-center gap-2 bg-white/20 w-full px-4 py-2 rounded-xl cursor-pointer hover:text-[#C2611F] transition-all' onClick={partagerWhatsApp}>
+                            <img className='h-5 w-5' src={whatsapp} alt="Logo de l'information" />
+                            <p>WhatsApp</p>
+                        </button>
+                        {navigator.share && (
+                            // N'affiche le bouton natif que si le navigateur le supporte
+                            <button className='flex justify-center items-center gap-2 bg-white/20 w-full px-4 py-2 rounded-xl cursor-pointer hover:text-[#C2611F] transition-all' onClick={partagerNatif}>
+                                <img className='h-5 w-5' src={send} alt="Logo de l'information" />
+                                <p>Partager</p>
+                            </button>
+                        )}
+                    </div>
                 </div>
- 
-                {/* ── COLONNE DROITE : ACHAT DE BILLET (DESKTOP UNIQUEMENT) ─────── */}
+
+                {/* ── COLONNE DROITE : ACHAT DE BILLET (DESKTOP UNIQUEMENT) ─── */}
                 {/* hidden sur mobile — le drawer prend le relais sur mobile */}
                 {/* visible (flex) à partir de md */}
                 <div className='hidden md:flex relative w-2/5 justify-center items-start py-4 px-2'>
@@ -452,12 +603,8 @@ export default function EvenementShow() {
                         </p>
                         {/* Sélecteur méthode de paiement */}
                         <select
-                            onChange={(e) => {
-                                if (!evenement?.categories) return  // ← protection si l'event n'est pas chargé
-                                const categorie = evenement.categories.find(c => c.id === parseInt(e.target.value))
-                                setCategorieChoisie(categorie)
-                                setQuantite(1)
-                            }}
+                            value={methode}
+                            onChange={(e) => setMethode(e.target.value)}
                             className='border border-gray-300 rounded-lg p-2'
                         >
                             <option value="MTN">MTN Mobile Money</option>
@@ -483,7 +630,7 @@ export default function EvenementShow() {
                                 onClick={async () => {
                                     setModalOuvert(false)
                                     setDrawerOuvert(false) // Ferme aussi le drawer si ouvert sur mobile
-                                    await reserver()
+                                    await payer()
                                 }}
                                 className='w-1/2 py-3 bg-[#C2611F] text-white rounded-xl hover:bg-[#a14f19] transition-all'
                             >

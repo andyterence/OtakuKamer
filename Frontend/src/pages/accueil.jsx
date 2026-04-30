@@ -89,7 +89,7 @@ function Accueil() {
                     </div>
                 </div>
             )}
-            <button className="anime-flotter bg-[#C2611F]/50 fixed bottom-30 right-10 border-2 border-black h-10 w-10 rounded-full flex justify-center items-center z-50 cursor-pointer hover:bg-[#C2611F]/70 hover:scale-110 transition-transform duration-300">
+            <button className="anime-flotter bg-[#C2611F]/50 fixed bottom-30 right-10 border-2 border-black h-13 w-13 rounded-full flex justify-center items-center z-50 cursor-pointer hover:bg-[#C2611F] hover:scale-110 transition-transform duration-300">
                 <div className="anime-flotter absolute border-2 border-black h-7 w-7 rounded-full flex justify-center items-center">
                     <div className="absolute border-2 border-black h-5 w-5 rounded-full flex justify-center items-center">
                         <div className="absolute border-2 border-black h-3 w-3 rounded-full flex justify-center items-center"></div>

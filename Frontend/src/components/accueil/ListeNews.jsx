@@ -10,10 +10,9 @@ export function ListeNews(){
     // UseState qui va se charger de la liste des news selon le type
     const [news, setnews] = useState([])
     // UseState qui va se charger du filtre des news selon le type
-    const [filtreActif, setFiltreActif] = useState('Tous')
+    const [filtreActif, setFiltreActif] = useState('Mixte')
     // Pour generer les filtres boutons grace a .map()
-    const filtres = ['Tous', 'gaming', 'anime', 'manga']
-
+    const filtres = ['Mixte', 'gaming', 'anime', 'BD']
     useEffect(() => {
         const chargernews = async() => {
             try {
@@ -26,7 +25,7 @@ export function ListeNews(){
         chargernews()
     },[])
 
-    const newsFiltres = filtreActif === 'Tous' 
+    const newsFiltres = filtreActif === 'Mixte' 
     ? news 
     : news.filter(e => e.typeNews === filtreActif)
 

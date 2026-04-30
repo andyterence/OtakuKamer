@@ -12,17 +12,15 @@ import tags from '../assets/icons/tags.svg'
 import tag from '../assets/icons/tag.svg'
 import clock from '../assets/icons/clock.svg'
 import x from '../assets/icons/x.svg'
+import link from '../assets/icons/link.svg'
 import categorie from '../assets/icons/chart-column-stacked.svg'
 
 export default function ModifierEvenement() {
     const { id } = useParams()
     const navigate = useNavigate()
-    // État pour indiquer si la connexion est en cours d'attente, utilisé pour afficher une image différente pendant le processus de connexion
     const [enAttente, setEnAttente] = useState(false)
     const [modifierEven, setModifierEven] = useState(null)
-    // Etat pour refuser l'autorisation du sidebar aux personnes qui ne sont pas connecter
     const token = localStorage.getItem('access')
-    // Menu ouvert ou pas
     const [menuOuvert, setMenuOuvert] = useState(false)
     const [titre, setTitre] = useState('')
     const [description, setDescription] = useState('')
@@ -34,6 +32,10 @@ export default function ModifierEvenement() {
     const [image, setImage] = useState(null)
     const [statut, setStatut] = useState('en_preparation')
     const [categories, setCategories] = useState([])
+    const [photos, setPhotos] = useState([])
+    const [photosExistantes, setPhotosExistantes] = useState([])
+    const [estVirtuel, setEstVirtuel] = useState(false)
+    const [lienVirtuel, setLienVirtuel] = useState('')
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -63,6 +65,18 @@ export default function ModifierEvenement() {
                     'Authorization': `Bearer ${token}`
                 }
             })
+
+            if (photos.length > 0) {
+                const photosFormData = new FormData()
+                photos.forEach(photo => {
+                    photosFormData.append('photos', photo)
+                })
+                await axios.post(
+                    `${API_URL}/api/evenements/${id}/ajouter-photos/`,
+                    photosFormData,
+                    { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' } }
+                )
+            }
 
             // catégories (essaie de compléter cette partie)
             for (const categorie of categories) {
@@ -129,6 +143,8 @@ export default function ModifierEvenement() {
                 setVille(e.ville)
                 setLieu(e.lieu)
                 setStatut(e.statut)
+                setEstVirtuel(e.estVirtuel)
+                setLienVirtuel(e.lienVirtuel || '')
 
                 if (e.dateLancement) {
                     const dt = new Date(e.dateLancement)
@@ -144,6 +160,10 @@ export default function ModifierEvenement() {
                         prix: c.prix,
                         nombreteTotale: c.nombreteTotale
                     })))
+                }
+                // Photos existantes
+                if (e.photos?.length > 0) {
+                    setPhotosExistantes(e.photos)
                 }
             } catch (_err) {
                 console.error(_err)
@@ -176,7 +196,7 @@ export default function ModifierEvenement() {
         </aside>
         <main className={token ? 'md:w-6/7 w-full' : 'w-full'}>
             {/* SECTION PRINCIPALE */}
-            <section className="md:w-6/7 w-full flex flex-col justify-center items-center gap-10">
+            <section className="w-6/7 w-full flex flex-col justify-center items-center gap-10">
                 {/* TITRE ET SOUS TITRE */}
                 <div className='md:w-full flex flex-col justify-center items-start font-bold pt-10 md:p-10 pr-0'>
                     <h1 className='text-2xl md:text-4xl'>Modifier l'événement {modifierEven?.titre}</h1>
@@ -315,14 +335,97 @@ export default function ModifierEvenement() {
                                         >
                                             <option value="Tous">Mixte</option>
                                             <option value="Anime">Anime</option>
-                                            <option value="Manga">Manga</option>
+                                            <option value="Manga">BD</option>
                                             <option value="Gaming">Gaming</option>
                                         </select>
                                     </div>
                                 </div>
+                                {/* CATEGORIE : PHYSIQUE OU VIRTUEL */}
+                                <div className='flex flex-col gap-4 md:px-3'>
+                                    <div className='w-full flex flex-col justify-start items-center gap-1'>
+                                        <div className='w-full flex gap-2 text-sm md:text-md'>
+                                            <img className='h-5 w-5' src={link} alt="Icone des informations" />
+                                            <label htmlFor="typeEven">Catégorie de l'événement</label>
+                                        </div>
+                                        <div className='flex w-full gap-4'>
+                                            <label className='w-full flex items-center gap-2 bg-[#C2611F]/20 h-10 rounded-md px-3 text-sm cursor-pointer'>
+                                                <input
+                                                    type='radio'
+                                                    name='typeEvent'
+                                                    checked={!estVirtuel}
+                                                    onChange={() => setEstVirtuel(false)}
+                                                    className='accent-[#C2611F]'
+                                                />
+                                                <span>Physique</span>
+                                            </label>
+                                            <label className='w-full flex items-center gap-2 bg-[#C2611F]/20 h-10 rounded-md px-3 text-sm cursor-pointer'>
+                                                <input
+                                                    type='radio'
+                                                    name='typeEvent'
+                                                    checked={estVirtuel}
+                                                    onChange={() => setEstVirtuel(true)}
+                                                    className='accent-[#C2611F]'
+                                                />
+                                                <span>Virtuel</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    {/* Champ Lien — visible seulement si virtuel */}
+                                    {estVirtuel && (
+                                        <div className='flex flex-col gap-1'>
+                                            <div className='w-full flex gap-2'>
+                                                <img className='h-5 w-5' src={link} alt="Icone des informations" />
+                                                <label className='text-sm'>Lien de la réunion</label>
+                                            </div>
+                                            <input
+                                                type='url'
+                                                value={lienVirtuel}
+                                                onChange={(e) => setLienVirtuel(e.target.value)}
+                                                placeholder='https://meet.google.com/...  OU  https://web.whatsapp.com/...'
+                                                className='bg-[#C2611F]/20 h-10 rounded-md px-3 text-sm'
+                                            />
+                                        </div>
+                                    )}
+
+                                    {/* Ville et Lieu — cachés si virtuel */}
+                                    {!estVirtuel && (
+                                        <div className='w-full flex justify-center items-center md:gap-4'>
+                                            <div className='w-1/2 md:w-full flex flex-col px-1'>
+                                                <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
+                                                    <img className='h-4 w-4 md:h-5 md:w-5' src={map} alt="Icone des informations" />
+                                                    <label htmlFor="name">Ville</label>
+                                                </div>
+                                                <input
+                                                    type='text'
+                                                    id='name'
+                                                    value={ville}
+                                                    onChange={(e) => setVille(e.target.value)}
+                                                    placeholder='     Ex:OtakuFest 2026'
+                                                    className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4 text-sm md:text-md'
+                                                >
+                                                </input>
+                                            </div>
+                                            <div className='w-1/2 md:w-full flex flex-col px-1 md:px-'>
+                                                <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
+                                                    <img className='h-4 w-4 md:h-5 md:w-5' src={map} alt="Icone des informations" />    
+                                                    <label htmlFor="name">Lieu précis</label>
+                                                </div>
+                                                <input
+                                                    type='text'
+                                                    id='name'
+                                                    value={lieu}
+                                                    onChange={(e) => setLieu(e.target.value)}
+                                                    placeholder='     Ex:OtakuFest 2026'
+                                                    className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4 text-sm md:text-md'
+                                                >
+                                                </input>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                                 {/* Date de l'événement & Heure de début */}
                                 <div className='w-full flex md:justify-center items-center md:gap-4'>
-                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-4'>
+                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:pl-4'>
                                         <div className='w-full flex sm:justify-center md:justify-start items-center gap-1 md:gap-2 text-[12px] md:text-md'>
                                             <img className='h-4 w-4 md:h-5 md:w-5' src={calendrier} alt="Icone des informations" />
                                             <label htmlFor="date">Date de l'événement</label>
@@ -337,7 +440,7 @@ export default function ModifierEvenement() {
                                         >
                                         </input>
                                     </div>
-                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-4'>
+                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:pr-4'>
                                         <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
                                             <img className='h-4 w-4 md:h-5 md:w-5' src={clock} alt="Icone des informations" />
                                             <label htmlFor="time">Heure de début</label>
@@ -347,39 +450,6 @@ export default function ModifierEvenement() {
                                             id='time'
                                             value={heure}
                                             onChange={(e) => setHeure(e.target.value)}
-                                            placeholder='     Ex:OtakuFest 2026'
-                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4 text-sm md:text-md'
-                                        >
-                                        </input>
-                                    </div>
-                                </div>
-                                {/* Ville & Lieu précis */}
-                                <div className='w-full flex justify-center items-center md:gap-4'>
-                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-2'>
-                                        <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
-                                            <img className='h-4 w-4 md:h-5 md:w-5' src={map} alt="Icone des informations" />
-                                            <label htmlFor="name">Ville</label>
-                                        </div>
-                                        <input
-                                            type='text'
-                                            id='name'
-                                            value={ville}
-                                            onChange={(e) => setVille(e.target.value)}
-                                            placeholder='     Ex:OtakuFest 2026'
-                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4 text-sm md:text-md'
-                                        >
-                                        </input>
-                                    </div>
-                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-4'>
-                                        <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
-                                            <img className='h-4 w-4 md:h-5 md:w-5' src={map} alt="Icone des informations" />    
-                                            <label htmlFor="name">Lieu précis</label>
-                                        </div>
-                                        <input
-                                            type='text'
-                                            id='name'
-                                            value={lieu}
-                                            onChange={(e) => setLieu(e.target.value)}
                                             placeholder='     Ex:OtakuFest 2026'
                                             className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4 text-sm md:text-md'
                                         >
@@ -489,6 +559,49 @@ export default function ModifierEvenement() {
                                     </div>
                                 ))}
                             </div>
+                        </div>
+                        {/* GALERIE PHOTOS */}
+                        <div className='w-full flex flex-col gap-4 bg-[#C2611F]/10 rounded-xl p-6'>
+                            <div className='w-full flex justify-start items-center gap-2 font-[500]'>
+                                <img className='h-6 w-6' src={imageIcon} alt="Icone photo" />
+                                <h1>Photos de galerie</h1>
+                            </div>
+                            <label
+                                htmlFor="photos-galerie"
+                                className='w-full h-24 flex flex-col justify-center items-center gap-2 bg-[#C2611F]/10 border-2 border-dashed border-[#C2611F]/40 rounded-xl cursor-pointer hover:bg-[#C2611F]/20 transition-all'
+                            >
+                                <p className='font-bold text-[#C2611F] text-sm'>Ajouter des photos à la galerie</p>
+                                <p className='text-xs text-gray-500'>{photos.length} photo(s) sélectionnée(s)</p>
+                            </label>
+                            <input
+                                type='file'
+                                id='photos-galerie'
+                                accept='image/*'
+                                multiple
+                                onChange={(e) => setPhotos(Array.from(e.target.files))}
+                                className='hidden'
+                            />
+                            {photosExistantes.length > 0 && (
+                                <div className='flex flex-col gap-2'>
+                                    <p className='text-sm text-gray-500'>Photos actuelles</p>
+                                    <div className='flex gap-2 flex-wrap'>
+                                        {photosExistantes.map((photo) => (
+                                            <img key={photo.id} src={photo.image} className='h-20 w-20 object-cover rounded-lg' />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {photos.length > 0 && (
+                                <div className='flex flex-col gap-2'>
+                                    <p className='text-sm text-[#C2611F] font-bold'>Nouvelles photos à ajouter</p>
+                                    <div className='flex gap-2 flex-wrap'>
+                                        {photos.map((photo, i) => (
+                                            <img key={i} src={URL.createObjectURL(photo)} className='h-20 w-20 object-cover rounded-lg border-2 border-[#C2611F]' />
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                         {/* BUTTON DE PUBLICATION */}
                         <div className='w-full flex justify-center items-center gap-4 pb-8'>

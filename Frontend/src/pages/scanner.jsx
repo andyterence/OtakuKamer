@@ -8,14 +8,14 @@ import menu from '../assets/icons/menu.svg'
 
 
 export default function Scanner() {
-    const videoRef = useRef(null)
-    const canvasRef = useRef(null)
-    const navigate = useNavigate()
+    const videoRef = useRef(null) // Référence à l'élément vidéo pour accéder à la caméra
+    const canvasRef = useRef(null) // Référence à un canvas pour capturer les images de la vidéo et les analyser
+    const navigate = useNavigate() // Hook pour la navigation entre les pages
     const token = localStorage.getItem('access')
-    const [resultat, setResultat] = useState(null)
-    const [scanning, setScanning] = useState(true)
+    const [resultat, setResultat] = useState(null) // État pour stocker le résultat de la validation du billet (succès ou échec)
+    const [scanning, setScanning] = useState(true) // État pour savoir si le scanner est actif ou non
     const [menuOuvert, setMenuOuvert] = useState(false)
-    const intervalRef = useRef(null)
+    const intervalRef = useRef(null) // Référence pour stocker l'intervalle de temps qui contrôle la fréquence du scan
 
     useEffect(() => {
         // Démarre la caméra
@@ -36,11 +36,14 @@ export default function Scanner() {
     }, [])
 
     const scanner = () => {
-        const video = videoRef.current
-        const canvas = canvasRef.current
-        if (!video || !canvas || video.readyState !== video.HAVE_ENOUGH_DATA) return
-
-        const ctx = canvas.getContext('2d')
+    const video = videoRef.current
+    const canvas = canvasRef.current
+    if (!video || !canvas) return
+    
+    console.log('readyState:', video.readyState) 
+    
+    if (video.readyState !== video.HAVE_ENOUGH_DATA) return
+        const ctx = canvas.getContext('2d', { willReadFrequently: true }) // ✅ Indique au navigateur que getImageData sera appelé souvent
         
         canvas.width = video.videoWidth / 2
         canvas.height = video.videoHeight / 2
@@ -78,7 +81,7 @@ export default function Scanner() {
     const reessayer = () => {
         setResultat(null)
         setScanning(true)
-        requestAnimationFrame(scanner)
+        intervalRef.current = setInterval(scanner, 300)
     }
 
     return (

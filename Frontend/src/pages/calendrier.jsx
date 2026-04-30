@@ -14,8 +14,58 @@ export default function Calendrier() {
     const [evenements, setEvenements] = useState([])
     const [enAttente, setEnAttente] = useState(false)
     const [menuOuvert, setMenuOuvert] = useState(false)
-    // Pour pouvoir naviguer entre les pages
+    const [moisActuel, setMoisActuel] = useState(new Date())
+    const [jourSelectionne, setJourSelectionne] = useState(null)
     const navigate = useNavigate()
+
+    // Fonction pour calculer les jours du mois et leur position dans la grille du calendrier
+    const joursduMois = () => {
+        const annee = moisActuel.getFullYear()
+        const mois = moisActuel.getMonth()
+        
+        // Nombre de jours dans ce mois
+        const nombreJours = new Date(annee, mois + 1, 0).getDate()
+        
+        // Quel jour de la semaine est le 1er ? (0=Dim, 1=Lun... 6=Sam)
+        // En France, la semaine commence le Lundi → ajuster l'offset
+        let premierJour = new Date(annee, mois, 1).getDay()
+        premierJour = premierJour === 0 ? 6 : premierJour - 1  // ← convertit Dim(0) en 6, Lun(1) en 0
+        
+        const jours = []
+        
+        // Cases vides avant le 1er jour
+        for (let i = 0; i < premierJour; i++) {
+            jours.push(null)  // null = case vide
+        }
+        
+        // Jours du mois
+        for (let i = 1; i <= nombreJours; i++) {
+            jours.push(i)
+        }
+        
+        return jours
+    }
+
+    const evenementsduJour = (jour) => {
+        return evenements.filter(e => {
+            const dateEven = new Date(e.dateLancement)
+            return (
+                dateEven.getDate() === jour &&
+                dateEven.getMonth() === moisActuel.getMonth() &&
+                dateEven.getFullYear() === moisActuel.getFullYear()
+            )
+        })
+    }
+
+    const moisSuivant = () => {
+        setMoisActuel(new Date(moisActuel.getFullYear(), moisActuel.getMonth() + 1, 1))
+        setJourSelectionne(null)  // reset la sélection
+    }
+
+    const moisPrecedent = () => {
+        setMoisActuel(new Date(moisActuel.getFullYear(), moisActuel.getMonth() - 1, 1))
+        setJourSelectionne(null)
+    }
 
     // AFFICHAGE DU CALENDRIER PAR MOIS
     const evenementsParMois = evenements.reduce((groupes, evenement) => {
@@ -81,27 +131,71 @@ export default function Calendrier() {
                         <p className="text-white text-lg">Chargement en cours...</p>
                     </div>
                 )}
-                {/* CONTENEUR GENERAL REGROUPANT LES EVENEMENTS PAR MOIS*/}
-                {Object.entries(evenementsParMois).map(([mois, evenementsDuMois]) => (
-                    <div key={mois} className='bg-[#C2611F]/10 w-[95%] md:w-[90%] flex flex-col gap-2 rounded-md p-4 mb-4'>
-                        {/* TITRE DU MOIS */}
-                        <div className='flex items-center gap-2 font-bold'>
-                            <img className='h-6 w-6' src={calendrier} />
-                            <p className='capitalize'>{mois}</p>
-                        </div>
-                        {/* EVENEMENTS DU MOIS */}
-                        {evenementsDuMois.map(evenement => (
-                            <button 
-                                key={evenement.id} 
+                {/* GRILLE CALENDRIER */}
+                <div className='bg-white w-[95%] md:w-[90%] rounded-xl p-4 mb-6 shadow-xl'>
+                    
+                    {/* Navigation mois */}
+                    <div className='flex justify-between items-center mb-4'>
+                        <button onClick={moisPrecedent}>← </button>
+                        <h2 className='font-bold capitalize'>
+                            {moisActuel.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                        </h2>
+                        <button onClick={moisSuivant}> →</button>
+                    </div>
+                    
+                    {/* En-têtes jours */}
+                    <div className='grid grid-cols-7 mb-2'>
+                        {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(j => (
+                            <div key={j} className='text-center text-xs font-bold text-[#C2611F]'>{j}</div>
+                        ))}
+                    </div>
+                    
+                    {/* Cases jours */}
+                    <div className='grid grid-cols-7 gap-1'>
+                        {joursduMois().map((jour, index) => {
+                            const evenementsCeJour = jour ? evenementsduJour(jour) : []
+                            const estSelectionne = jourSelectionne === jour
+                            
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => jour && setJourSelectionne(jour === jourSelectionne ? null : jour)}
+                                    className={`relative h-20 flex flex-col justify-center items-center rounded-lg text-sm cursor-pointer transition-all duration-200
+                                        ${!jour ? '' : 'hover:bg-[#C2611F]/30'}
+                                        ${estSelectionne ? 'bg-[#C2611F]/30 text-black' : ''} 
+                                    `}
+                                >
+                                    {jour && <span>{jour}</span>}
+                                    {/* Point rouge si événement ce jour */}
+                                    {evenementsCeJour.length > 0 && (
+                                        <div className='absolute bottom-1 w-2 h-2 bg-[#C2611F] rounded-full' 
+                                            style={{ backgroundColor: estSelectionne ? 'white' : '#C2611F' }}
+                                        />
+                                    )}
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+
+                {/* LISTE DU JOUR SÉLECTIONNÉ */}
+                {jourSelectionne && evenementsduJour(jourSelectionne).length > 0 && (
+                    <div className='bg-[#C2611F]/40 w-[95%] md:w-[90%] rounded-xl p-4 mb-4'>
+                        <h3 className='font-bold mb-3'>
+                            Événements du {jourSelectionne} {moisActuel.toLocaleDateString('fr-FR', { month: 'long' })}
+                        </h3>
+                        {evenementsduJour(jourSelectionne).map(evenement => (
+                            <button
+                                key={evenement.id}
                                 onClick={() => navigate(`/evenement/${evenement.id}`)}
-                                className='bg-[#C2611F]/20 flex justify-between items-center hover:bg-[#C2611F]/50 transition-all duration-200 rounded-md p-4'>
-                                <p className='h-12 w-16 rounded-md shadow-[#C2611F]/20 shadow-md flex justify-center items-center'>{new Date(evenement.dateLancement).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}</p>
+                                className='w-full bg-white flex justify-between items-center hover:bg-[#C2611F]/50 transition-all rounded-md p-4 mb-2'
+                            >
                                 <h1 className='font-bold'>{evenement.titre}</h1>
-                                <p  className='h-8 w-30 md:w-40 rounded-md shadow-[#C2611F]/20 shadow-md flex justify-center items-center'>{formaterStatut(evenement?.statut)}</p>
+                                <p className='h-8 w-30 md:w-40 rounded-md shadow-[#C2611F]/20 shadow-md flex justify-center items-center'>{formaterStatut(evenement?.statut)}</p>
                             </button>
                         ))}
                     </div>
-                ))}
+                )}
             </section>
         </div>
     )

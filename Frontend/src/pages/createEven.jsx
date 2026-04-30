@@ -14,6 +14,8 @@ import clock from '../assets/icons/clock.svg'
 import x from '../assets/icons/x.svg'
 import categorie from '../assets/icons/chart-column-stacked.svg'
 import menu from '../assets/icons/menu.svg'
+import link from '../assets/icons/link.svg'
+import info from '../assets/icons/info.svg'
 
 export default function CreateEven() {
 
@@ -39,6 +41,8 @@ export default function CreateEven() {
     const [toastMessage, setToastMessage] = useState('')
     const [toastType, setToastType] = useState('succes')
     const [photos, setPhotos] = useState([])
+    const [estVirtuel, setEstVirtuel] = useState(false)
+    const [lienVirtuel, setLienVirtuel] = useState('')
     
     // Fonctions pour gérer les catégories
     const ajouterCategorie = () => {
@@ -73,7 +77,12 @@ export default function CreateEven() {
         formData.append('lieu', lieu);
         formData.append('prix', 0); 
         formData.append('statut', statut);
-        
+        formData.append('estVirtuel', estVirtuel)
+
+        if (estVirtuel && lienVirtuel) {
+            formData.append('lienVirtuel', lienVirtuel)
+        }
+
         if (date && heure) {
             try {
                 // 1. On prépare la date (gestion des slashs si nécessaire)
@@ -321,12 +330,92 @@ export default function CreateEven() {
                                             placeholder='     Ex:OtakuFest 2026'
                                             className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md px-4'
                                         >
-                                            <option value="Tous">Mixte</option>
+                                            <option value="Mixte">Mixte</option>
                                             <option value="Anime">Anime</option>
-                                            <option value="Manga">Manga</option>
+                                            <option value="Manga">BD</option>
                                             <option value="Gaming">Gaming</option>
                                         </select>
                                     </div>
+                                </div>
+                                {/* CATEGORIE : PHYSIQUE OU VIRTUEL */}
+                                <div className='flex flex-col gap-3 md:px-3'>
+                                    <div className='w-full flex gap-2 text-sm md:text-md'>
+                                        <img className='h-5 w-5' src={link} alt="Icone des informations" />
+                                        <label htmlFor="typeEven">Catégorie de l'événement</label>
+                                    </div>
+                                    <div className='w-full flex justify-start items-center gap-6'>
+                                        <label className='w-1/2 md:w-full flex items-center gap-2 bg-[#C2611F]/20 h-10 rounded-md px-3 text-sm cursor-pointer'>
+                                            <input
+                                                type='radio'
+                                                name='typeEvent'
+                                                checked={!estVirtuel}
+                                                onChange={() => setEstVirtuel(false)}
+                                                className='accent-[#C2611F]'
+                                            />
+                                            <span>Physique</span>
+                                        </label>
+                                        <label className='w-1/2 md:w-full flex items-center gap-2 bg-[#C2611F]/20 h-10 rounded-md px-3 text-sm cursor-pointer'>
+                                            <input
+                                                type='radio'
+                                                name='typeEvent'
+                                                checked={estVirtuel}
+                                                onChange={() => setEstVirtuel(true)}
+                                                className='accent-[#C2611F]'
+                                            />
+                                            <span>Virtuel</span>
+                                        </label>
+                                    </div>
+
+                                    {/* Champ Lien — visible seulement si virtuel */}
+                                    {estVirtuel && (
+                                        <div className='flex flex-col gap-1'>
+                                            <div className='w-full flex gap-2'>
+                                                <img className='h-5 w-5' src={link} alt="Icone des informations" />
+                                                <label className='text-sm'>Lien de la réunion</label>
+                                            </div>
+                                            <input
+                                                type='url'
+                                                value={lienVirtuel}
+                                                onChange={(e) => setLienVirtuel(e.target.value)}
+                                                placeholder='https://meet.google.com/...  OU  https://web.whatsapp.com/...'
+                                                className='bg-[#C2611F]/20 h-10 rounded-md px-3 text-sm'
+                                            />
+                                        </div>
+                                    )}
+
+                                    {/* Ville et Lieu — cachés si virtuel */}
+                                    {!estVirtuel && (
+                                        <div className='w-full flex justify-center items-center md:gap-4'>
+                                            <div className='w-1/2 md:w-full flex flex-col'>
+                                                <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
+                                                    <img className='h-4 w-4 md:h-5 md:w-5' src={map} alt="Icone des informations" />
+                                                    <label htmlFor="name">Ville</label>
+                                                </div>
+                                                <input
+                                                    type='text'
+                                                    id='name'
+                                                    onChange={(e) => setVille(e.target.value)}
+                                                    placeholder='     Ex:OtakuFest 2026'
+                                                    className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md text-sm md:text-md'
+                                                >
+                                                </input>
+                                            </div>
+                                            <div className='w-1/2 md:w-full flex flex-col'>
+                                                <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
+                                                    <img className='h-4 w-4 md:h-5 md:w-5' src={map} alt="Icone des informations" />    
+                                                    <label htmlFor="name">Lieu précis</label>
+                                                </div>
+                                                <input
+                                                    type='text'
+                                                    id='name'
+                                                    onChange={(e) => setLieu(e.target.value)}
+                                                    placeholder='     Ex:OtakuFest 2026'
+                                                    className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md text-sm md:text-md'
+                                                >
+                                                </input>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                                 {/* Date de l'événement & Heure de début */}
                                 <div className='w-full flex md:justify-center items-center md:gap-4'>
@@ -359,40 +448,10 @@ export default function CreateEven() {
                                         </input>
                                     </div>
                                 </div>
-                                {/* Ville & Lieu précis */}
-                                <div className='w-full flex justify-center items-center md:gap-4'>
-                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-2'>
-                                        <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
-                                            <img className='h-4 w-4 md:h-5 md:w-5' src={map} alt="Icone des informations" />
-                                            <label htmlFor="name">Ville</label>
-                                        </div>
-                                        <input
-                                            type='text'
-                                            id='name'
-                                            onChange={(e) => setVille(e.target.value)}
-                                            placeholder='     Ex:OtakuFest 2026'
-                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md text-sm md:text-md'
-                                        >
-                                        </input>
-                                    </div>
-                                    <div className='w-1/2 md:w-full flex flex-col px-1 md:px-4'>
-                                        <div className='w-full flex items-center gap-1 md:gap-2 text-sm md:text-md'>
-                                            <img className='h-4 w-4 md:h-5 md:w-5' src={map} alt="Icone des informations" />    
-                                            <label htmlFor="name">Lieu précis</label>
-                                        </div>
-                                        <input
-                                            type='text'
-                                            id='name'
-                                            onChange={(e) => setLieu(e.target.value)}
-                                            placeholder='     Ex:OtakuFest 2026'
-                                            className='bg-[#C2611F]/20 h-10 cursor-pointer rounded-md text-sm md:text-md'
-                                        >
-                                        </input>
-                                    </div>
-                                </div>
                                 {/* Statut de l'événement */}
                                 <div className='flex flex-col md:px-4 text-sm md:text-md'>
-                                    <div className='w-full'>
+                                    <div className='w-full flex justify-start items-center gap-2'>
+                                        <img className='h-4 w-4 md:h-5 md:w-5' src={info} alt="Icone des informations" />
                                         <h1 htmlFor="description_long">Statut de l'événement</h1>
                                     </div>
                                     <div className='w-full'>

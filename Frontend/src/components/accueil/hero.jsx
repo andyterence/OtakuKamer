@@ -98,11 +98,11 @@ export default function Hero() {
                         <div className='w-full flex justify-center md:justify-start items-center md:gap-6'>
                             {evenementTermine ? (
                                 <div className='text-center text-[#0D0D0D]'>
-                                    <p className='tet-gray-300'>Le prochain événement vedette sera annoncé bientôt.</p>
+                                    <p className='text-gray-300'>Le prochain événement vedette sera annoncé bientôt.</p>
                                 </div>
                             ) : (
                                 <div className='flex flex-col justify-center gap-3'>
-                                    <p className='text-[10px] md:text-[#0D0D0D] text-[#C2611F] font-bold tracking-wide'>COMPTE À REBOURS</p>
+                                    <p className='text-[10px] text-white font-bold tracking-wide'>COMPTE À REBOURS</p>
                                     <div className='w-full flex justify-center items-center gap-3 md:gap-6'>
                                             {[
                                             { valeur: compteRebours.jours, label: 'JOURS' },
@@ -150,16 +150,6 @@ export default function Hero() {
                         <div className="absolute inset-0 bg-black/30"></div>
                         <div className='absolute z-15 w-30 h-7 shadow-md shadow-black-500/50 flex justify-center items-center text-[#F1F1F1] font-bold bg-[#C2611F] text-[10px] rounded-full md:left-64 md:bottom-118'>
                             <p>En vedette</p>
-                        </div>
-                        <div className='z-10 flex justify-start items-center gap-2 text-[14px] w-full z-15'>
-                            <img className='h-5 w-5' src={notif} alt="Icon de la notification" />
-                            <p>{new Date(evenementsVedettes?.dateLancement).toLocaleDateString('fr-FR', {
-                                day: 'numeric', month: 'long', year: 'numeric'
-                            })}</p>
-                        </div>
-                        <div className='flex justify-start items-center gap-2 text-[14px] w-full z-15'>
-                            <img className='h-5 w-5' src={localisation} alt="Icon de la localisation" />
-                            <p>{evenementsVedettes?.lieu}</p>
                         </div>
                     </div>
                 </section>

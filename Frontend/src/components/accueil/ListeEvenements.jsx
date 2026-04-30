@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import API_URL from '../../utils/api'
-import CarrouselEvenements from './carrouselEvenements'
+import CarrouselEvenements from '././carrouselEvenements'
+import formaterStatut from '../../utils/formaterStatut'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import axios from 'axios'
@@ -17,10 +18,9 @@ function ListeEvenements(){
     // UseState qui va se charger du filtre des evenements selon le type
     const [filtreActif, setFiltreActif] = useState('Tous')
     // Pour generer les filtres boutons grace a .map()
-    const filtres = ['Tous', 'Gaming', 'Anime', 'Manga']
+    const filtres = ['Mixte', 'Gaming', 'Anime', 'BD']
     // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
-
     useEffect(() => {
     AOS.init({
         duration: 1000, // Durée de l'animation
@@ -70,18 +70,23 @@ function ListeEvenements(){
                 {evenementsFiltres.length === 0 
                     ? <p className=' font-bold'>Aucun événement de ce type</p>
                     : evenementsFiltres.map(evenement => (
-                        <div key={evenement.id} data-aos="fade-right" className={`card md:h-140 w-full md:w-250 bg-[#C2611F]/20 flex flex-col md:flex-row justify-center items-center rounded-xl font-bold md:p-4 ${
-                            evenement.typeEven === 'Gaming' ? 'border-green-500' :
-                            evenement.typeEven === 'Anime' ? 'border-blue-500' :
-                            evenement.typeEven === 'Manga' ? 'border-red-500' :
-                                                    'border-purple-500'
-                        }`}>
+                        <div key={evenement.id} data-aos="fade-right" className={`card md:h-140 w-full md:w-250 flex flex-col md:flex-row justify-center items-center rounded-xl font-bold md:p-4
+                            ${evenement.statut === 'annule' || evenement.statut === 'termine' 
+                                ? 'bg-gray-300/50 opacity-60 grayscale' 
+                                : 'bg-[#C2611F]/20'
+                            }
+                        `}>
                             {/* SECTION INFORMATION A GAUCHE */}
                             <article className='h-full md:w-110 flex flex-col justify-start items-start gap-1 md:gap-8 md:px-10'>
                                 {/* BADGE */}
                                 <div className='w-full flex md:justify-center md:justify-start items-center font-bold pt-5 md:pt-5'>
                                     <h1 className='text-[#C2611F] text-[12px] bg-black/20 px-4 py-1 rounded-full'>{evenement?.typeEven}</h1>
                                 </div>
+                                {evenement?.estVirtuel && (
+                                <span className='text-blue-400 text-[11px] bg-blue-400/20 px-3 py-1 rounded-full ml-2'>
+                                    🌐 Virtuel
+                                </span>
+                                )}
                                 {/* NOM DE L'EVEN ET DESCRIPTION*/}
                                 <div className='w-full flex flex-col md:justify-start items-start gap-2 px-4 mb-2 md:mb-0'>
                                     <h1 className='text-4xl text- md:text-start font-bold'>{evenement?.titre}</h1>
@@ -104,13 +109,13 @@ function ListeEvenements(){
                                         <div className='flex justify-center items-center h-8 w-8 bg-[#C2611F] rounded-md'>
                                             <img className='h-5 w-5' src={map} alt="Icon de la localisation" />
                                         </div>
-                                        <p>{evenement?.lieu}</p>
+                                        <p>{evenement?.ville}</p>
                                     </div>
                                     <div className='w-full flex justify-start md:justify-start items-center gap-2 text-[12px] w-full'>
                                         <div className='flex justify-center items-center h-8 w-8 bg-[#C2611F] rounded-md'>
                                             <img className='h-5 w-5' src={info} alt="Icon de la localisation" />
                                         </div>
-                                        <p>{evenement?.statut}</p>
+                                        <p>{formaterStatut(evenement?.statut)}</p>
                                     </div>
                                     <div className='w-full flex justify-start text-[12px] w-full py-2 md:py-6'>
                                         <button 

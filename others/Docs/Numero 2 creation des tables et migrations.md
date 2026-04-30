@@ -131,7 +131,7 @@ Tous les modèles ont été définis et leurs migrations ont été appliquées a
 - `datePublication` (auto), `dateMiseAJour` (auto)
 - `image` — ImageField (optionnel)
 - `statut` — `publie` | `brouillon`
-- `typeNews` — `gaming` | `anime` | `manga` | `culture`
+- `typeNews` — `gaming` | `anime` | `BD` | `culture`
 
 ### Migrations
 

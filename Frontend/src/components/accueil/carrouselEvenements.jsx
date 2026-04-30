@@ -44,10 +44,14 @@ function CarrouselEvenements({ image, photos = [] }){
                     </div>
                 </div>
                 <div className='relative h-40 md:h-90 w-full rounded-xl bg-cover bg-center bg-gray-200'
-                    style={{ backgroundImage: `url(${photos.length > 0 
-                        ? `${API_URL}${photos[indexActuel]?.image}` 
-                        : image})` 
-                    }}>
+                    style={{ backgroundImage: `url(${
+                        photos.length > 0 
+                            ? (photos[indexActuel]?.image?.startsWith('http') 
+                                ? photos[indexActuel].image                    // URL déjà complète → garder
+                                : `${API_URL}${photos[indexActuel]?.image}`)  // URL relative → ajouter domaine
+                            : image
+                    })` }}
+                    >
                     <div className='w-full flex justify-end p-2'>
                         <div className='absolute h-8 w-8 bg-white/70 rounded-full flex justify-center items-center'>
                             <span>{indexActuel + 1}/{total}</span>
