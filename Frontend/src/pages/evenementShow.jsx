@@ -4,6 +4,7 @@ import axios from 'axios'
 import API_URL from '../utils/api'
 import formaterStatut from '../utils/formaterStatut'
 import CarrouselEvenements from '../components/accueil/carrouselEvenements'
+import Toast from '../components/shared/Toast'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import background from '../assets/imgs/background.jpg'
@@ -16,6 +17,7 @@ import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
 import map from '../assets/icons/map-check.svg'
 import shield from '../assets/icons/shield-check.svg'
 import whatsapp from '../assets/logos/whatsapp.svg'
+import goku_attend from '../assets/imgs/goku_attend.png'
  
 export default function EvenementShow() {
  
@@ -32,14 +34,14 @@ export default function EvenementShow() {
     const [categorieChoisie, setCategorieChoisie] = useState(null)
     // Etat pour ouvrir/fermer le drawer de réservation sur mobile
     const [drawerOuvert, setDrawerOuvert] = useState(false)
-    // Pour pouvoir naviguer entre les pages
     const navigate = useNavigate()
-    // Etat pour refuser l'autorisation a un element aux personnes qui ne sont pas connecter
     const token = localStorage.getItem('access')
     const [methode, setMethode] = useState("MTN")
     const [numero, setNumero] = useState("")
     const [voirPlus, setVoirPlus] = useState(false)
     const [lienCopie, setLienCopie] = useState(false)
+    const [toastMessage, setToastMessage] = useState('')
+    const [toastType, setToastType] = useState('succes')
     
  
     // ─── FONCTIONS ────────────────────────────────────────────────────────────
@@ -63,35 +65,16 @@ export default function EvenementShow() {
             console.error(_err)
         }
     }
- 
-    // Envoie la réservation à l'API et redirige vers /billets si succès.
-    // const reserver = async () => {
-    //     if (!categorieChoisie) {
-    //         alert('Veuillez choisir une catégorie !')
-    //         return
-    //     }
-    //     try {
-    //         const token = localStorage.getItem('access')
-    //         await axios.post(
-    //             `${API_URL}/api/billet/`,
-    //             { categorie: categorieChoisie.id, quantite: quantite },
-    //             { headers: { Authorization: `Bearer ${token}` } }
-    //         )
-    //         setMessageConfirmation(true)
-    //         setTimeout(() => {
-    //             setMessageConfirmation(false)
-    //             navigate('/billets')
-    //         }, 1000)
-    //     } catch (_err) {
-    //         console.error(_err)
-    //     }
-    // }
 
     const payer = async () => {
         if (!categorieChoisie) {
-            alert('Veuillez choisir une catégorie !')
+            setToastType('erreur')
+            setToastMessage('Veuillez choisir une catégorie !')
             return
         }
+        
+        setEnAttente(true)  // ← ajoute ici
+        
         try {
             const token = localStorage.getItem('access')
             const res = await axios.post(`${API_URL}/api/payments/init/`, {
@@ -102,16 +85,20 @@ export default function EvenementShow() {
                 numero: numero 
             }, { headers: { Authorization: `Bearer ${token}` } })
 
-            // GeniusPay retourne une URL de paiement
             if (res.data?.data?.checkout_url) {
+                // Pas besoin de setEnAttente(false) ici
+                // car window.location.href va quitter la page
                 window.location.href = res.data.data.checkout_url
             } else {
-                console.error('Pas de payment_url dans la réponse', res.data)
-                alert('Erreur lors de l\'initialisation du paiement')
+                setEnAttente(false)  // ← arrête l'animation si pas de checkout_url
+                setToastType('erreur')
+                setToastMessage('Erreur lors de l\'initialisation du paiement')
             }
         } catch (err) {
+            setEnAttente(false)  // ← arrête l'animation en cas d'erreur
             console.error(err)
-            alert('Erreur lors du paiement')
+            setToastType('erreur')
+            setToastMessage('Erreur lors du paiement')
         }
     }
  
@@ -371,12 +358,30 @@ export default function EvenementShow() {
                             </div>
                             {/* BOUTON RESERVER — visible seulement si connecté */}
                             {token && (
-                                <button
-                                    onClick={() => setModalOuvert(true)}
-                                    className='w-full h-12 bg-[#C2611F] text-white flex justify-center items-center rounded-xl cursor-pointer hover:bg-[#a14f19] transition-all'
-                                >
-                                    Réserver ma place
-                                </button>
+                                evenement?.modePaiement === 'whatsapp'
+                                ? (
+                                    // ← Redirige vers WhatsApp avec un message pré-rempli
+                                    
+                                       <a href={`https://wa.me/${evenement.whatsappOrganisateur?.replace(/\D/g, '')}?text=${encodeURIComponent(
+                                            `Bonjour, je souhaite réserver ${quantite} billet(s) "${categorieChoisie?.nom}" pour l'événement "${evenement?.titre}". Total : ${(quantite * (categorieChoisie?.prix || 0)).toFixed(0)} FCFA`
+                                        )}`}
+                                        target='_blank'
+                                        rel='noreferrer'
+                                        className='w-full h-12 bg-green-500 text-white flex justify-center items-center rounded-xl cursor-pointer hover:bg-green-600 transition-all font-bold gap-2'
+                                    >
+                                        <img className='h-5 w-5' src={whatsapp} alt="WhatsApp" />
+                                        Réserver via WhatsApp
+                                    </a>
+                                )
+                                : (
+                                    // ← Flux billetterie normal
+                                    <button
+                                        onClick={() => setModalOuvert(true)}
+                                        className='w-full h-12 bg-[#C2611F] text-white flex justify-center items-center rounded-xl cursor-pointer hover:bg-[#a14f19] transition-all'
+                                    >
+                                        Réserver ma place
+                                    </button>
+                                )
                             )}
                         </div>
                     </div>
@@ -437,10 +442,12 @@ export default function EvenementShow() {
                             )}
                             {/* Avis et participants — données statiques pour l'instant */}
                             <div className='flex items-center justify-center gap-4 flex-wrap'>
-                                <div className='flex justify-center items-center'>
-                                    <img className='h-5 w-5' src={star} alt="Étoile" />
-                                    <p className='text-sm'>  /  ( avis)</p>
-                                </div>
+                                {evenement?.nombreAvis > 0 && (
+                                    <div className='flex justify-center items-center'>
+                                        <img className='h-5 w-5' src={star} alt="Étoile" />
+                                        <p className='text-sm'>{evenement?.notemoyenne} / 5 ({evenement?.nombreAvis} avis)</p>
+                                    </div>
+                                )}
                                 <span className='text-[20px]'>·</span>
                                 <div className='flex justify-center items-center'>
                                     <img className='h-5 w-5' src={users} alt="Participants" />
@@ -652,6 +659,15 @@ export default function EvenementShow() {
                         </h2>
                         <p className='text-gray-500 text-sm'>Redirection vers vos billets...</p>
                     </div>
+                </div>
+            )}
+            {toastMessage && (
+                <Toast message={toastMessage} setMessage={setToastMessage} type={toastType} />
+            )}
+            {enAttente && (
+                <div className="flex flex-col fixed inset-0 bg-black/90 flex items-center justify-center z-50">
+                    <img className='w-80 h-auto anime-flotter' src={goku_attend} />
+                    <p className="text-[#9CA3AF] text-lg">Chargement en cours...</p>
                 </div>
             )}
         </div>

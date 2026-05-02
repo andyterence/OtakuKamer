@@ -4,6 +4,7 @@ import API_URL from '../utils/api'
 import Sidebar from "../components/shared/sidebar";
 import Toast from '../components/shared/Toast'
 import axios from 'axios'
+import bank from '../assets/icons/banknote.svg'
 import imageIcon from '../assets/icons/image.svg'
 import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
 import map from '../assets/icons/map-check.svg'
@@ -43,6 +44,8 @@ export default function CreateEven() {
     const [photos, setPhotos] = useState([])
     const [estVirtuel, setEstVirtuel] = useState(false)
     const [lienVirtuel, setLienVirtuel] = useState('')
+    const [modePaiement, setModePaiement] = useState('billetterie')
+    const [whatsappOrganisateur, setWhatsappOrganisateur] = useState('')
     
     // Fonctions pour gérer les catégories
     const ajouterCategorie = () => {
@@ -78,6 +81,11 @@ export default function CreateEven() {
         formData.append('prix', 0); 
         formData.append('statut', statut);
         formData.append('estVirtuel', estVirtuel)
+        formData.append('modePaiement', modePaiement)
+
+        if (modePaiement === 'whatsapp' && whatsappOrganisateur) {
+            formData.append('whatsappOrganisateur', whatsappOrganisateur)
+        }
 
         if (estVirtuel && lienVirtuel) {
             formData.append('lienVirtuel', lienVirtuel)
@@ -472,6 +480,49 @@ export default function CreateEven() {
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                {/* MODE DE PAIEMENT */}
+                                <div className='flex flex-col gap-3 md:px-4'>
+                                    <div className='w-full flex items-center gap-2'>
+                                        <img className='h-5 w-5' src={bank} alt="Paiement" />
+                                        <label className='text-sm md:text-md'>Mode de paiement</label>
+                                    </div>
+                                    <div className='w-full flex gap-4'>
+                                        <label className='w-1/2 flex items-center gap-2 bg-[#C2611F]/20 h-10 rounded-md px-3 text-sm cursor-pointer'>
+                                            <input
+                                                type='radio'
+                                                name='modePaiement'
+                                                checked={modePaiement === 'billetterie'}
+                                                onChange={() => setModePaiement('billetterie')}
+                                                className='accent-[#C2611F]'
+                                            />
+                                            <span>Billetterie en ligne</span>
+                                        </label>
+                                        <label className='w-1/2 flex items-center gap-2 bg-[#C2611F]/20 h-10 rounded-md px-3 text-sm cursor-pointer'>
+                                            <input
+                                                type='radio'
+                                                name='modePaiement'
+                                                checked={modePaiement === 'whatsapp'}
+                                                onChange={() => setModePaiement('whatsapp')}
+                                                className='accent-[#C2611F]'
+                                            />
+                                            <span>WhatsApp</span>
+                                        </label>
+                                    </div>
+
+                                    {/* Numéro WhatsApp — visible seulement si whatsapp choisi */}
+                                    {modePaiement === 'whatsapp' && (
+                                        <div className='flex flex-col gap-1'>
+                                            <label className='text-sm'>Numéro WhatsApp de l'organisateur</label>
+                                            <input
+                                                type='text'
+                                                value={whatsappOrganisateur}
+                                                onChange={(e) => setWhatsappOrganisateur(e.target.value)}
+                                                placeholder='Ex: +237677000000'
+                                                className='bg-[#C2611F]/20 h-10 rounded-md px-3 text-sm'
+                                            />
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

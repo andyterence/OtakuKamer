@@ -17,6 +17,8 @@ import PrivatyPolicy from './pages/privatyPolicy'
 import CursorTrail from "./components/shared/CursorTrail"
 import Scanner from './pages/scanner';
 import NotFound from './pages/NotFound'
+import PaiementSucces from './pages/PaiementSucces'
+import PaiementEchec from './pages/PaiementEchec'
 
 function App() {
   const location = useLocation();
@@ -45,6 +47,8 @@ function App() {
         <Route path="/privatyPolicy/" element={<PrivatyPolicy />} />
         <Route path="/scanner" element={<PrivateRoute><Scanner /></PrivateRoute>} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/paiement/succes" element={<PaiementSucces />} />
+        <Route path="/paiement/echec" element={<PaiementEchec />} />
       </Routes>
     </>
   )

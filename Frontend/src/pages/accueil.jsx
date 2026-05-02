@@ -5,29 +5,33 @@ import ListeNews from "../components/accueil/ListeNews";
 import Sidebar from "../components/shared/sidebar";
 import Navbar from "../components/shared/Navbar";
 import Footer from "../components/shared/Footer";
+import Onboarding from "../components/onboarding/onboarding";
 import menu from '../assets/icons/menu.svg'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 function Accueil() {
-
-    // Etat pour refuser l'autorisation du sidebar aux personnes qui ne sont pas connecter
+    
     const token = localStorage.getItem('access')
-    // Menu ouvert ou pas
     const [menuOuvert, setMenuOuvert] = useState(false)
     const [modalBienvenue, setModalBienvenue] = useState(false)
     const [dejaVu, setDejaVu] = useState(false)
+    const [tutorielActif, setTutorielActif] = useState(false);
     // Ferme le modal de bienvenue et enregistre dans le localStorage que l'utilisateur l'a déjà vu pour ne pas le réafficher à sa prochaine visite
     const fermerModal = () => {
         localStorage.setItem("dejaVuBienvenue", "true")
         setModalBienvenue(false)
     }
 
-    // useEffect pour bloquer le modal de bienvenue si l'utilisateur n'est pas a sa toute premiere visite
+    const lancerTutoriel = () => {
+        localStorage.setItem("dejaVuBienvenue", "true")
+        setModalBienvenue(false)
+        setTutorielActif(true)  // ← lance le tutoriel !
+    }
+
     useEffect(() => {
         const dejaVu = localStorage.getItem("dejaVuBienvenue")
-
-        if (!dejaVu) {
+        if (!dejaVu && token) {  // ← ajout de token
             setModalBienvenue(true)
         }
     }, [])
@@ -81,7 +85,7 @@ function Accueil() {
                             </button>
                             <button 
                                 className="mt-4 bg-[#C2611F] transition-all duration-300 cursor-pointer hover:translate-y-1 text-white font-bold py-3 px-5 rounded"
-                                onClick={fermerModal}
+                                onClick={lancerTutoriel}
                             >
                                 Oui, c'est parti !
                             </button>
@@ -89,13 +93,16 @@ function Accueil() {
                     </div>
                 </div>
             )}
-            <button className="anime-flotter bg-[#C2611F]/50 fixed bottom-30 right-10 border-2 border-black h-13 w-13 rounded-full flex justify-center items-center z-50 cursor-pointer hover:bg-[#C2611F] hover:scale-110 transition-transform duration-300">
+            {/* BOUTON FLOTTANT POUR DECLANCHER L'ONBOARDING */}
+            <button onClick={() => setTutorielActif(true)} className="anime-flotter bg-[#C2611F]/50 fixed bottom-30 right-10 border-2 border-black h-13 w-13 rounded-full flex justify-center items-center z-50 cursor-pointer hover:bg-[#C2611F] hover:scale-110 transition-transform duration-300">
                 <div className="anime-flotter absolute border-2 border-black h-7 w-7 rounded-full flex justify-center items-center">
                     <div className="absolute border-2 border-black h-5 w-5 rounded-full flex justify-center items-center">
                         <div className="absolute border-2 border-black h-3 w-3 rounded-full flex justify-center items-center"></div>
                     </div>
                 </div>
             </button>
+            {/* ONBOARDING */}
+            <Onboarding run={tutorielActif} setRun={setTutorielActif} />
         </div>
         )
     }

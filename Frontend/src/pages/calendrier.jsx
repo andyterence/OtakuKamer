@@ -75,6 +75,7 @@ export default function Calendrier() {
     return groupes
     }, {})
 
+
     useEffect(() => {
         const chargerEvenements = async() => {
             setEnAttente(true)
@@ -156,19 +157,26 @@ export default function Calendrier() {
                             const evenementsCeJour = jour ? evenementsduJour(jour) : []
                             const estSelectionne = jourSelectionne === jour
                             
+                            // Ici — `jour` existe
+                            const aujourdhui = new Date()
+                            const estAujourdhui = 
+                                jour === aujourdhui.getDate() &&
+                                moisActuel.getMonth() === aujourdhui.getMonth() &&
+                                moisActuel.getFullYear() === aujourdhui.getFullYear()
+                            
                             return (
                                 <div
                                     key={index}
                                     onClick={() => jour && setJourSelectionne(jour === jourSelectionne ? null : jour)}
                                     className={`relative h-20 flex flex-col justify-center items-center rounded-lg text-sm cursor-pointer transition-all duration-200
                                         ${!jour ? '' : 'hover:bg-[#C2611F]/30'}
-                                        ${estSelectionne ? 'bg-[#C2611F]/30 text-black' : ''} 
+                                        ${estSelectionne ? 'bg-[#C2611F]/30 text-black' : ''}
+                                        ${estAujourdhui ? 'border-2 border-[#C2611F] font-bold' : ''}
                                     `}
                                 >
                                     {jour && <span>{jour}</span>}
-                                    {/* Point rouge si événement ce jour */}
                                     {evenementsCeJour.length > 0 && (
-                                        <div className='absolute bottom-1 w-2 h-2 bg-[#C2611F] rounded-full' 
+                                        <div className='absolute bottom-1 w-2 h-2 rounded-full' 
                                             style={{ backgroundColor: estSelectionne ? 'white' : '#C2611F' }}
                                         />
                                     )}
@@ -196,6 +204,30 @@ export default function Calendrier() {
                         ))}
                     </div>
                 )}
+                {jourSelectionne && evenementsduJour(jourSelectionne).length === 0 && (
+                    <div className='w-[95%] md:w-[90%] text-center py-4 text-gray-500 text-sm'>
+                        Aucun événement ce jour
+                    </div>
+                )}
+                {/* LISTE CHRONOLOGIQUE PAR MOIS */}
+                {Object.entries(evenementsParMois).map(([mois, evenementsDuMois]) => (
+                    <div key={mois} className='bg-[#C2611F]/10 w-[95%] md:w-[90%] flex flex-col gap-2 rounded-md p-4 mb-4'>
+                        <div className='flex items-center gap-2 font-bold'>
+                            <img className='h-6 w-6' src={calendrier} />
+                            <p className='capitalize'>{mois}</p>
+                        </div>
+                        {evenementsDuMois.map(evenement => (
+                            <button
+                                key={evenement.id}
+                                onClick={() => navigate(`/evenement/${evenement.id}`)}
+                                className='bg-[#C2611F]/20 flex justify-between items-center hover:bg-[#C2611F]/50 transition-all duration-200 rounded-md p-4'>
+                                <p>{new Date(evenement.dateLancement).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}</p>
+                                <h1 className='font-bold'>{evenement.titre}</h1>
+                                <p>{formaterStatut(evenement?.statut)}</p>
+                            </button>
+                        ))}
+                    </div>
+                ))}
             </section>
         </div>
     )

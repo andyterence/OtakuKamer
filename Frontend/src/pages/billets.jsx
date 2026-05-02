@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import API_URL from '../utils/api'
 import Sidebar from "../components/shared/sidebar";
-import Footer from "../components/shared/Footer";
+import formaterStatut from '../utils/formaterStatut'
+import Toast from '../components/shared/Toast'
 import axios from 'axios'
 import { QRCodeCanvas } from 'qrcode.react'
 import info from '../assets/icons/info.svg'
@@ -11,13 +12,10 @@ import calendrier from "../assets/icons/calendar-days-svgrepo-com.svg";
 import ticket from '../assets/icons/ticket-check.svg'
 import download from '../assets/icons/download.svg'
 import qrcode from '../assets/icons/scan-qr-code.svg'
-// import background from '../assets/imgs/background.jpg'
 import map from '../assets/icons/locate.svg'
 import map_check from '../assets/icons/locate-fixed.svg'
 import bank from '../assets/icons/banknote.svg'
 import menu from '../assets/icons/menu.svg'
-
-// import notif from '../../assets/icons/bell.svg'
 
 export default function Billets() {
 
@@ -28,6 +26,8 @@ export default function Billets() {
     const [messageConfirmation, setMessageConfirmation] = useState(false)
     const [billetAnnuler, setBilletAnnuler] = useState(null)
     const [menuOuvert, setMenuOuvert] = useState(false)
+    const [toastMessage, setToastMessage] = useState('')
+    const [toastType, setToastType] = useState('succes')
     // Etat pour refuser l'autorisation du sidebar aux personnes qui ne sont pas connecter
     const token = localStorage.getItem('access')
     // UseState qui va se charger de la liste des billets selon le type
@@ -42,7 +42,8 @@ export default function Billets() {
         
         // 2. On vérifie qu'il est bien visible
         if (!canvas) {
-            alert('Veuillez d\'abord afficher le QR code !')
+            setToastType('erreur')
+            setToastMessage('Veuillez d\'abord afficher le QR code !')
             return
         }
         // 3. On convertit le canvas en image
@@ -242,7 +243,7 @@ export default function Billets() {
                                                 </div>
                                                 <p  className='font-bold'>{billet?.prix} FCFA</p>
                                             </div>
-                                            <p className='font-bold'>{billet?.statut}</p>
+                                            <p className='font-bold'>{formaterStatut(billet?.statut)}</p>
                                         </div>
                                         {/* QRCODE */}
                                         <div className='w-full h-full flex justify-center items-center top-10'>
@@ -359,6 +360,9 @@ export default function Billets() {
                         <h2 className='text-xl font-bold text-green-800'>Votre billet a bien été annulé</h2>
                     </div>
                 </div>
+            )}
+            {toastMessage && (
+                <Toast message={toastMessage} setMessage={setToastMessage} type={toastType} />
             )}
         </div>
     )

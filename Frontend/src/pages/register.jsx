@@ -110,7 +110,7 @@ function Register() {
                 <h1 className='text-3xl text-center text-[#0D0D0D] font-bold'>Ton nindo commence ici. Bienvenue parmi nous, jeune ninja !</h1>
             </div>
             {/* BOUTONS DE CONNEXION AVEC GOOGLE OU GITHUB */}
-            <div className='flex items-center justify-center gap-4 text-[12px]'>
+            <div className='flex items-center justify-center gap-4 text-[11px]'>
                 <button className='w-41 bg-[#C2611F] text-[#0D0D0D] p-3 rounded-md border-[1px solid #C2611F]'>Se connecter avec Google</button>
                 <button className='w-41 bg-[#C2611F] text-[#0D0D0D] p-3 rounded-md border-[1px solid #C2611F]'>Se connecter avec GitHub</button>
             </div>
