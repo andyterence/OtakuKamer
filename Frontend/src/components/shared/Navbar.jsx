@@ -55,6 +55,8 @@ function Navbar() {
         )
     }
 
+    if (token) return null
+
     return(
         <nav className="z-50 fixed w-screen text-white bg-black/50">
             {/* BARRE PRINCIPALE */}

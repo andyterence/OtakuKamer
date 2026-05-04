@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import API_URL from '../utils/api'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
+import { GoogleLogin } from '@react-oauth/google'
 import logo from '../assets/logos/logo-orange.png'
 import naruto from '../assets/imgs/naruto_bienvenue.png'
 import naruto_hover from '../assets/imgs/naruto_entre.png'
 import sakura_erreur from '../assets/imgs/sakura_erreur.png'
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
+import bell from '../assets/icons/bell-electric.svg'
 
 function Login() {
     // Utiliser le hook useNavigate pour permettre de rediriger après la connexion réussie
@@ -19,34 +21,78 @@ function Login() {
     const [erreur, setErreur] = useState('')
     // État pour indiquer si la connexion est en cours d'attente, utilisé pour afficher une image différente pendant le processus de connexion
     const [enAttente, setEnAttente] = useState(false)
-
+    const [sessionExpiree, setSessionExpiree] = useState(false)
+        
+    useEffect(() => {
+        if (localStorage.getItem('sessionExpiree')) {
+            setSessionExpiree(true)
+            localStorage.removeItem('sessionExpiree')
+        }
+    }, [])
 
     //   Fonction pour gérer la soumission du formulaire de connexion etant une fonction asynchrone pour permettre l'utilisation de await lors de l'appel à l'API
     const handleSubmit = async (e) => {
-    // Empêcher le comportement par défaut du formulaire de soumission pour éviter le rechargement de la page
-    e.preventDefault()
-    // Indiquer que la connexion est en cours d'attente pour afficher une image de chargement
-    setEnAttente(true)
-    try {
+        e.preventDefault()
+        setEnAttente(true)
+        try {
             const reponse = await axios.post(`${API_URL}/api/token/`, {
                 email: email,
                 password: motDePasse
             })
             localStorage.setItem('access', reponse.data.access)
             localStorage.setItem('refresh', reponse.data.refresh)
-            navigate('/accueil')
+            
+            // ✅ Utilise reponse.data.user.role — pas le JWT décodé
+            const role = reponse.data.user?.role
+            localStorage.setItem('role', role)  // ← stocke le rôle !
+
+            if (role === 'admin') {
+                navigate('/admin')
+            } else {
+                navigate('/accueil')
+            }
         } catch (_err) {
             setErreur("Email ou mot de passe incorrect")
-            console.error(_err)
         } finally {
             setEnAttente(false)
         }
     }
 
+    const handleGoogleLogin = async (credentialResponse) => {
+        try {
+            const res = await axios.post(`${API_URL}/api/auth/google/`, {
+                token: credentialResponse.credential
+            })
+            localStorage.setItem('access', res.data.access)
+            localStorage.setItem('refresh', res.data.refresh)
+
+            // Décode le token pour lire le rôle
+            const payload = JSON.parse(atob(res.data.access.split('.')[1]))
+            if (payload.role === 'admin') {
+                navigate('/admin')
+            } else {
+                navigate('/accueil')
+            }
+        } catch (err) {
+            setErreur('Connexion Google échouée')
+            console.error(err)
+        }
+    }
 
   return (
     // Structure de la page de connexion avec deux sections : une pour l'accueil et une pour le formulaire de connexion
     <div className='flex md:flex-row flex-col text-[#0D0D0D] h-full w-full flex items-center justify-center'>
+
+        {/* MESSAGE SESSION EXPIRÉE */}
+        {sessionExpiree && (
+            <div className='w-80 bg-orange-50 border border-orange-300 rounded-xl px-4 py-3 text-center'>
+                <div className='flex justify-center items-center gap-2'>
+                    <img className='w-6 h-6' src={bell} alt="Logo d'OtakuKamer" />
+                    <p className='text-orange-600 font-bold text-sm'>Votre session a expiré</p>
+                </div>
+                <p className='text-orange-500 text-xs mt-1'>Veuillez vous reconnecter pour continuer.</p>
+            </div>
+        )}
 
         {/* SECTION DE GAUCHE - ACCUEIL */}
         <section className='hidden md:block md:w-1/2 h-[98vh] md:h-screen flex flex-col items-center justify-center gap-2 pt-[4%]'>
@@ -78,8 +124,14 @@ function Login() {
             </div>
             {/* BOUTONS DE CONNEXION AVEC GOOGLE OU GITHUB */}
             <div className='flex items-center justify-center gap-4 text-[12px]'>
-                <button className='w-41 bg-[#C2611F] text-[#] p-3 rounded-md border-[1px solid #2D2D2D]'>Se connecter avec Google</button>
-                <button className='w-41 bg-[#C2611F] text-[#0D0D0D] p-3 rounded-md border-[1px solid #2D2D2D]'>Se connecter avec GitHub</button>
+                <GoogleLogin
+                    onSuccess={handleGoogleLogin}
+                    onError={() => setErreur('Connexion Google échouée')}
+                    useOneTap
+                    text="signin_with"
+                    shape="rectangular"
+                    locale="fr"
+                />
             </div>
             <div className='w-88 rounded-[10px]'>
                 <form action="" method="post" className="space-y-4">

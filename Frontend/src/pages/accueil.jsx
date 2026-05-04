@@ -6,6 +6,7 @@ import Sidebar from "../components/shared/sidebar";
 import Navbar from "../components/shared/Navbar";
 import Footer from "../components/shared/Footer";
 import Onboarding from "../components/onboarding/onboarding";
+import BottomNav from '../components/shared/BottomNav'
 import menu from '../assets/icons/menu.svg'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -28,6 +29,8 @@ function Accueil() {
         setModalBienvenue(false)
         setTutorielActif(true)  // ← lance le tutoriel !
     }
+
+    const role = localStorage.getItem('role')
 
     useEffect(() => {
         const dejaVu = localStorage.getItem("dejaVuBienvenue")
@@ -61,13 +64,15 @@ function Accueil() {
                         </aside>
                     </>
                 )}
-                <main className={token ? 'md:w-6/7 w-full' : 'w-full'}>
+                <main className={`${token ? 'md:w-6/7 w-full' : 'w-full'} pb-16 md:pb-0`}>
                     <Navbar />
                     <Hero />
                     <ListeEvenements />
                     {/* <ListeNews /> */}
                     <Footer  />
                 </main>
+
+                {token && <BottomNav role={role} />}
                 
             </div>
             {/* MODAL DE BIENVENUE */}

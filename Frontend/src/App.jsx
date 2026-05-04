@@ -16,6 +16,8 @@ import ConditionUser from './pages/conditionUser';
 import PrivatyPolicy from './pages/privatyPolicy'
 import CursorTrail from "./components/shared/CursorTrail"
 import Scanner from './pages/scanner';
+import AdminRoute from './components/AdminRoute'
+import Admin from './pages/Admin'
 import NotFound from './pages/NotFound'
 import PaiementSucces from './pages/PaiementSucces'
 import PaiementEchec from './pages/PaiementEchec'
@@ -46,9 +48,10 @@ function App() {
         <Route path="/conditionUser/" element={<ConditionUser />} />
         <Route path="/privatyPolicy/" element={<PrivatyPolicy />} />
         <Route path="/scanner" element={<PrivateRoute><Scanner /></PrivateRoute>} />
-        <Route path="*" element={<NotFound />} />
-        <Route path="/paiement/succes" element={<PaiementSucces />} />
-        <Route path="/paiement/echec" element={<PaiementEchec />} />
+        <Route path="/paiement/succes" element={<PaiementSucces />} />  {/* ← déplacé avant * */}
+        <Route path="/paiement/echec" element={<PaiementEchec />} />    {/* ← déplacé avant * */}
+        <Route path="/admin" element={<AdminRoute><Admin /></AdminRoute>} />
+        <Route path="*" element={<NotFound />} />  {/* ← toujours en dernier */}
       </Routes>
     </>
   )

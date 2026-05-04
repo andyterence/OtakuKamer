@@ -17,17 +17,10 @@
   animation: flotter 3s ease-in-out infinite;
 }
 
-/* Style pour le carrousel Embla */
-.embla__viewport {
-  overflow: hidden;
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
-
-.embla__container {
-  display: flex;
-  touch-action: pan-y pinch-zoom;
-}
-
-.embla__slide {
-  flex: 0 0 100%;
-  min-width: 0;
+.animate-fade-in {
+    animation: fade-in 0.25s ease-out;
 }

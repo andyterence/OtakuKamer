@@ -34,6 +34,7 @@ const etapes = [
 function Onboarding({ run, setRun }) {
     const [etape, setEtape] = useState(0);
     const [rect, setRect] = useState(null);
+    
 
     // Calcule la position de l'élément ciblé
     useEffect(() => {
