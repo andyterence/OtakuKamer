@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { useEffect } from 'react';
+import { useEffect } from 'react'
 import PrivateRoute from './components/PrivateRoute' 
 import Login from './pages/Login'
 import Register from './pages/register'
@@ -11,16 +11,16 @@ import MyEvenement from './pages/myEvenement'
 import Calendrier from './pages/calendrier'
 import About from './pages/about'
 import ModifierEvenement from './pages/modifierEvenement'
-import Setting from './pages/setting';
-import ConditionUser from './pages/conditionUser';
+import Setting from './pages/setting'
+import ConditionUser from './pages/conditionUser'
 import PrivatyPolicy from './pages/privatyPolicy'
 import CursorTrail from "./components/shared/CursorTrail"
-import Scanner from './pages/scanner';
+import Scanner from './pages/scanner'
 import AdminRoute from './components/AdminRoute'
 import Admin from './pages/Admin'
 import NotFound from './pages/NotFound'
 import PaiementSucces from './pages/PaiementSucces'
-import PaiementEchec from './pages/PaiementEchec'
+import PaiementEchec from "./pages/PaiementEchec"
 
 function App() {
   const location = useLocation();

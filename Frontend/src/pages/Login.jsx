@@ -126,7 +126,10 @@ function Login() {
             <div className='flex items-center justify-center gap-4 text-[12px]'>
                 <GoogleLogin
                     onSuccess={handleGoogleLogin}
-                    onError={() => setErreur('Connexion Google échouée')}
+                    onError={(err) => {
+                        console.error('Google error:', err)
+                        setErreur('Connexion avec Google impossible. Réessayez.')
+                    }}
                     useOneTap
                     text="signin_with"
                     shape="rectangular"
